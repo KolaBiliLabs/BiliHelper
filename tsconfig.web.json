@@ -10,7 +10,7 @@
   },
   "include": [
     "electron/preload/*.d.ts",
-    "src/env.d.ts",
+    "src/types/env.d.ts",
     "src/**/*",
     "constants/**/*"
   ]

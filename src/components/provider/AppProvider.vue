@@ -2,7 +2,7 @@
 import { ConfigProvider, theme } from 'ant-design-vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useSystemStore } from '@/stores/systemStore'
 
 defineSlots<{
@@ -12,9 +12,8 @@ defineSlots<{
 const systemStore = useSystemStore()
 const { isDark } = storeToRefs(systemStore)
 
-const customTheme = computed(() => ({
-  algorithm: isDark.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
-  token: isDark.value
+const themeToken = computed(() => {
+  return isDark.value
     ? {
         colorPrimary: '#bd93f9', // 主色
         colorPrimaryText: '#fcf6f7', // 主色内容色
@@ -28,18 +27,31 @@ const customTheme = computed(() => ({
         wireframe: true, // 线框风格
       }
     : {
-        colorPrimary: '#570df8', // daisyUI primary
-        colorPrimaryText: '#ffffff', // daisyUI primary-content
+        colorPrimary: '#463aa2', // daisyUI primary
+        colorPrimaryText: '#394e6a', // daisyUI primary-content
         colorSuccess: '#36d399', // daisyUI success
         colorWarning: '#fbbd23', // daisyUI warning
         colorError: '#f87272', // daisyUI error
         colorInfo: '#3abff8', // daisyUI info
         colorBgBase: '#ffffff', // daisyUI base-100
         colorTextBase: '#1f2937', // daisyUI base-content
-        borderRadius: 8, // 保持一致
-        wireframe: true,
-      },
+      }
+})
+const customTheme = computed(() => ({
+  algorithm: isDark.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
+  token: {
+    ...themeToken.value,
+    borderRadius: 8, // 保持一致
+    wireframe: true,
+  },
 }))
+
+watch(themeToken, (v) => {
+  const root = document.documentElement
+  Object.entries(v).forEach(([key, value]) => {
+    root.style.setProperty(`--cus-v-${key}`, value)
+  })
+}, { immediate: true })
 </script>
 
 <template>

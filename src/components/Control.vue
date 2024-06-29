@@ -8,7 +8,7 @@ const volume = ref(70) // 音量
 </script>
 
 <template>
-  <div class="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 flex-between gap-2 h-[100px]">
+  <div class="fixed bottom-0 left-0 right-0 p-4 border-t border-primary bg-primary/20 flex-between gap-2 h-[100px]">
     <!-- left  -->
     <div class="flex-none flex items-center">
       <Avatar :size="48" src="" class="mr-3" />

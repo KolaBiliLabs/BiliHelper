@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Avatar, Input, List } from 'ant-design-vue'
 import { computed, ref } from 'vue'
-import { requestSearch } from '@/api/search'
+import { searchKeyword } from '@/api/search'
 
 const searchValue = ref('')
 const searchResults = ref<any[]>([])
@@ -19,22 +19,22 @@ async function handleSubmit() {
     return
   }
 
-  const res = await requestSearch(searchValue.value)
-  // Bilibili API 返回的数据在 data.result 中
+  const res = await searchKeyword(searchValue.value)
   searchResults.value = res.data.result || []
   console.log(123123, searchValue.value, searchResults.value)
 }
 </script>
 
 <template>
-  <div class="app-region-no-darg">
-    <form class="app-region-no-darg" @submit.prevent="handleSubmit">
+  <div>
+    <form @submit.prevent="handleSubmit">
       <Input
         v-model:value="searchValue"
         placeholder="输入关键词或 b 站链接"
         allow-clear
         size="large"
         width="100"
+        class="app-region-no-drag"
       />
     </form>
 

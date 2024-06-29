@@ -42,13 +42,14 @@ const dataSource = []
         <Header />
 
         <LayoutContent class="flex-grow flex flex-col p-6 overflow-auto">
-          <div class="flex-none flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
+          <div class="flex-none flex items-center justify-between pb-4 mb-4 border-b">
             <div class="flex items-center space-x-4">
-              <h1 class="text-2xl font-bold text-gray-900">
+              <h1 class="text-2xl font-bold">
                 测试歌单
               </h1>
-              <span class="text-gray-500">共 0 首</span>
+              <span class="">共 0 首</span>
             </div>
+
             <div class="flex items-center space-x-4">
               <Button type="primary" shape="round" class="flex-center">
                 <template #icon>
@@ -81,6 +82,6 @@ const dataSource = []
       </Layout>
     </Layout>
 
-    <!-- <Control /> -->
+    <Control />
   </AppProvider>
 </template>

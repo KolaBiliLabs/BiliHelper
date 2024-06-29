@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-primary: var(--cus-v-colorPrimary);
+  --color-primary-text: var(--cus-v-colorPrimaryText);
+  --color-success: var(--cus-v-colorSuccess);
+  --color-warning: var(--cus-v-colorWarning);
+  --color-error: var(--cus-v-colorError);
+  --color-info: var(--cus-v-colorInfo);
+  --color-bg-base: var(--cus-v-colorBgBase);
+  --color-text-base: var(--cus-v-colorTextBase);
+}
+
 @layer base {
   .lucide {
     @apply size-4;

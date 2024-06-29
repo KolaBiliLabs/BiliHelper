@@ -1,21 +1,15 @@
 import axios from 'axios'
 
-const baseUrl = '/api'
-
 const instance = axios.create({
-  baseURL: baseUrl, // 替换为你的后端地址
-  timeout: 15000,
-  withCredentials: true,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    'Referer': 'https://www.bilibili.com/',
+  },
 })
 
 // 请求拦截器
 instance.interceptors.request.use(
   (config) => {
-    // 这里可以自动携带 token
-    // const token = localStorage.getItem('token')
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`
-    // }
     return config
   },
   (error) => {
@@ -34,8 +28,6 @@ instance.interceptors.response.use(
     return response.data
   },
   (error) => {
-    // 统一处理错误
-    // 可以根据 error.response.status 做不同处理
     return Promise.reject(error)
   },
 )
