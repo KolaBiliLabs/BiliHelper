@@ -1,1 +1,18 @@
 @import './base.css';
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* 防止全局滚动条 */
+}
+body {
+  font-size: 16px;
+}
+
+#app {
+  height: 100vh; /* 或 height: 100%; 如果父级已设置 */
+  display: flex; /* 让 App 组件的根元素填充高度 */
+  flex-direction: column; /* 如果 App 组件内部是垂直布局 */
+  overflow: hidden; /* 防止 #app 滚动 */
+  font-size: 14px;
+}

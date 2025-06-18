@@ -6,7 +6,6 @@
   "homepage": "https://electron-vite.org",
   "main": "./out/main/index.js",
   "scripts": {
-    "format": "prettier --write .",
     "lint": "eslint --cache .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "vue-tsc --noEmit -p tsconfig.web.json --composite false",
@@ -24,7 +23,11 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.10",
+    "ant-design-vue": "^4.2.6",
     "electron-updater": "^6.3.9",
+    "lucide-vue-next": "^0.517.0",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.3.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
