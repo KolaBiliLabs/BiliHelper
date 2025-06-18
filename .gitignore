@@ -1,0 +1,61 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript build artifacts
+dist/
+build/
+*.tsbuildinfo
+*.js.map
+*.d.ts # 通常不提交 d.ts 文件，除非你是在发布库
+
+# Compiled output
+*.js # 如果你只编写 TypeScript，并且 dist 目录包含了所有编译后的 JS 文件，可以包含此项。否则，如果你的项目混合了 TS 和 JS，请移除。
+
+# Editors and IDEs
+.vscode/ # VS Code settings (可以考虑不忽略，如果团队共享特定设置)
+.idea/   # IntelliJ IDEA / WebStorm
+*.sublime-project
+*.sublime-workspace
+.DS_Store # macOS specific
+Thumbs.db # Windows specific
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# npm / yarn / pnpm cache files
+.npm/
+.yarn/
+.pnpm-store/
+
+# NestJS specific
+.temp/ # NestJS 的临时文件目录
+
+# Vite specific
+.vite/ # Vite 缓存目录
+
+# Electron specific
+out/        # Electron Build 输出目录 (electron-builder 或 electron-packager)
+release/    # 某些 Electron 打包工具的输出目录
+*.asar
+!.asar.unpacked # 如果你需要解包asar里的特定内容
+node_modules/.bin/ # Electron 应用内部的 node_modules 符号链接
+
+# Other common ignored files
+npm-debug.log
+yarn-error.log
+.eslintcache
+.prettiercache
+coverage/ # 测试覆盖率报告
+*.tgz # npm pack 打包的文件
