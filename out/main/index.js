@@ -32,8 +32,8 @@ async function getSafePort() {
   if (webPort && servePort) {
     return { webPort, servePort };
   }
-  webPort = 14558;
-  servePort = 25884;
+  webPort = "14558";
+  servePort = "25884";
   return {
     webPort,
     servePort
@@ -44,7 +44,10 @@ async function initAppServer() {
     const fastify = Fastify({
       logger: true
     });
-    fastify.get("/api", (request, reply) => {
+    fastify.get("/", (request, reply) => {
+      reply.send({ hello: "world" });
+    });
+    fastify.get("/search", (request, reply) => {
       reply.send({ hello: "world" });
     });
     const { servePort: servePort2 } = await getSafePort();

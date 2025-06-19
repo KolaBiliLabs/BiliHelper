@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = '/api/'
+const baseUrl = '/api'
 
 const instance = axios.create({
   baseURL: baseUrl, // 替换为你的后端地址

@@ -9,7 +9,12 @@ async function initAppServer() {
     })
 
     // Declare a route
-    fastify.get('/api', (request, reply) => {
+    fastify.get('/', (request, reply) => {
+      reply.send({ hello: 'world' })
+    })
+
+    // Declare a route
+    fastify.get('/search', (request, reply) => {
       reply.send({ hello: 'world' })
     })
 
