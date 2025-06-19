@@ -9,32 +9,26 @@ import WindowControls from './WindowControls.vue'
 const systemStore = useSystemStore()
 const { siderWidth } = storeToRefs(systemStore)
 
-const headerStyle: CSSProperties & { appRegion: 'drag' } = {
+const headerStyle: CSSProperties = {
   padding: 0,
   color: '#fff',
   height: 64,
   backgroundColor: '#7dbcea',
-  appRegion: 'drag',
 }
 </script>
 
 <template>
-  <LayoutHeader :style="headerStyle" class="titleBar flex items-center">
-    <div :style="{ flex: `0 0 ${siderWidth}px` }" class="flex items-center justify-center" />
+  <LayoutHeader :style="headerStyle" class="relative flex items-center app-region-drag">
+    <div :style="{ flex: `0 0 ${siderWidth}px` }" class="flex items-center justify-center">
+      <img src="../../assets/electron.svg" alt="logo" class="w-10 h-10">
+    </div>
 
-    <div class="flex-1 flex items-center ">
-      <Search />
+    <div class="flex-1 flex items-center">
+      <Search class="app-region-no-drag" />
     </div>
 
     <section class="flex-none w-[164px] flex items-center justify-center">
-      <WindowControls />
+      <WindowControls class="app-region-no-drag" />
     </section>
   </LayoutHeader>
 </template>
-
-<style scope>
-.titleBar {
-  height: 120px;
-  background-color: #fff;
-}
-</style>

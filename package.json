@@ -23,6 +23,7 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.10",
+    "alova": "^3.3.3",
     "ant-design-vue": "^4.2.6",
     "electron-updater": "^6.3.9",
     "lucide-vue-next": "^0.517.0",
