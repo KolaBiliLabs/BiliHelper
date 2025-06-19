@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   winClose,
-  winIsMax,
   winMax,
   winMin,
 } from '@renderer/utils/ipcMainEvent'
