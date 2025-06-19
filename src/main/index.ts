@@ -1,9 +1,10 @@
 /* eslint-disable node/prefer-global/process */
 import { join } from 'node:path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 import icon from '../../resources/icon.png?asset'
 import { initTray } from './tray'
+import { registerWindowControl } from './windowControl'
 
 function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -56,27 +57,8 @@ app.whenReady().then(() => {
 
   const win = createWindow()
 
-  // 窗口控制相关的IPC处理
-  ipcMain.handle('window-minimize', () => {
-    win.minimize()
-  })
-
-  ipcMain.handle('window-maximize', () => {
-    if (win.isMaximized()) {
-      win.unmaximize()
-    } else {
-      win.maximize()
-    }
-    return win.isMaximized()
-  })
-
-  ipcMain.handle('window-close', () => {
-    win.close()
-  })
-
-  ipcMain.handle('window-is-maximized', () => {
-    return win.isMaximized()
-  })
+  // 注册窗口控制IPC
+  registerWindowControl(win)
 
   // 初始化托盘
   initTray(win)
