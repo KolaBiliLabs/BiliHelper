@@ -58,10 +58,29 @@ function initTray(win) {
     }
   });
 }
+function registerWindowControl(win) {
+  electron.ipcMain.handle("window-minimize", () => {
+    win.minimize();
+  });
+  electron.ipcMain.handle("window-maximize", () => {
+    if (win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win.maximize();
+    }
+    return win.isMaximized();
+  });
+  electron.ipcMain.handle("window-close", () => {
+    win.close();
+  });
+  electron.ipcMain.handle("window-is-maximized", () => {
+    return win.isMaximized();
+  });
+}
 function createWindow() {
   const mainWindow2 = new electron.BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     ...process.platform === "linux" ? { icon } : {},
@@ -91,27 +110,12 @@ electron.app.whenReady().then(() => {
     utils.optimizer.watchWindowShortcuts(window);
   });
   const win = createWindow();
-  electron.ipcMain.handle("window-minimize", () => {
-    win.minimize();
-  });
-  electron.ipcMain.handle("window-maximize", () => {
-    if (win.isMaximized()) {
-      win.unmaximize();
-    } else {
-      win.maximize();
-    }
-    return win.isMaximized();
-  });
-  electron.ipcMain.handle("window-close", () => {
-    win.close();
-  });
-  electron.ipcMain.handle("window-is-maximized", () => {
-    return win.isMaximized();
-  });
+  registerWindowControl(win);
   initTray(win);
   electron.app.on("activate", function() {
-    if (electron.BrowserWindow.getAllWindows().length === 0)
+    if (electron.BrowserWindow.getAllWindows().length === 0) {
       createWindow();
+    }
   });
 });
 electron.app.on("window-all-closed", () => {
