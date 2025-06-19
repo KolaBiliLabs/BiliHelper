@@ -8,11 +8,12 @@ import Search from './Search.vue'
 const systemStore = useSystemStore()
 const { siderWidth } = storeToRefs(systemStore)
 
-const headerStyle: CSSProperties = {
+const headerStyle: CSSProperties & { appRegion: 'drag' } = {
   padding: 0,
   color: '#fff',
   height: 64,
   backgroundColor: '#7dbcea',
+  appRegion: 'drag',
 }
 </script>
 
