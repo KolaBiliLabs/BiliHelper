@@ -1,7 +1,7 @@
-import { searchInstance } from '..'
+import { request } from '@/utils/request'
 
 export function requestSearch(keyword: string) {
-  return searchInstance.get('/', {
+  return request.get('/', {
     params: {
       keyword,
     },
