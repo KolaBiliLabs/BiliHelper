@@ -1,41 +1,50 @@
-import type { BackendResponse } from './types'
-import { createAlova } from 'alova'
-import adapterFetch from 'alova/fetch'
-import vueHook from 'alova/vue'
+import axios from 'axios'
 
-// 这里可以根据实际情况配置 baseURL、请求头等
-function createAlovaInstance(baseUrl: string) {
-  return createAlova({
+function createInstance(baseUrl: string) {
+  const instance = axios.create({
     baseURL: baseUrl, // 替换为你的后端地址
-    requestAdapter: adapterFetch(),
-    statesHook: vueHook,
     timeout: 10000,
-    // 可选：全局请求/响应拦截
-    beforeRequest(config) {
-    // 比如加 token
-    // config.headers.Authorization = 'Bearer ' + token
-      return config
-    },
-    responded: {
-      onSuccess: async (response) => {
-        if (response.status >= 200 && response.status < 300) {
-          const data: BackendResponse = await response.json()
-          if (data.success) {
-            return data.data
-          } else {
-            return Promise.reject(data.message)
-          }
-        } else {
-          const error = await response.json()
-          return Promise.reject(error)
-        }
-      },
-      onError: error => Promise.reject(error),
+    headers: {
+      'Content-Type': 'application/json',
     },
   })
+
+  // 请求拦截器
+  instance.interceptors.request.use(
+    (config) => {
+    // 这里可以自动携带 token
+    // const token = localStorage.getItem('token')
+    // if (token) {
+    //   config.headers.Authorization = `Bearer ${token}`
+    // }
+      return config
+    },
+    (error) => {
+      return Promise.reject(error)
+    },
+  )
+
+  // 响应拦截器
+  instance.interceptors.response.use(
+    (response) => {
+    // 统一处理返回数据
+      if (response.data && response.data.success === false) {
+      // 这里可以自定义错误处理
+        return Promise.reject(response.data.message || '请求失败')
+      }
+      return response.data
+    },
+    (error) => {
+    // 统一处理错误
+    // 可以根据 error.response.status 做不同处理
+      return Promise.reject(error)
+    },
+  )
+
+  return instance
 }
 
-const searchInstance = createAlovaInstance('https://api.bilibili.com/x/web-interface/wbi/search/all/v2')
+const searchInstance = createInstance('https://api.bilibili.com/x/web-interface/wbi/search/all/v2')
 
 export {
   searchInstance,

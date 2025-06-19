@@ -7,7 +7,7 @@ const searchValue = ref('')
 
 async function handleSubmit() {
   const res = await requestSearch(searchValue.value)
-  console.log(res)
+  console.log(123123, searchValue.value, res)
 }
 </script>
 

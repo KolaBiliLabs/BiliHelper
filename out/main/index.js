@@ -3,11 +3,52 @@ const node_path = require("node:path");
 const utils = require("@electron-toolkit/utils");
 const electron = require("electron");
 const path = require("path");
+const Fastify = require("fastify");
+const log = require("electron-log");
+require("node:crypto");
+require("node:fs/promises");
 const icon = path.join(__dirname, "../../resources/icon.png");
+const isDev = utils.is.dev;
+process.platform === "win32";
+process.platform === "darwin";
+process.platform === "linux";
+const appName = electron.app.getName() || "SPlayer";
+Object.assign(console, log.functions);
+log.transports.file.level = "info";
+log.transports.file.maxSize = 2 * 1024 * 1024;
+if (log.transports.ipc)
+  log.transports.ipc.level = false;
+log.transports.console.useStyles = true;
+log.transports.file.format = "{y}-{m}-{d} {h}:{i}:{s}:{ms} {text}";
+if (!isDev) {
+  log.transports.file.resolvePathFn = () => node_path.join(electron.app.getPath("documents"), "/SPlayer/SPlayer-log.txt");
+} else {
+  log.transports.file.level = false;
+}
+log.info("📃 logger initialized");
+async function initAppServer() {
+  try {
+    const fastify = Fastify({
+      logger: true
+    });
+    fastify.get("/", (request, reply) => {
+      reply.send({ hello: "world" });
+    });
+    fastify.listen({ port: 3e3 }, (err, address) => {
+      if (err) {
+        throw err;
+      }
+      log.info(`Server is now listening on ${address}`);
+    });
+  } catch (error) {
+    log.error("🚫 AppServer failed to start");
+    throw error;
+  }
+}
 let tray = null;
-let mainWindow = null;
+let mainWindow$1 = null;
 function initTray(win) {
-  mainWindow = win;
+  mainWindow$1 = win;
   const iconPath = node_path.join(
     __dirname,
     "../../resources",
@@ -20,9 +61,9 @@ function initTray(win) {
     {
       label: "显示窗口",
       click: () => {
-        if (mainWindow) {
-          mainWindow.show();
-          mainWindow.focus();
+        if (mainWindow$1) {
+          mainWindow$1.show();
+          mainWindow$1.focus();
         } else {
           console.warn("Main window is null when trying to show from tray.");
         }
@@ -40,12 +81,12 @@ function initTray(win) {
   ]);
   tray.setContextMenu(contextMenu);
   tray.on("click", () => {
-    if (mainWindow) {
-      if (mainWindow.isVisible()) {
-        mainWindow.hide();
+    if (mainWindow$1) {
+      if (mainWindow$1.isVisible()) {
+        mainWindow$1.hide();
       } else {
-        mainWindow.show();
-        mainWindow.focus();
+        mainWindow$1.show();
+        mainWindow$1.focus();
       }
     } else {
       console.warn("Main window is null when trying to click tray.");
@@ -77,10 +118,67 @@ function registerWindowControl(win) {
     return win.isMaximized();
   });
 }
-function createWindow() {
-  const mainWindow2 = new electron.BrowserWindow({
+let mainWindow;
+electron.app.on("ready", async () => {
+  utils.electronApp.setAppUserModelId("com.electron.bili.helper");
+  await initAppServer();
+  createMainWindow();
+  registerWindowControl(mainWindow);
+  initTray(mainWindow);
+  handleAppEvents();
+});
+function handleAppEvents() {
+  electron.app.on("browser-window-created", (_, window) => {
+    utils.optimizer.watchWindowShortcuts(window, {});
+  });
+  electron.app.on("activate", function() {
+    if (electron.BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+  electron.app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+      electron.app.quit();
+    }
+  });
+}
+function createWindow(options = {}) {
+  const defaultOptions = {
+    title: appName,
+    width: 1280,
+    height: 720,
+    frame: false,
+    center: true,
+    // 图标
+    icon,
+    webPreferences: {
+      preload: node_path.join(__dirname, "../preload/index.ts"),
+      // 禁用渲染器沙盒
+      sandbox: false,
+      // 禁用同源策略
+      webSecurity: false,
+      // 允许 HTTP
+      allowRunningInsecureContent: true,
+      // 禁用拼写检查
+      spellcheck: false,
+      // 启用 Node.js
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      // 启用上下文隔离
+      contextIsolation: false
+    }
+  };
+  Object.assign(defaultOptions, options);
+  const win = new electron.BrowserWindow(options);
+  return win;
+}
+function createMainWindow() {
+  mainWindow = new electron.BrowserWindow({
     width: 1200,
     height: 800,
+    minHeight: 800,
+    minWidth: 1280,
+    // 立即显示窗口
     show: false,
     autoHideMenuBar: true,
     ...process.platform === "linux" ? { icon } : {},
@@ -90,36 +188,20 @@ function createWindow() {
     },
     frame: false
   });
-  mainWindow2.on("ready-to-show", () => {
-    mainWindow2.show();
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.show();
   });
-  mainWindow2.webContents.setWindowOpenHandler((details) => {
+  mainWindow.webContents.setWindowOpenHandler((details) => {
     electron.shell.openExternal(details.url);
     return { action: "deny" };
   });
   if (utils.is.dev && process.env.ELECTRON_RENDERER_URL) {
-    mainWindow2.loadURL(process.env.ELECTRON_RENDERER_URL);
+    mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
   } else {
-    mainWindow2.loadFile(node_path.join(__dirname, "../renderer/index.html"));
+    mainWindow.loadFile(node_path.join(__dirname, "../renderer/index.html"));
   }
-  return mainWindow2;
+  return mainWindow;
 }
-electron.app.whenReady().then(() => {
-  utils.electronApp.setAppUserModelId("com.electron");
-  electron.app.on("browser-window-created", (_, window) => {
-    utils.optimizer.watchWindowShortcuts(window);
-  });
-  const win = createWindow();
-  registerWindowControl(win);
-  initTray(win);
-  electron.app.on("activate", function() {
-    if (electron.BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
-});
-electron.app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    electron.app.quit();
-  }
-});

@@ -1,16 +1,111 @@
 /* eslint-disable node/prefer-global/process */
+import type { BrowserWindowConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
 import icon from '../../resources/icon.png?asset'
+import initAppServer from '../server'
 import { initTray } from './tray'
+import { appName, isDev } from './utils'
 import { registerWindowControl } from './windowControl'
 
-function createWindow(): BrowserWindow {
+// 主窗口
+let mainWindow: BrowserWindow
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', async () => {
+  // 设置应用程序名称
+  electronApp.setAppUserModelId('com.electron.bili.helper')
+
+  // 启动主进程服务
+  await initAppServer()
+
+  // 创建主窗口
+  createMainWindow()
+
+  // 注册窗口控制IPC
+  registerWindowControl(mainWindow)
+  // 初始化托盘
+  initTray(mainWindow)
+  // 处理app事件
+  handleAppEvents()
+})
+
+/**
+ *  处理app事件
+ */
+function handleAppEvents() {
+  app.on('browser-window-created', (_, window) => {
+    optimizer.watchWindowShortcuts(window, {
+
+    })
+  })
+
+  app.on('activate', function () {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    }
+  })
+
+  // Quit when all windows are closed, except on macOS. There, it's common
+  // for applications and their menu bar to stay active until the user quits
+  // explicitly with Cmd + Q.
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+}
+
+/**
+ * 创建窗口
+ */
+function createWindow(options: BrowserWindowConstructorOptions = {}): BrowserWindow {
+  const defaultOptions: BrowserWindowConstructorOptions = {
+    title: appName,
+    width: 1280,
+    height: 720,
+    frame: false,
+    center: true,
+    // 图标
+    icon,
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.ts'),
+      // 禁用渲染器沙盒
+      sandbox: false,
+      // 禁用同源策略
+      webSecurity: false,
+      // 允许 HTTP
+      allowRunningInsecureContent: true,
+      // 禁用拼写检查
+      spellcheck: false,
+      // 启用 Node.js
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      // 启用上下文隔离
+      contextIsolation: false,
+    },
+  }
+  Object.assign(defaultOptions, options)
+  const win = new BrowserWindow(options)
+  return win
+}
+
+/**
+ * 创建主窗口
+ */
+function createMainWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    minHeight: 800,
+    minWidth: 1280,
+    // 立即显示窗口
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -20,6 +115,10 @@ function createWindow(): BrowserWindow {
     },
     frame: false,
   })
+
+  if(isDev) {
+    mainWindow.webContents.openDevTools()
+  }
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -40,43 +139,3 @@ function createWindow(): BrowserWindow {
 
   return mainWindow
 }
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
-
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window)
-  })
-
-  const win = createWindow()
-
-  // 注册窗口控制IPC
-  registerWindowControl(win)
-
-  // 初始化托盘
-  initTray(win)
-
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
-})
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
