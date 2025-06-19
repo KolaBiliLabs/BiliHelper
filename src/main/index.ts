@@ -5,9 +5,9 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
 import icon from '../../resources/icon.png?asset'
 import initAppServer from '../server'
+import { initIpcMain } from './ipcMain'
 import { initTray } from './tray'
 import { appName, isDev } from './utils'
-import { registerWindowControl } from './windowControl'
 
 // 主窗口
 let mainWindow: BrowserWindow
@@ -25,12 +25,14 @@ app.on('ready', async () => {
   // 创建主窗口
   createMainWindow()
 
-  // 注册窗口控制IPC
-  registerWindowControl(mainWindow)
-  // 初始化托盘
-  initTray(mainWindow)
   // 处理app事件
   handleAppEvents()
+
+  // 初始化托盘
+  initTray(mainWindow)
+
+  // 注册窗口控制IPC
+  initIpcMain(mainWindow)
 })
 
 /**
@@ -116,7 +118,7 @@ function createMainWindow() {
     frame: false,
   })
 
-  if(isDev) {
+  if (isDev) {
     mainWindow.webContents.openDevTools()
   }
 

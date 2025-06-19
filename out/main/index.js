@@ -26,15 +26,29 @@ if (!isDev) {
   log.transports.file.level = false;
 }
 log.info("📃 logger initialized");
+let webPort;
+let servePort;
+async function getSafePort() {
+  if (webPort && servePort) {
+    return { webPort, servePort };
+  }
+  webPort = 14558;
+  servePort = 25884;
+  return {
+    webPort,
+    servePort
+  };
+}
 async function initAppServer() {
   try {
     const fastify = Fastify({
       logger: true
     });
-    fastify.get("/", (request, reply) => {
+    fastify.get("/api", (request, reply) => {
       reply.send({ hello: "world" });
     });
-    fastify.listen({ port: 3e3 }, (err, address) => {
+    const { servePort: servePort2 } = await getSafePort();
+    fastify.listen({ port: servePort2 }, (err, address) => {
       if (err) {
         throw err;
       }
@@ -44,6 +58,32 @@ async function initAppServer() {
     log.error("🚫 AppServer failed to start");
     throw error;
   }
+}
+const WINDOW_MINIMIZE = "win-min";
+const WINDOW_MAXIMIZE = "win-max";
+const WINDOW_CLOSE = "win-close";
+const WINDOW_IS_MAXIMIZED = "win-is-max";
+function initIpcMain(mainWindow2) {
+  initMainIpcMain(mainWindow2);
+}
+function initMainIpcMain(win) {
+  electron.ipcMain.on(WINDOW_MINIMIZE, () => {
+    win.minimize();
+  });
+  electron.ipcMain.on(WINDOW_MAXIMIZE, () => {
+    if (win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win.maximize();
+    }
+    return win.isMaximized();
+  });
+  electron.ipcMain.on(WINDOW_CLOSE, () => {
+    win.close();
+  });
+  electron.ipcMain.on(WINDOW_IS_MAXIMIZED, () => {
+    return win.isMaximized();
+  });
 }
 let tray = null;
 let mainWindow$1 = null;
@@ -99,33 +139,14 @@ function initTray(win) {
     }
   });
 }
-function registerWindowControl(win) {
-  electron.ipcMain.handle("window-minimize", () => {
-    win.minimize();
-  });
-  electron.ipcMain.handle("window-maximize", () => {
-    if (win.isMaximized()) {
-      win.unmaximize();
-    } else {
-      win.maximize();
-    }
-    return win.isMaximized();
-  });
-  electron.ipcMain.handle("window-close", () => {
-    win.close();
-  });
-  electron.ipcMain.handle("window-is-maximized", () => {
-    return win.isMaximized();
-  });
-}
 let mainWindow;
 electron.app.on("ready", async () => {
   utils.electronApp.setAppUserModelId("com.electron.bili.helper");
   await initAppServer();
   createMainWindow();
-  registerWindowControl(mainWindow);
-  initTray(mainWindow);
   handleAppEvents();
+  initTray(mainWindow);
+  initIpcMain(mainWindow);
 });
 function handleAppEvents() {
   electron.app.on("browser-window-created", (_, window) => {

@@ -12,4 +12,9 @@ declare global {
       }
     }
   }
+
+  interface ImportMetaEnv {
+    VITE_SERVER_PORT: string
+    VITE_WEB_PORT: string
+  }
 }

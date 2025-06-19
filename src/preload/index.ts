@@ -1,17 +1,6 @@
 /* eslint-disable node/prefer-global/process */
 import { electronAPI } from '@electron-toolkit/preload'
-import { contextBridge, ipcRenderer } from 'electron'
-
-// Custom APIs for renderer
-const api = {
-  // 窗口控制API
-  windowControl: {
-    minimize: () => ipcRenderer.invoke('window-minimize'),
-    maximize: () => ipcRenderer.invoke('window-maximize'),
-    close: () => ipcRenderer.invoke('window-close'),
-    isMaximized: () => ipcRenderer.invoke('window-is-maximized'),
-  },
-}
+import { contextBridge } from 'electron'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -19,13 +8,10 @@ const api = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
   } catch (error) {
     console.error(error)
   }
 } else {
   // @ts-expect-error (define in dts)
   window.electron = electronAPI
-  // @ts-expect-error (define in dts)
-  window.api = api
 }

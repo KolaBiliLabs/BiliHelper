@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import log from '../main/logger'
+import { getSafePort } from './getPort'
 
 async function initAppServer() {
   try {
@@ -8,12 +9,13 @@ async function initAppServer() {
     })
 
     // Declare a route
-    fastify.get('/', (request, reply) => {
+    fastify.get('/api', (request, reply) => {
       reply.send({ hello: 'world' })
     })
 
+    const { servePort } = await getSafePort()
     // Run the server!
-    fastify.listen({ port: 3000 }, (err, address) => {
+    fastify.listen({ port: servePort }, (err, address) => {
       if (err) {
         throw err
       }
