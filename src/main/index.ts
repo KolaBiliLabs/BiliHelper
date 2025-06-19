@@ -17,8 +17,7 @@ function createWindow(): BrowserWindow {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
     },
-    titleBarStyle: 'hidden',
-    ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
+    frame: false,
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -55,10 +54,29 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   const win = createWindow()
+
+  // 窗口控制相关的IPC处理
+  ipcMain.handle('window-minimize', () => {
+    win.minimize()
+  })
+
+  ipcMain.handle('window-maximize', () => {
+    if (win.isMaximized()) {
+      win.unmaximize()
+    } else {
+      win.maximize()
+    }
+    return win.isMaximized()
+  })
+
+  ipcMain.handle('window-close', () => {
+    win.close()
+  })
+
+  ipcMain.handle('window-is-maximized', () => {
+    return win.isMaximized()
+  })
 
   // 初始化托盘
   initTray(win)
@@ -66,8 +84,9 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0)
+    if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
+    }
   })
 })
 

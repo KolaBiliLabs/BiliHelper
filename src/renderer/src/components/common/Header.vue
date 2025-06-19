@@ -4,6 +4,7 @@ import { useSystemStore } from '@renderer/stores/systemStore'
 import { LayoutHeader } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import Search from './Search.vue'
+import WindowControls from './WindowControls.vue'
 
 const systemStore = useSystemStore()
 const { siderWidth } = storeToRefs(systemStore)
@@ -18,22 +19,22 @@ const headerStyle: CSSProperties & { appRegion: 'drag' } = {
 </script>
 
 <template>
-  <LayoutHeader :style="headerStyle" class="flex items-center">
-    <section
-      :style="{
-        flex: `0 0 ${siderWidth}px`,
-      }"
-      class="flex items-center justify-center"
-    >
-      bili helper
-    </section>
+  <LayoutHeader :style="headerStyle" class="titleBar flex items-center">
+    <div :style="{ flex: `0 0 ${siderWidth}px` }" class="flex items-center justify-center" />
 
-    <section class="flex-1 flex items-center ">
+    <div class="flex-1 flex items-center ">
       <Search />
-    </section>
+    </div>
 
     <section class="flex-none w-[164px] flex items-center justify-center">
-      这是按钮区域
+      <WindowControls />
     </section>
   </LayoutHeader>
 </template>
+
+<style scope>
+.titleBar {
+  height: 120px;
+  background-color: #fff;
+}
+</style>

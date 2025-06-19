@@ -69,8 +69,7 @@ function createWindow() {
       preload: node_path.join(__dirname, "../preload/index.js"),
       sandbox: false
     },
-    titleBarStyle: "hidden",
-    ...process.platform !== "darwin" ? { titleBarOverlay: true } : {}
+    frame: false
   });
   mainWindow2.on("ready-to-show", () => {
     mainWindow2.show();
@@ -91,8 +90,24 @@ electron.app.whenReady().then(() => {
   electron.app.on("browser-window-created", (_, window) => {
     utils.optimizer.watchWindowShortcuts(window);
   });
-  electron.ipcMain.on("ping", () => console.log("pong"));
   const win = createWindow();
+  electron.ipcMain.handle("window-minimize", () => {
+    win.minimize();
+  });
+  electron.ipcMain.handle("window-maximize", () => {
+    if (win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win.maximize();
+    }
+    return win.isMaximized();
+  });
+  electron.ipcMain.handle("window-close", () => {
+    win.close();
+  });
+  electron.ipcMain.handle("window-is-maximized", () => {
+    return win.isMaximized();
+  });
   initTray(win);
   electron.app.on("activate", function() {
     if (electron.BrowserWindow.getAllWindows().length === 0)
