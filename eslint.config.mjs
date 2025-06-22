@@ -4,12 +4,13 @@ export default antfu(
   {
     vue: true,
     typescript: true,
-    stylistic: true,
-    formatters: {
-      css: true,
-      html: true,
-      markdown: true,
+    stylistic: {
+      semi: false,
+      quotes: 'single',
+      indent: 2,
+      jsx: true,
     },
+    formatters: true,
   },
   {
     files: ['**/*.vue'],

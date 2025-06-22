@@ -7,11 +7,14 @@ defineSlots<{
 </script>
 
 <template>
-  <ConfigProvider>
+  <ConfigProvider
+    :theme="{
+      token: {
+        colorPrimary: '#1672ff30',
+        colorBgBase: '#ffffff30',
+      },
+    }"
+  >
     <slot />
   </ConfigProvider>
 </template>
-
-<style scoped>
-
-</style>

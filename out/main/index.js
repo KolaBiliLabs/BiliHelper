@@ -176,7 +176,7 @@ function createWindow(options = {}) {
     // 图标
     icon,
     webPreferences: {
-      preload: node_path.join(__dirname, "../preload/index.ts"),
+      preload: node_path.join(__dirname, "../preload/index.js"),
       // 禁用渲染器沙盒
       sandbox: false,
       // 禁用同源策略
@@ -187,34 +187,24 @@ function createWindow(options = {}) {
       spellcheck: false,
       // 启用 Node.js
       nodeIntegration: true,
-      nodeIntegrationInWorker: true,
-      // 启用上下文隔离
-      contextIsolation: false
+      nodeIntegrationInWorker: true
     }
   };
-  Object.assign(defaultOptions, options);
-  const win = new electron.BrowserWindow(options);
+  const win = new electron.BrowserWindow({ ...defaultOptions, ...options });
   return win;
 }
 function createMainWindow() {
-  mainWindow = new electron.BrowserWindow({
+  mainWindow = createWindow({
     width: 1200,
     height: 800,
     minHeight: 800,
     minWidth: 1280,
     // 立即显示窗口
     show: false,
-    autoHideMenuBar: true,
-    ...process.platform === "linux" ? { icon } : {},
-    webPreferences: {
-      preload: node_path.join(__dirname, "../preload/index.js"),
-      sandbox: false
-    },
-    frame: false
+    frame: false,
+    transparent: true,
+    ...process.platform === "linux" ? { icon } : {}
   });
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
   });

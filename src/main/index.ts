@@ -76,7 +76,7 @@ function createWindow(options: BrowserWindowConstructorOptions = {}): BrowserWin
     // 图标
     icon,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.ts'),
+      preload: join(__dirname, '../preload/index.js'),
       // 禁用渲染器沙盒
       sandbox: false,
       // 禁用同源策略
@@ -88,12 +88,9 @@ function createWindow(options: BrowserWindowConstructorOptions = {}): BrowserWin
       // 启用 Node.js
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      // 启用上下文隔离
-      contextIsolation: false,
     },
   }
-  Object.assign(defaultOptions, options)
-  const win = new BrowserWindow(options)
+  const win = new BrowserWindow({ ...defaultOptions, ...options })
   return win
 }
 
@@ -102,24 +99,20 @@ function createWindow(options: BrowserWindowConstructorOptions = {}): BrowserWin
  */
 function createMainWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  mainWindow = createWindow({
     width: 1200,
     height: 800,
     minHeight: 800,
     minWidth: 1280,
     // 立即显示窗口
     show: false,
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-    },
     frame: false,
+    transparent: true,
+    ...(process.platform === 'linux' ? { icon } : {}),
   })
 
   if (isDev) {
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
   }
 
   mainWindow.on('ready-to-show', () => {
