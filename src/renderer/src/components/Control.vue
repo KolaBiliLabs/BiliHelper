@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Avatar, Button, Slider } from 'ant-design-vue'
-import { MenuIcon, SquareRoundCorner } from 'lucide-vue-next'
+import { MenuIcon, Play, SquareRoundCorner, StepBack, StepForward } from 'lucide-vue-next'
 import { ref } from 'vue'
 
 const progress = ref(50) // 播放进度
@@ -8,8 +8,9 @@ const volume = ref(70) // 音量
 </script>
 
 <template>
-  <div class="flex-none bg-white p-4 border-t border-gray-200 flex items-center justify-between h-full">
-    <div class="flex items-center">
+  <div class="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 flex-between gap-2 h-[100px]">
+    <!-- left  -->
+    <div class="flex-none flex items-center">
       <Avatar :size="48" src="https://via.placeholder.com/60x60?text=Cover" class="mr-3" />
       <div>
         <div class="text-base font-semibold">
@@ -21,18 +22,26 @@ const volume = ref(70) // 音量
       </div>
     </div>
 
-    <div class="flex flex-col items-center flex-grow-0 mx-4">
-      <div class="flex items-center space-x-6 mb-2">
-        <Button type="text" size="large">
-          1
+    <!-- center -->
+    <div class="flex-1 flex-col-center gap-2">
+      <div class="flex-center gap-4">
+        <Button shape="circle" class="flex-center">
+          <template #icon>
+            <StepBack />
+          </template>
         </Button>
-        <Button type="text" size="large">
-          j1
+        <Button shape="circle" type="primary" class="flex-center">
+          <template #icon>
+            <Play :size="14" />
+          </template>
         </Button>
-        <Button type="text" size="large">
-          1
+        <Button shape="circle" class="flex-center">
+          <template #icon>
+            <StepForward />
+          </template>
         </Button>
       </div>
+
       <div class="flex items-center w-full text-xs text-gray-600">
         <span class="mr-2">00:01:08</span>
         <Slider
@@ -46,7 +55,8 @@ const volume = ref(70) // 音量
       </div>
     </div>
 
-    <div class="flex items-center space-x-4">
+    <!-- right -->
+    <div class="flex-none flex items-center space-x-4">
       <Button type="text">
         <MenuIcon />
       </Button>

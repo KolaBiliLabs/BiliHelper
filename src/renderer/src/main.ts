@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-
 import { setupPinia } from './plugins/store'
+
 import './assets/main.css'
 
 function bootstrap() {

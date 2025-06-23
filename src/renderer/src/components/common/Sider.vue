@@ -12,8 +12,16 @@ const { siderWidth } = storeToRefs(systemStore)
   <LayoutSider
     :width="siderWidth"
     theme="light"
-    class="shadow-md overflow-y-auto custom-scrollbar flex-none"
+    class="h-screen shadow-md flex-none space-y-2 flex flex-col"
+    :style="{ width: `${siderWidth}px` }"
   >
-    <SiderMenu />
+    <div class="flex-none flex-center gap-2 h-[64px] app-region-drag">
+      <img src="../../assets/electron.svg" alt="logo" class="size-10 app-region-no-drag hover:scale-105 transition-all duration-300">
+      <span class="text-xl font-semibold text-gray-800">
+        EBH Music
+      </span>
+    </div>
+
+    <SiderMenu class="overflow-auto flex-1 custom-scrollbar" />
   </LayoutSider>
 </template>

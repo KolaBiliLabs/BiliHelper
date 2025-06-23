@@ -1,1 +1,34 @@
 @import 'tailwindcss';
+
+@layer base {
+  .lucide {
+    @apply size-4;
+  }
+
+  .flex-center {
+    @apply !flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply !flex items-center justify-between;
+  }
+
+  .flex-col-center {
+    @apply !flex flex-col items-center justify-center;
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: none;
+    /* scrollbar-color: #888 #fff; 滑块颜色 轨道颜色 */
+  }
+
+  .app-region-drag {
+    app-region: drag;
+    -webkit-app-region: drag;
+  }
+
+  .app-region-no-drag {
+    app-region: no-drag;
+    -webkit-app-region: no-drag;
+  }
+}

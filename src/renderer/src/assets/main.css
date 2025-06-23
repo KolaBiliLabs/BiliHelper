@@ -3,22 +3,12 @@
 @layer base {
   html,
   body {
-    @apply h-full m-0 p-0 overflow-hidden bg-transparent;
+    @apply h-full m-0 p-0 bg-transparent;
     font-size: 16px;
   }
 
   #app {
     font-size: 14px;
-    @apply min-h-screen overflow-hidden font-mono antialiased;
-  }
-
-  .app-region-drag {
-    app-region: drag;
-    -webkit-app-region: drag;
-  }
-
-  .app-region-no-drag {
-    app-region: no-drag;
-    -webkit-app-region: no-drag;
+    @apply h-screen font-mono antialiased;
   }
 }

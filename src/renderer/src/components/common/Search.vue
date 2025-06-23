@@ -13,6 +13,12 @@ async function handleSubmit() {
 
 <template>
   <form @submit.prevent="handleSubmit">
-    <Input v-model:value="searchValue" placeholder="输入关键词或 b 站链接" allow-clear />
+    <Input
+      v-model:value="searchValue"
+      placeholder="输入关键词或 b 站链接"
+      allow-clear
+      size="large"
+      width="100"
+    />
   </form>
 </template>

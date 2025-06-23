@@ -1,48 +1,113 @@
 <script setup lang="ts">
 import Sider from '@renderer/components/common/Sider.vue'
-import { Button, Layout, LayoutContent } from 'ant-design-vue'
-import { Share } from 'lucide-vue-next'
+import { Button, Layout, LayoutContent, Table } from 'ant-design-vue'
+import { Heart, Play, Share } from 'lucide-vue-next'
 import Header from '@/components/common/Header.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
+import Control from './components/Control.vue'
+
+// 模拟歌曲列表数据
+const columns = [
+  {
+    title: '歌曲',
+    dataIndex: 'title',
+    key: 'title',
+  },
+  {
+    title: '歌手',
+    dataIndex: 'artist',
+    key: 'artist',
+  },
+  {
+    title: '专辑',
+    dataIndex: 'album',
+    key: 'album',
+  },
+  {
+    title: '时长',
+    dataIndex: 'duration',
+    key: 'duration',
+  },
+]
+
+const dataSource = []
 </script>
 
 <template>
   <AppProvider>
-    <Layout class="h-screen overflow-hidden backdrop-blur-2xl">
-      <Header class="text-r" />
+    <Layout class="h-full overflow-hidden backdrop-blur-2xl flex">
+      <Sider class="flex-none" />
 
-      <Layout class="flex-grow flex flex-row overflow-hidden">
-        <Sider />
+      <Layout class="flex-grow flex flex-col overflow-hidden">
+        <Header />
 
-        <LayoutContent class="flex-grow flex flex-col p-6 overflow-hidden">
-          <div class="flex-none flex items-center justify-between pb-4 border-b border-gray-200">
-            <h1 class="text-2xl font-bold text-gray-900">
-              测试歌单
-            </h1>
+        <LayoutContent class="flex-grow flex flex-col p-6 overflow-auto">
+          <div class="flex-none flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
             <div class="flex items-center space-x-4">
-              <Button type="primary" shape="round">
+              <h1 class="text-2xl font-bold text-gray-900">
+                测试歌单
+              </h1>
+              <span class="text-gray-500">共 0 首</span>
+            </div>
+            <div class="flex items-center space-x-4">
+              <Button type="primary" shape="round" class="flex-center">
+                <template #icon>
+                  <Play class="w-4 h-4 mr-1" />
+                </template>
                 播放全部
               </Button>
-              <Button shape="round">
-                <template #icon />
+              <Button shape="round" class="flex-center">
+                <template #icon>
+                  <Heart class="w-4 h-4 mr-1" />
+                </template>
                 收藏
               </Button>
-              <Button shape="round">
+              <Button shape="round" class="flex-center">
                 <template #icon>
-                  <Share />
+                  <Share class="w-4 h-4 mr-1" />
                 </template>
                 分享
               </Button>
             </div>
           </div>
+
+          <Table
+            :columns="columns"
+            :data-source="dataSource"
+            :pagination="false"
+            class="song-table"
+          />
         </LayoutContent>
       </Layout>
     </Layout>
+
+    <Control />
   </AppProvider>
 </template>
 
 <style lang="css" scoped>
 :deep(.ant-layout) {
   background-color: #ffffff50 !important;
+}
+
+:deep(.song-table) {
+  background-color: transparent !important;
+}
+
+:deep(.song-table .ant-table) {
+  background-color: transparent !important;
+}
+
+:deep(.song-table .ant-table-thead > tr > th) {
+  background-color: transparent !important;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+:deep(.song-table .ant-table-tbody > tr > td) {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+:deep(.song-table .ant-table-tbody > tr:hover > td) {
+  background-color: rgba(0, 0, 0, 0.02) !important;
 }
 </style>
