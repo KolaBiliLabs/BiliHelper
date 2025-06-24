@@ -1,6 +1,7 @@
 import Fastify from 'fastify'
 import log from '../main/logger'
 import { getSafePort } from './getPort'
+import search from './search'
 
 async function initAppServer() {
   try {
@@ -8,15 +9,8 @@ async function initAppServer() {
       logger: true,
     })
 
-    // Declare a route
-    fastify.get('/', (request, reply) => {
-      reply.send({ hello: 'world' })
-    })
-
-    // Declare a route
-    fastify.get('/search', (request, reply) => {
-      reply.send({ hello: 'world' })
-    })
+    // 注册 the search route
+    fastify.register(search, { prefix: '/api' })
 
     const { servePort } = await getSafePort()
     // Run the server!

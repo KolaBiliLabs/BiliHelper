@@ -11,7 +11,7 @@ const volume = ref(70) // 音量
   <div class="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 flex-between gap-2 h-[100px]">
     <!-- left  -->
     <div class="flex-none flex items-center">
-      <Avatar :size="48" src="https://via.placeholder.com/60x60?text=Cover" class="mr-3" />
+      <Avatar :size="48" src="" class="mr-3" />
       <div>
         <div class="text-base font-semibold">
           物理魔法使马修 神插曲

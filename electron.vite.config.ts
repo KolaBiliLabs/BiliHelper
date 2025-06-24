@@ -1,6 +1,7 @@
 /* eslint-disable node/prefer-global/process */
 import type { MainEnv } from './env'
 import { resolve } from 'node:path'
+// @ts-ignore don't have types
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite'
@@ -39,7 +40,9 @@ export default defineConfig(({ command, mode }) => {
           '/api': {
             target: `http://localhost:${servePort}`,
             changeOrigin: true,
-            rewrite: path => path.replace(/^\/api/, '/api/'),
+            rewrite(path) {
+              return path.replace(/^\/api/, '/api/')
+            },
           },
         },
       },

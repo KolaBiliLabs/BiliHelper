@@ -39,17 +39,26 @@ async function getSafePort() {
     servePort
   };
 }
+function search(fastify, opts, done) {
+  fastify.get("/search", async (request, reply) => {
+    const { keyword } = request.query;
+    if (!keyword) {
+      return reply.status(400).send({ error: "Keyword is required" });
+    }
+    const results = {
+      keyword,
+      results: []
+    };
+    return reply.send(results);
+  });
+  done();
+}
 async function initAppServer() {
   try {
     const fastify = Fastify({
       logger: true
     });
-    fastify.get("/", (request, reply) => {
-      reply.send({ hello: "world" });
-    });
-    fastify.get("/search", (request, reply) => {
-      reply.send({ hello: "world" });
-    });
+    fastify.register(search, { prefix: "/api" });
     const { servePort: servePort2 } = await getSafePort();
     fastify.listen({ port: servePort2 }, (err, address) => {
       if (err) {
