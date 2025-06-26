@@ -7,6 +7,8 @@ const Fastify = require("fastify");
 const log = require("electron-log");
 require("node:crypto");
 require("node:fs/promises");
+const biliApi = require("@renmu/bili-api");
+const axios = require("axios");
 const icon = path.join(__dirname, "../../resources/icon.png");
 const isDev = utils.is.dev;
 process.platform === "win32";
@@ -39,17 +41,27 @@ async function getSafePort() {
     servePort
   };
 }
-function search(fastify, opts, done) {
+const client = new biliApi.Client();
+axios.create({
+  withCredentials: true,
+  timeout: 5e4
+});
+function search(fastify, _, done) {
   fastify.get("/search", async (request, reply) => {
     const { keyword } = request.query;
     if (!keyword) {
       return reply.status(400).send({ error: "Keyword is required" });
     }
-    const results = {
-      keyword,
-      results: []
-    };
-    return reply.send(results);
+    try {
+      const res = await client.search.all({
+        keyword: "",
+        page: 1,
+        page_size: 20
+      });
+      reply.send(res);
+    } catch (error) {
+      fastify.log.error(error);
+    }
   });
   done();
 }

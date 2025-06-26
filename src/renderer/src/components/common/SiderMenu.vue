@@ -4,7 +4,7 @@ import type { VueElement } from 'vue'
 import { Menu } from 'ant-design-vue'
 import { BookHeadphones, Heart } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
-import { computed, h, ref } from 'vue'
+import { h, ref } from 'vue'
 import { useSystemStore } from '@/stores/systemStore'
 
 const systemStore = useSystemStore()
@@ -44,7 +44,7 @@ const items = ref<ItemType[]>([
   getItem('我喜欢的音乐', 'favorite', Heart),
   getItem('最近播放', 'recently', BookHeadphones),
   { type: 'divider' },
-  getItem('创建的歌单', 'created', undefined, computed(() => playLists.value), 'group'),
+  getItem('创建的歌单', 'created', undefined, playLists.value, 'group'),
 ])
 </script>
 

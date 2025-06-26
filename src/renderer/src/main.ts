@@ -11,11 +11,3 @@ function bootstrap() {
 }
 
 bootstrap()
-
-fetch('/api/search?keyword=1312321').then(res => res.json()).then((res) => {
-  console.log(res)
-})
-
-fetch('/t-api').then(res => res.json()).then((res) => {
-  console.log(res)
-})

@@ -17,11 +17,13 @@
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
-    "build:linux": "npm run build && electron-builder --linux"
+    "build:linux": "npm run build && electron-builder --linux",
+    "start:dev": "nodemon --watch ./src/server/index.ts"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@renmu/bili-api": "^2.7.0",
     "@tailwindcss/vite": "^4.1.10",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.10.0",
@@ -46,6 +48,7 @@
     "eslint": "^9.24.0",
     "eslint-plugin-format": "^1.0.1",
     "eslint-plugin-vue": "^10.0.0",
+    "nodemon": "^3.1.10",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "vite": "^6.2.6",
