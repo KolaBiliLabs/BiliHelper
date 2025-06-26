@@ -86,28 +86,4 @@ const dataSource = []
 </template>
 
 <style lang="css" scoped>
-:deep(.ant-layout) {
-  background-color: #ffffff50 !important;
-}
-
-:deep(.song-table) {
-  background-color: transparent !important;
-}
-
-:deep(.song-table .ant-table) {
-  background-color: transparent !important;
-}
-
-:deep(.song-table .ant-table-thead > tr > th) {
-  background-color: transparent !important;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-:deep(.song-table .ant-table-tbody > tr > td) {
-  border-bottom: 1px solid #f0f0f0;
-}
-
-:deep(.song-table .ant-table-tbody > tr:hover > td) {
-  background-color: rgba(0, 0, 0, 0.02) !important;
-}
 </style>

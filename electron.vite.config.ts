@@ -1,7 +1,7 @@
 /* eslint-disable node/prefer-global/process */
 import type { MainEnv } from './env'
 import { resolve } from 'node:path'
-// @ts-ignore don't have types
+// @ts-ignore it's a vite plugin, don't have types
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite'
