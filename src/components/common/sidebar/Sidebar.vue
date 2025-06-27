@@ -16,8 +16,8 @@ const { siderWidth } = storeToRefs(systemStore)
     :style="{ width: `${siderWidth}px` }"
   >
     <div class="flex-none flex-center gap-2 h-[64px] app-region-drag">
-      <img src="../../assets/electron.svg" alt="logo" class="size-10 app-region-no-drag hover:scale-105 transition-all duration-300">
-      <span class="text-xl font-semibold text-gray-800">
+      <img src="../../../assets/electron.svg" alt="logo" class="size-10 app-region-no-drag hover:scale-105 transition-all duration-300">
+      <span class="text-xl font-semibold">
         EBH Music
       </span>
     </div>

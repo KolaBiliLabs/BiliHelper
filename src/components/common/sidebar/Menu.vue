@@ -26,18 +26,6 @@ const playLists = ref([
   getItem('物理魔法使马修 神插曲3', 'playlist3'),
   getItem('物理魔法使马修 神插曲4', 'playlist4'),
   getItem('物理魔法使马修 神插曲5', 'playlist5'),
-  getItem('物理魔法使马修 神插曲2', 'playlist2'),
-  getItem('物理魔法使马修 神插曲2', 'playlist2'),
-  getItem('物理魔法使马修 神插曲3', 'playlist3'),
-  getItem('物理魔法使马修 神插曲4', 'playlist4'),
-  getItem('物理魔法使马修 神插曲5', 'playlist5'),
-  getItem('物理魔法使马修 神插曲3', 'playlist3'),
-  getItem('物理魔法使马修 神插曲4', 'playlist4'),
-  getItem('物理魔法使马修 神插曲2', 'playlist2'),
-  getItem('物理魔法使马修 神插曲3', 'playlist3'),
-  getItem('物理魔法使马修 神插曲4', 'playlist4'),
-  getItem('物理魔法使马修 神插曲5', 'playlist5'),
-  getItem('物理魔法使马修 神插曲5', 'playlist5'),
 ])
 
 const items = ref<ItemType[]>([

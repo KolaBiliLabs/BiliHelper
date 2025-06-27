@@ -28,7 +28,7 @@ async function handleSubmit() {
 
 <template>
   <div class="app-region-no-darg">
-    <form @submit.prevent="handleSubmit">
+    <form class="app-region-no-darg" @submit.prevent="handleSubmit">
       <Input
         v-model:value="searchValue"
         placeholder="输入关键词或 b 站链接"

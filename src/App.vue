@@ -81,6 +81,6 @@ const dataSource = []
       </Layout>
     </Layout>
 
-    <Control />
+    <!-- <Control /> -->
   </AppProvider>
 </template>
