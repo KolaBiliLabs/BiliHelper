@@ -16,17 +16,29 @@ export default defineConfig(({ command, mode }) => {
   const servePort: number = Number(getEnv('VITE_SERVER_PORT') || 25884)
   return {
     main: {
+      build: {
+        lib: {
+          entry: resolve(__dirname, 'electron/main/index.ts'),
+          name: 'main',
+        },
+      },
       plugins: [externalizeDepsPlugin()],
     },
     preload: {
+      build: {
+        lib: {
+          entry: resolve(__dirname, 'electron/preload/index.ts'),
+          name: 'preload',
+        },
+      },
       plugins: [externalizeDepsPlugin()],
     },
     renderer: {
+      root: '.',
       resolve: {
         alias: {
-          '@renderer': resolve('src/renderer/src'),
-          '@': resolve('src/renderer/src'),
-          '@constants': resolve('src/constants'),
+          '@': resolve('src'),
+          '@constants': resolve('constants'),
         },
       },
       plugins: [
@@ -43,6 +55,15 @@ export default defineConfig(({ command, mode }) => {
             rewrite(path) {
               return path.replace(/^\/api/, '/api/')
             },
+          },
+        },
+      },
+      build: {
+        outDir: 'dist/renderer',
+        emptyOutDir: true,
+        rollupOptions: {
+          input: {
+            index: resolve(__dirname, 'index.html'),
           },
         },
       },

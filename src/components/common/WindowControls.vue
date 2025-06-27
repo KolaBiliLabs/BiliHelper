@@ -3,7 +3,7 @@ import {
   winClose,
   winMax,
   winMin,
-} from '@renderer/utils/ipcMainEvent'
+} from '@/utils/ipcMainEvent'
 </script>
 
 <template>

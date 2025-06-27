@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Sider from '@renderer/components/common/Sider.vue'
 import { Button, Layout, LayoutContent, Table } from 'ant-design-vue'
 import { Heart, Play, Share } from 'lucide-vue-next'
 import Header from '@/components/common/Header.vue'
+import Sider from '@/components/common/Sider.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
 import Control from './components/Control.vue'
 

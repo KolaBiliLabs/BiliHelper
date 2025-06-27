@@ -3,7 +3,7 @@ import type { BrowserWindowConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon@16.png'
 import initAppServer from '../server'
 import { initIpcMain } from './ipcMain'
 import { initTray } from './tray'
@@ -129,7 +129,7 @@ function createMainWindow() {
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../../index.html'))
   }
 
   return mainWindow

@@ -4,22 +4,19 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@renderer/*": [
-        "src/renderer/src/*"
-      ],
       "@/*": [
-        "src/renderer/src/*"
+        "src/*"
       ],
       "@constants/*": [
-        "src/constants/*"
+        "constants/*"
       ]
     }
   },
   "include": [
-    "src/renderer/src/env.d.ts",
-    "src/renderer/src/**/*",
-    "src/renderer/src/**/*.vue",
-    "src/preload/*.d.ts",
-    "src/constants/**/*"
+    "src/env.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "preload/*.d.ts",
+    "constants/**/*"
   ]
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useSystemStore } from '@renderer/stores/systemStore'
 import { LayoutSider } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
+import { useSystemStore } from '@/stores/systemStore'
 import SiderMenu from './SiderMenu.vue'
 
 const systemStore = useSystemStore()
