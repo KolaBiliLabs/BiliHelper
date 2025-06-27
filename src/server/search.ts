@@ -13,7 +13,7 @@ export default function (fastify: FastifyInstance, _, done) {
 
     try {
       const res = await client.search.all({
-        keyword: '',
+        keyword,
         page: 1,
         page_size: 20,
       })

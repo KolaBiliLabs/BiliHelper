@@ -3,8 +3,10 @@
 @layer base {
   html,
   body {
+    --theme-toggle-transition: 0.2s ease;
     @apply h-full m-0 p-0 bg-transparent;
     font-size: 16px;
+    transition: background-color var(--theme-toggle-transition), color var(--theme-toggle-transition);
   }
 
   #app {

@@ -12,8 +12,8 @@ export function initTray(win: BrowserWindow) {
   mainWindow = win // 保存主窗口实例
 
   // 根据操作系统选择图标路径
-  const iconPath = join(__dirname, '../../resources', process.platform === 'win32' ? 'icon.ico' : 'icon.png', // 假设你有 icon.ico 和 icon.png 在 resources 目录下
-  )
+  // 假设你有 icon.ico 和 icon.png 在 resources 目录下
+  const iconPath = join(__dirname, '../../resources', process.platform === 'win32' ? 'icon.ico' : 'icon@16.png')
 
   tray = new Tray(iconPath)
 

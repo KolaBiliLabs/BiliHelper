@@ -1,5 +1,5 @@
 import Fastify from 'fastify'
-import log from '../main/logger'
+// import log from '../main/logger'
 import { getSafePort } from './getPort'
 import search from './search'
 
@@ -19,10 +19,11 @@ async function initAppServer() {
         throw err
       }
 
-      log.info(`Server is now listening on ${address}`)
+      // log.info(`Server is now listening on ${address}`)
     })
   } catch (error) {
-    log.error('🚫 AppServer failed to start')
+    // log.error('🚫 AppServer failed to start')
+    console.log(error)
     throw error
   }
 }
