@@ -7,7 +7,7 @@ import {
 </script>
 
 <template>
-  <div class="flex items-center space-x-2">
+  <div class="flex items-center space-x-2 app-region-no-drag">
     <!-- 最小化按钮 -->
     <button
       type="button"

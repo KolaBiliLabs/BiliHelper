@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Button, Layout, LayoutContent, Table } from 'ant-design-vue'
 import { Heart, Play, Share } from 'lucide-vue-next'
-import Header from '@/components/common/Header.vue'
-import Sider from '@/components/common/Sider.vue'
+import Header from '@/components/common/header/Header.vue'
+import Sider from '@/components/common/sidebar/Sidebar.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
 import Control from './components/Control.vue'
 
@@ -84,6 +84,3 @@ const dataSource = []
     <Control />
   </AppProvider>
 </template>
-
-<style lang="css" scoped>
-</style>

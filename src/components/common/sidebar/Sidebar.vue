@@ -2,7 +2,7 @@
 import { LayoutSider } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { useSystemStore } from '@/stores/systemStore'
-import SiderMenu from './SiderMenu.vue'
+import Menu from './Menu.vue'
 
 const systemStore = useSystemStore()
 const { siderWidth } = storeToRefs(systemStore)
@@ -22,6 +22,6 @@ const { siderWidth } = storeToRefs(systemStore)
       </span>
     </div>
 
-    <SiderMenu class="overflow-auto flex-1 custom-scrollbar" />
+    <Menu class="overflow-auto flex-1 custom-scrollbar" />
   </LayoutSider>
 </template>
