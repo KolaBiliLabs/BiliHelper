@@ -10,3 +10,5 @@ declare global {
     VITE_WEB_PORT: string
   }
 }
+
+export {}

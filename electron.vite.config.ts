@@ -1,6 +1,6 @@
 /* eslint-disable node/prefer-global/process */
 import type { MainEnv } from './env'
-import { resolve } from 'node:path'
+import path, { resolve } from 'node:path'
 // @ts-ignore it's a vite plugin, don't have types
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
@@ -22,6 +22,11 @@ export default defineConfig(({ command, mode }) => {
           name: 'main',
         },
       },
+      resolve: {
+        alias: {
+          '@constants': path.resolve(__dirname, 'constants'),
+        },
+      },
       plugins: [externalizeDepsPlugin()],
     },
     preload: {
@@ -37,8 +42,8 @@ export default defineConfig(({ command, mode }) => {
       root: '.',
       resolve: {
         alias: {
-          '@': resolve('src'),
-          '@constants': resolve('constants'),
+          '@': path.resolve(__dirname, 'src'),
+          '@constants': path.resolve(__dirname, 'constants'),
         },
       },
       plugins: [

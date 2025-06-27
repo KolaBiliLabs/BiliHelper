@@ -4,19 +4,14 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@constants/*": [
-        "constants/*"
-      ]
+      "@/*": ["src/*"],
+      "@constants/*": ["constants/*"]
     }
   },
   "include": [
+    "electron/preload/*.d.ts",
     "src/env.d.ts",
     "src/**/*",
-    "src/**/*.vue",
-    "preload/*.d.ts",
     "constants/**/*"
   ]
 }

@@ -1,6 +1,6 @@
 import type { BrowserWindow } from 'electron'
+import { WINDOW_CLOSE, WINDOW_IS_MAXIMIZED, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '@constants/win'
 import { ipcMain } from 'electron'
-import { WINDOW_CLOSE, WINDOW_IS_MAXIMIZED, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '../../constants/win'
 
 /**
  * 注册窗口控制IPC
