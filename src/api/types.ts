@@ -16,3 +16,9 @@ export interface BackendResponse<T = any> {
   data: T
   error: string[] | null
 }
+
+export interface DataType<T = any> {
+  code: number
+  message: string
+  data: T
+}

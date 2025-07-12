@@ -7,7 +7,6 @@ const instance = axios.create({
   },
 })
 
-// 请求拦截器
 instance.interceptors.request.use(
   (config) => {
     return config
@@ -17,14 +16,8 @@ instance.interceptors.request.use(
   },
 )
 
-// 响应拦截器
 instance.interceptors.response.use(
   (response) => {
-    // 统一处理返回数据
-    if (response.data && response.data.success === false) {
-      // 这里可以自定义错误处理
-      return Promise.reject(response.data.message || '请求失败')
-    }
     return response.data
   },
   (error) => {

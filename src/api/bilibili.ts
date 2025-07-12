@@ -1,3 +1,4 @@
+import type { DataType } from './types'
 import { BASE_URL_PREFIX, LOGIN_URL_PREFIX } from '@constants/urls'
 import { useAppStore } from '@/stores/appStore'
 import { request } from '@/utils/request'
@@ -29,10 +30,10 @@ export function verifyQrCodeApi(qrcode_key: string) {
 /**
  * 获取用户信息
  */
-export function getUserInfoApi() {
+export function getUserInfoApi(): PromiseData<IUser> {
   const { currentUser } = useAppStore()
 
-  return request<IUser>({
+  return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
     headers: {
       cookie: currentUser!.cookie,
@@ -46,9 +47,7 @@ export async function validateLoginInfoApi() {
   if (!currentUser?.cookie || !currentUser?.csrf)
     return
 
-  return request({
-    method: 'POST',
-    url: 'https://api.vc.bilibili.com/link_setting/v1/link_setting/get',
+  return request.post('https://api.vc.bilibili.com/link_setting/v1/link_setting/get', {
     data: {
       msg_notify: '1',
       show_unfollowed_msg: '1',
