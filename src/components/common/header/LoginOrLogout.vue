@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { Button, message } from 'ant-design-vue'
+import { Button, Modal } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { getUserInfoApi } from '@/api/bilibili'
+import Qrcode from '@/components/Qrcode.vue'
+import { useLoginModal } from '@/hooks/useLoginModal'
 import { useAppStore } from '@/stores/appStore'
 
 const isLogin = ref(true)
 
 const appStore = useAppStore()
 const { currentUser } = storeToRefs(appStore)
+
+const { isShowModal, openModal, closeModal } = useLoginModal()
 
 function logout() {
   isLogin.value = false
@@ -17,29 +21,7 @@ function logout() {
 // 进入时，获取用户信息
 onMounted(async () => {
   const userInfoResponse = await getUserInfoApi()
-  console.log('🚀 ~ onMounted ~ userInfo:', userInfoResponse)
-  const { code, data, message } = userInfoResponse
-
-  handleGetUserInfoResponse(code, message)
 })
-
-// 处理获取用户信息的响应
-function handleGetUserInfoResponse(code: number, msg: string) {
-  switch (code) {
-    case -101: {
-      // -101 代表未登录，弹出提示信息
-      message.info(msg)
-
-      // todo: 准备一个弹框，来提供登录的途径
-
-      break
-    }
-    default: {
-      // 其它情况暂不处理
-      break
-    }
-  }
-}
 </script>
 
 <template>
@@ -56,5 +38,23 @@ function handleGetUserInfoResponse(code: number, msg: string) {
     <template v-else>
       login
     </template>
+
+    <Modal
+      v-model:open="isShowModal"
+      :mask-closable="false"
+      :closable="false"
+      :footer="null"
+      width="200px"
+    >
+      <div class="text-center text-slate-500">
+        使用 bilibili 客户端扫码
+      </div>
+      <Qrcode class="mt-2" @success="closeModal" />
+      <div class="flex-center mt-2">
+        <Button class="w-20" type="primary" @click="closeModal">
+          x
+        </Button>
+      </div>
+    </Modal>
   </section>
 </template>
