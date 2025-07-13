@@ -26,3 +26,22 @@ export async function searchKeyword(keyword: string) {
     },
   })
 }
+
+/**
+ * 获取搜索结果
+ * @param {string} keyword 关键词
+ */
+export async function searchSuggestion(keyword: string): Promise<{ result: { tag: ISuggestion[] } }> {
+  const { currentUser } = useAppStore()
+
+  return request({
+    url: `https://s.search.bilibili.com/main/suggest`,
+    method: 'GET',
+    params: {
+      term: keyword,
+    },
+    headers: {
+      cookie: currentUser?.cookie,
+    },
+  })
+}

@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useSystemStore } from '@/stores/systemStore'
 import LoginOrLogout from './LoginOrLogout.vue'
-import Search from './Search.vue'
+import Search from './search/Search.vue'
 
 const systemStore = useSystemStore()
 const { siderWidth } = storeToRefs(systemStore)

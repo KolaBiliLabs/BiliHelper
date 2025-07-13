@@ -17,3 +17,9 @@ interface IAccess {
   cookie?: string
   csrf?: string
 }
+
+interface ISuggestion {
+  term: string
+  type: string
+  value: string
+}
