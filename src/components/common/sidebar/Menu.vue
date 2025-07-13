@@ -1,47 +1,80 @@
 <script setup lang="ts">
-import type { ItemType } from 'ant-design-vue'
-import type { VueElement } from 'vue'
-import { Menu } from 'ant-design-vue'
-import { BookHeadphones, Heart } from 'lucide-vue-next'
-import { storeToRefs } from 'pinia'
-import { h, ref } from 'vue'
+import type { MenuOption } from 'naive-ui'
+import { NEllipsis, NMenu } from 'naive-ui'
+import { computed, h, ref } from 'vue'
 import { useSystemStore } from '@/stores/systemStore'
+import IconI from '../IconI.vue'
 
 const systemStore = useSystemStore()
-const { selectedMenuKey } = storeToRefs(systemStore)
 
-function getItem(label: VueElement | string, key: string, icon?: any, children?: ItemType[], type?: 'group'): ItemType {
-  return {
-    key,
-    icon: icon ? h(icon) : undefined,
-    children,
-    label,
-    type,
-  } as ItemType
+// 当前选中的菜单项
+const activeKey = ref<string>('online-music')
+
+// 渲染图标
+function renderIcon(iconName: string, size: number) {
+  return () => h(IconI, { size, iconName })
 }
 
-const playLists = ref([
-  getItem('物理魔法使马修 神插曲', 'playlist1'),
-  getItem('物理魔法使马修 神插曲2', 'playlist2'),
-  getItem('物理魔法使马修 神插曲3', 'playlist3'),
-  getItem('物理魔法使马修 神插曲4', 'playlist4'),
-  getItem('物理魔法使马修 神插曲5', 'playlist5'),
-])
+//
+function renderMenuRouterLink(to: string, label: string) {
+  return () =>
+    h(
+      'div',
+      {
+        to,
+        activeClass: 'active',
+      },
+      h(NEllipsis, {
+        maxWidth: '20px',
+      }, {
+        default: () => label,
+      }),
+    )
+}
 
-const items = ref<ItemType[]>([
-  getItem('我喜欢的音乐', 'favorite', Heart),
-  getItem('最近播放', 'recently', BookHeadphones),
-  { type: 'divider' },
-  getItem('创建的歌单', 'created', undefined, playLists.value, 'group'),
+// 菜单项
+const menuOptions = computed<MenuOption[]>(() => [
+  {
+    type: 'group',
+    label: '我的音乐',
+    key: 'my-music',
+    children: [],
+    show: !systemStore.collapsed,
+  },
+  {
+    label: renderMenuRouterLink('/favorite', '我喜欢的音乐'),
+    key: 'favorite',
+    icon: renderIcon('i-carbon:3d-print-mesh', 20),
+  },
+  {
+    label: renderMenuRouterLink('/history', '最近播放'),
+    key: 'history',
+    icon: renderIcon('i-carbon:ibm-cloud-pak-integration', 20),
+  },
 ])
 </script>
 
 <template>
-  <div class="h-full">
-    <Menu
-      v-model:selected-keys="selectedMenuKey"
-      mode="inline"
-      :items
-    />
-  </div>
+  <NMenu
+    v-model:value="activeKey"
+    class="main-menu"
+    :root-indent="32"
+    :indent="0"
+    :collapsed="systemStore.collapsed"
+    :collapsed-width="systemStore.collapsedWidth"
+    :collapsed-icon-size="22"
+    :options="menuOptions"
+  />
 </template>
+
+<style lang="scss" scoped>
+.main-menu {
+  :deep(.n-menu-item) {
+    .n-menu-item-content--selected {
+      &:before {
+        border-left: 3px solid red;
+      }
+    }
+  }
+}
+</style>

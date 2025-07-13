@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useSystemStore } from '@/stores/systemStore'
 import LoginOrLogout from './LoginOrLogout.vue'
 import Search from './Search.vue'
-import Theme from './Theme.vue'
-import WindowControls from './WindowControls.vue'
+
+const systemStore = useSystemStore()
+const { siderWidth } = storeToRefs(systemStore)
 </script>
 
 <template>
-  <header class="flex-between p-4 h-[64px] bg-slate-500/50 app-region-drag">
-    <div class="flex-1 flex items-center gap-4">
-      <Search />
-      <Theme />
+  <div class="flex items-center w-full app-region-drag">
+    <!-- Logo -->
+    <div class="flex-none" :style="{ width: `${siderWidth}px` }">
+      logo
     </div>
 
-    <section class="flex-none flex-center gap-4 app-region-no-drag">
+    <div class="flex-1 flex-between">
+      <!-- 搜索框 -->
+      <Search />
+
+      <!-- 用户信息 -->
       <LoginOrLogout />
-      <WindowControls />
-    </section>
-  </header>
+    </div>
+  </div>
 </template>

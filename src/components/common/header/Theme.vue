@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button } from 'ant-design-vue'
 import { Moon, Sun } from 'lucide-vue-next'
+import { NButton } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useSystemStore } from '@/stores/systemStore'
 import { setTheme } from '@/utils/theme'
@@ -15,7 +15,7 @@ function toggleTheme() {
 </script>
 
 <template>
-  <Button
+  <NButton
     shape="circle"
     class="app-region-no-drag flex-center"
     @click="toggleTheme"
@@ -28,7 +28,7 @@ function toggleTheme() {
         <Sun />
       </template>
     </template>
-  </Button>
+  </NButton>
 </template>
 
 <style scoped>

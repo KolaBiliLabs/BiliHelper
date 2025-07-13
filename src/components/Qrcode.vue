@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Button } from 'ant-design-vue'
+import { NButton } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import QRCode from 'qrcode'
 import QS from 'qs'
@@ -100,6 +100,10 @@ async function setUserInfo(access: IAccess) {
   }
 
   currentUser.value = user
+
+  // 我在这里打印一下，
+  console.log('🚀 ~ setUserInfo ~ currentUser:', currentUser, currentUser.value.cookie)
+
   qrCodeImage.value = ''
   loginState.value = ELoginState.未登录
   emit('success')
@@ -115,9 +119,9 @@ onMounted(getQRCode)
     </h5>
     <h5 v-else-if="loginState === ELoginState.已过期">
       二维码已过期
-      <Button :underline="false" @click="getQRCode">
+      <NButton :underline="false" @click="getQRCode">
         点击刷新
-      </Button>
+      </NButton>
     </h5>
     <h5 v-else-if="loginState === ELoginState.扫码登陆成功">
       登录成功

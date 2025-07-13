@@ -1,61 +1,83 @@
 <script setup lang="ts">
-import { Avatar, Input, List } from 'ant-design-vue'
-import { computed, ref } from 'vue'
+import { NInput } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+import { ref, useTemplateRef } from 'vue'
 import { searchKeyword } from '@/api/search'
+import { useSystemStore } from '@/stores/systemStore'
+
+const systemStore = useSystemStore()
+const { searchFocus } = storeToRefs(systemStore)
+
+const searchInputRef = useTemplateRef<InstanceType<typeof NInput> | null>('searchInputRef')
 
 const searchValue = ref('')
-const searchResults = ref<any[]>([])
+const searchDefault = ref('')
 
-// 只显示视频类型的搜索结果
-const videoResults = computed(() => {
-  if (!searchResults.value)
-    return []
-  return searchResults.value.filter(item => item.result_type === 'video')
-})
+// 搜索
+function handleSearch(v: string) {
+  const _searchValue = v || searchDefault.value
 
-async function handleSubmit() {
-  if (!searchValue.value) {
-    searchResults.value = []
-    return
-  }
+  // 关闭搜索框
+  searchFocus.value = false
+  searchInputRef.value?.blur()
+}
 
-  const res = await searchKeyword(searchValue.value)
-  searchResults.value = res.data.result || []
-  console.log(123123, searchValue.value, searchResults.value)
+// 搜索框获取焦点
+function searchInputFocus() {
+  searchInputRef.value?.focus()
+  searchFocus.value = true
 }
 </script>
 
 <template>
-  <div>
-    <form @submit.prevent="handleSubmit">
-      <Input
-        v-model:value="searchValue"
-        placeholder="输入关键词或 b 站链接"
-        allow-clear
-        size="large"
-        width="100"
-        class="app-region-no-drag"
-      />
-    </form>
-
-    <List
-      v-if="videoResults.length > 0"
-      class="mt-4"
-      item-layout="horizontal"
-      :data-source="videoResults"
+  <div relative>
+    <NInput
+      ref="searchInputRef"
+      v-model:value="searchValue"
+      :class="searchFocus ? 'focus' : ''"
+      :placeholder="searchDefault || '搜索音乐'"
+      round
+      clearable
+      class="n-input app-region-no-drag"
+      @keyup.enter="handleSearch(searchValue)"
+      @focus="searchInputFocus"
     >
-      <template #renderItem="{ item }">
-        <List.Item>
-          <List.Item.Meta :description="`UP: ${item.author}`">
-            <template #title>
-              <a :href="item.arcurl" target="_blank" v-html="item.title" />
-            </template>
-            <template #avatar>
-              <Avatar :src="`https:${item.pic}`" />
-            </template>
-          </List.Item.Meta>
-        </List.Item>
+      <template #prefix>
+        <div
+          i-carbon:search
+          color="#ccc"
+          w-15
+          h-15
+        />
       </template>
-    </List>
+    </NInput>
+
+    <!-- 遮罩 -->
+    <Transition name="fade" mode="out-in">
+      <div v-show="searchFocus" class="search-mask" @click="searchFocus = false" />
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.n-input {
+  z-index: 100;
+  position: relative;
+  width: 200px;
+  transition: width 0.3s;
+
+  .focus {
+    width: 300px;
+  }
+}
+.search-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #00000050;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+</style>

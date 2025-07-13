@@ -1,20 +1,30 @@
 import { defineStore } from 'pinia'
 
+type Theme = 'light' | 'dark'
 interface SystemStore {
   selectedMenuKey: string[]
   siderWidth: number
-  theme: 'light' | 'dark'
+  themeType: Theme
+  // 搜索框是否聚焦
+  searchFocus: boolean
+  collapsed: boolean
+  collapsedWidth: number
+  fullScreen: boolean
 }
 
 export const useSystemStore = defineStore('systemStore', {
   state: (): SystemStore => ({
     selectedMenuKey: [],
     siderWidth: 220,
-    theme: 'light',
+    themeType: 'light',
+    searchFocus: false,
+    collapsed: false,
+    collapsedWidth: 64,
+    fullScreen: false,
   }),
   getters: {
     isDark(state) {
-      return state.theme === 'dark'
+      return state.themeType === 'dark'
     },
   },
   persist: {

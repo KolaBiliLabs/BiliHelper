@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutSider } from 'ant-design-vue'
+import { NLayoutSider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useSystemStore } from '@/stores/systemStore'
 import Menu from './Menu.vue'
@@ -9,19 +9,20 @@ const { siderWidth } = storeToRefs(systemStore)
 </script>
 
 <template>
-  <LayoutSider
-    :width="siderWidth"
-    theme="light"
-    class="h-screen shadow-md flex-none space-y-2 flex flex-col"
-    :style="{ width: `${siderWidth}px` }"
+  <NLayoutSider
+    class="main-sider"
+    :collapsed="systemStore.collapsed"
+    :collapsed-width="systemStore.collapsedWidth"
+    :native-scrollbar="false"
+    :width="240"
+    collapse-mode="width"
+    show-trigger="bar"
+    bordered
+    @collapse="systemStore.collapsed = true"
+    @expand="systemStore.collapsed = false"
   >
-    <div class="flex-none flex-center gap-2 h-[64px] app-region-drag">
-      <img src="../../../assets/electron.svg" alt="logo" class="size-10 app-region-no-drag hover:scale-105 transition-all duration-300">
-      <span class="text-xl font-semibold">
-        EBH Music
-      </span>
+    <div class="sider-all">
+      <Menu />
     </div>
-
-    <Menu class="overflow-auto flex-1 custom-scrollbar" />
-  </LayoutSider>
+  </NLayoutSider>
 </template>
