@@ -5,6 +5,7 @@ import Sider from '@/components/common/sidebar/Sidebar.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
 import { useSystemStore } from './stores/systemStore'
 // import Control from './components/Control.vue'
+import Content from './components/Content.vue'
 
 const systemStore = useSystemStore()
 </script>
@@ -27,7 +28,7 @@ const systemStore = useSystemStore()
 
         <!-- 主体部分 -->
         <NLayoutContent :native-scrollbar="false" embedded>
-          this is content
+          <Content />
         </NLayoutContent>
       </NLayout>
     </NLayout>

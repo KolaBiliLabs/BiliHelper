@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite'
+import vueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig(({ command, mode }) => {
   const getEnv = (name: keyof MainEnv): string => {
@@ -51,6 +52,7 @@ export default defineConfig(({ command, mode }) => {
         vue(),
         vueJsx(),
         tailwindcss(),
+        vueDevTools(),
       ],
       server: {
         port: webPort,

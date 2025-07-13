@@ -7,7 +7,7 @@ import { getWbi } from './wbi'
  * 获取搜索结果
  * @param {string} keyword 关键词
  */
-export async function searchKeyword(keyword: string) {
+export async function searchKeyword(keyword: string): PromiseData<{ result: IBilibiliVideoData[] }> {
   const params = {
     keyword,
     search_type: 'video',

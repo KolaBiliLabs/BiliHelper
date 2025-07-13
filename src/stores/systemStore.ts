@@ -10,6 +10,7 @@ interface SystemStore {
   collapsed: boolean
   collapsedWidth: number
   fullScreen: boolean
+  currentPage: string
 }
 
 export const useSystemStore = defineStore('systemStore', {
@@ -21,6 +22,7 @@ export const useSystemStore = defineStore('systemStore', {
     collapsed: false,
     collapsedWidth: 64,
     fullScreen: false,
+    currentPage: 'playList',
   }),
   getters: {
     isDark(state) {
