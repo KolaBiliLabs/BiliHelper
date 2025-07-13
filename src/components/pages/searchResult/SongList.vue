@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NCard, NEmpty, NImage, NText } from 'naive-ui'
+import { NCard, NEmpty, NText } from 'naive-ui'
 import Loading from '@/components/common/Loading.vue'
 
 interface Props {
@@ -47,30 +47,32 @@ function handleThumb(thumb: string) {
           select-none
           @dblclick="$emit('choose', item.id)"
         >
-          <div class="flex items-center h-full gap-4">
+          <div class="flex items-center h-full gap-4 w-full">
             <!-- 头像 -->
             <div
-              class="size-14 rounded-md overflow-hidden flex-center"
+              class="flex-none size-14 rounded-md overflow-hidden flex-center"
             >
               <img :src="handleThumb(item.pic)" :alt="item.desc" class="size-full object-cover">
             </div>
 
-            <div class="flex justify-center flex-col pr-4">
-              <div class="flex items-center gap-7">
-                <NText> {{ item.author }} </NText>
+            <!-- 介绍 -->
+            <div class="flex-1 flex justify-center flex-col pr-4">
+              <div class="flex flex-col justify-center">
+                <NText class="text-ellipsis">
+                  <div v-html="item.title" />
+                </NText>
+                <NText depth="3" class="text-slate-200">
+                  {{ item.author }}
+                </NText>
               </div>
-
-              <NText class="text-slate-500">
-                {{ item.author }}
-              </NText>
             </div>
+            <NText class="w-20 flex-none">
+              {{ item.typename }}
+            </NText>
+            <NText class="w-20 flex-none">
+              {{ item.duration }}
+            </NText>
           </div>
-          <NText class="w-20 flex-none">
-            {{ item.typename }}
-          </NText>
-          <NText class="duration">
-            {{ item.duration }}
-          </NText>
         </NCard>
       </template>
     </template>
@@ -94,6 +96,7 @@ function handleThumb(thumb: string) {
   border-radius: 8px;
   cursor: pointer;
   transition: $transition;
+  width: 100%;
 
   &:hover {
     box-shadow: 0 0 8px #ffffff60;
@@ -106,7 +109,7 @@ function handleThumb(thumb: string) {
   }
 
   &:active {
-    transform: scale3d(0.995, 0.995, 1);
+    transform: scale3d(0.993, 0.993, 1);
   }
 
   :deep(.n-card__content) {

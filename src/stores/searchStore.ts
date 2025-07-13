@@ -29,6 +29,7 @@ export const useSearchStore = defineStore('search', () => {
   return {
     currentSearchKeyword,
     currentSearchResult,
+    loading,
     clearupSearch,
   }
 }, {
