@@ -11,6 +11,9 @@
   "include": [
     "electron/preload/*.d.ts",
     "src/types/env.d.ts",
+    "src/types/common.d.ts",
+    "src/types/app.d.ts",
+    "src/types/provider.d.ts",
     "src/**/*",
     "constants/**/*"
   ]

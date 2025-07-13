@@ -4,6 +4,7 @@ import path, { resolve } from 'node:path'
 // @ts-ignore it's a vite plugin, don't have types
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite'
 
 export default defineConfig(({ command, mode }) => {
@@ -48,6 +49,7 @@ export default defineConfig(({ command, mode }) => {
       },
       plugins: [
         vue(),
+        vueJsx(),
         tailwindcss(),
       ],
       server: {
