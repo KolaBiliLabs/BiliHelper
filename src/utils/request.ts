@@ -1,6 +1,9 @@
 import axios from 'axios'
+import { createElectronAdapter } from '@/utils/adapter'
 
 const instance = axios.create({
+  // @ts-ignore
+  adapter: createElectronAdapter(),
   headers: {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Referer': 'https://www.bilibili.com/',

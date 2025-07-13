@@ -13,7 +13,10 @@ export async function searchKeyword(keyword: string) {
     search_type: 'video',
   }
   const { currentUser } = useAppStore()
+
   const wbi = await getWbi(params)
+
+  console.log('🚀 ~ searchKeyword ~ currentUser:', currentUser, currentUser.cookie)
 
   return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/wbi/search/type?${wbi}`,

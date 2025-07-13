@@ -42,6 +42,7 @@
     "astro",
     "svelte",
     "css",
+    "tailwindcss",
     "less",
     "scss",
     "pcss",
@@ -49,6 +50,7 @@
   ],
   "cSpell.words": [
     "bilibili",
+    "KHTML",
     "mobi",
     "qrcode"
   ]

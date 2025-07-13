@@ -1,6 +1,6 @@
 /* eslint-disable node/prefer-global/process */
 import { electronAPI } from '@electron-toolkit/preload'
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -8,6 +8,10 @@ import { contextBridge } from 'electron'
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
+
+    contextBridge.exposeInMainWorld('electronAPI', {
+      httpRequest: config => ipcRenderer.invoke('http-request', config),
+    })
   } catch (error) {
     console.error(error)
   }

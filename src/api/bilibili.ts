@@ -1,4 +1,3 @@
-import type { DataType } from './types'
 import { BASE_URL_PREFIX, LOGIN_URL_PREFIX } from '@constants/urls'
 import { useAppStore } from '@/stores/appStore'
 import { request } from '@/utils/request'
