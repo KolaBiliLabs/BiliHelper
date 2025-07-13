@@ -12,7 +12,7 @@ withDefaults(defineProps<Props>(), {
   disabledHeader: false,
 })
 defineEmits<{
-  choose: [id: number]
+  choose: [song: IBilibiliVideoData]
 }>()
 
 defineSlots<{
@@ -45,14 +45,14 @@ function handleThumb(thumb: string) {
           :key="item.id"
           hoverable
           select-none
-          @dblclick="$emit('choose', item.id)"
+          @dblclick="$emit('choose', item)"
         >
           <div class="flex items-center h-full gap-4 w-full">
             <!-- 头像 -->
             <div
               class="flex-none size-14 rounded-md overflow-hidden flex-center"
             >
-              <img :src="handleThumb(item.pic)" :alt="item.desc" class="size-full object-cover">
+              <img :src="handleThumb(item.pic)" :alt="item.description" class="size-full object-cover">
             </div>
 
             <!-- 介绍 -->

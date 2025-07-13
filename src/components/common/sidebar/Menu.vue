@@ -1,62 +1,56 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
 import { NEllipsis, NMenu } from 'naive-ui'
-import { computed, h, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, h } from 'vue'
+import { usePlaylistStore } from '@/stores/playlistStore'
 import { useSystemStore } from '@/stores/systemStore'
-import IconI from '../IconI.vue'
 
 const systemStore = useSystemStore()
+const { selectedMenuKey } = storeToRefs(systemStore)
 
-// 当前选中的菜单项
-const activeKey = ref<string>('online-music')
+const playlistStore = usePlaylistStore()
+const { defaultPlaylists, customPlaylists } = storeToRefs(playlistStore)
 
-// 渲染图标
-function renderIcon(iconName: string, size: number) {
-  return () => h(IconI, { size, iconName })
-}
-
-//
-function renderMenuRouterLink(to: string, label: string) {
+function renderMenuRouterLink(label: string) {
   return () =>
-    h(
-      'div',
-      {
-        to,
-        activeClass: 'active',
-      },
-      h(NEllipsis, {
-        maxWidth: '20px',
-      }, {
-        default: () => label,
-      }),
-    )
+    h(NEllipsis, {
+      maxWidth: '20px',
+    }, {
+      default: () => label,
+    })
 }
 
 // 菜单项
 const menuOptions = computed<MenuOption[]>(() => [
   {
     type: 'group',
-    label: '我的音乐',
-    key: 'my-music',
+    label: '默认歌单',
+    key: 'my-playlist',
     children: [],
     show: !systemStore.collapsed,
   },
+  ...defaultPlaylists.value.map(item => ({
+    label: renderMenuRouterLink(item.name),
+    key: item.id,
+  })),
   {
-    label: renderMenuRouterLink('/favorite', '我喜欢的音乐'),
-    key: 'favorite',
-    icon: renderIcon('i-carbon:3d-print-mesh', 20),
+    type: 'group',
+    label: '自定义歌单',
+    key: 'custom-playlist',
+    children: [],
+    show: !systemStore.collapsed,
   },
-  {
-    label: renderMenuRouterLink('/history', '最近播放'),
-    key: 'history',
-    icon: renderIcon('i-carbon:ibm-cloud-pak-integration', 20),
-  },
+  ...customPlaylists.value.map(item => ({
+    label: renderMenuRouterLink(item.name),
+    key: item.id,
+  })),
 ])
 </script>
 
 <template>
   <NMenu
-    v-model:value="activeKey"
+    v-model:value="selectedMenuKey"
     class="main-menu"
     :root-indent="32"
     :indent="0"

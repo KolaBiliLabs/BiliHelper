@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 
 type Theme = 'light' | 'dark'
 interface SystemStore {
-  selectedMenuKey: string[]
+  // 当前选中的菜单项 => 歌单id
+  selectedMenuKey: string
   siderWidth: number
   themeType: Theme
   // 搜索框是否聚焦
@@ -15,7 +16,7 @@ interface SystemStore {
 
 export const useSystemStore = defineStore('systemStore', {
   state: (): SystemStore => ({
-    selectedMenuKey: [],
+    selectedMenuKey: 'history',
     siderWidth: 220,
     themeType: 'light',
     searchFocus: false,

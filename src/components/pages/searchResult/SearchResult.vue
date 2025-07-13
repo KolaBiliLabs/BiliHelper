@@ -1,27 +1,31 @@
 <script setup lang="ts">
 import { NDivider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { ref, watchEffect } from 'vue'
+import { onBeforeUnmount, ref, watchEffect } from 'vue'
 import { searchKeyword } from '@/api/search'
 import Pagination from '@/components/common/Pagination.vue'
 import SongList from '@/components/pages/searchResult/SongList.vue'
+import { usePlaylistStore } from '@/stores/playlistStore'
 import { useSearchStore } from '@/stores/searchStore'
 
 const searchStore = useSearchStore()
 const { currentSearchKeyword, currentSearchResult } = storeToRefs(searchStore)
 
-function chooseSong(v) {
-  console.log(v)
-}
+const playlistStore = usePlaylistStore()
 
 const loading = ref(false)
 // 分页相关
-const currentPage = ref(50)
+const currentPage = ref(1)
 const pageSize = ref(20)
 const total = ref(0)
 
 function pageChange(v: number) {
   currentPage.value = v
+}
+
+// 选择歌曲
+function chooseSong(song: IBilibiliVideoData) {
+  playlistStore.addToHistory(song)
 }
 
 watchEffect(() => {
@@ -36,6 +40,11 @@ watchEffect(() => {
       loading.value = false
     })()
   }
+})
+
+onBeforeUnmount(() => {
+  searchStore.clearupSearch()
+  console.log('----- searStore 已清理 -----')
 })
 </script>
 

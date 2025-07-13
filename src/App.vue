@@ -3,9 +3,9 @@ import { NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
 import Header from '@/components/common/header/Header.vue'
 import Sider from '@/components/common/sidebar/Sidebar.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
-import { useSystemStore } from './stores/systemStore'
-// import Control from './components/Control.vue'
 import Content from './components/Content.vue'
+import Control from './components/control/Control.vue'
+import { useSystemStore } from './stores/systemStore'
 
 const systemStore = useSystemStore()
 </script>
@@ -33,7 +33,7 @@ const systemStore = useSystemStore()
       </NLayout>
     </NLayout>
 
-    <!-- <Control /> -->
+    <Control />
   </AppProvider>
 </template>
 
