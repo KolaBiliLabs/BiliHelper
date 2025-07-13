@@ -5,6 +5,7 @@ import Sider from '@/components/common/sidebar/Sidebar.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
 import Content from './components/Content.vue'
 import Control from './components/control/Control.vue'
+import LoginModal from './components/modals/LoginModal.vue'
 import { useSystemStore } from './stores/systemStore'
 
 const systemStore = useSystemStore()
@@ -12,7 +13,7 @@ const systemStore = useSystemStore()
 
 <template>
   <AppProvider>
-    <NLayout class="all-layout" :class="[{ fullScreen: systemStore.fullScreen }]" position="absolute">
+    <NLayout class="all-layout overflow-auto" :class="[{ fullScreen: systemStore.fullScreen }]" position="absolute">
       <!-- 头部 -->
       <NLayoutHeader bordered>
         <Header />
@@ -34,6 +35,11 @@ const systemStore = useSystemStore()
     </NLayout>
 
     <Control />
+
+    <!-- 所有的 modals -->
+    <Teleport to="#modals">
+      <LoginModal />
+    </Teleport>
   </AppProvider>
 </template>
 

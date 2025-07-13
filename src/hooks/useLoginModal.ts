@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 
-export function useLoginModal() {
-  const isShowModal = ref(false)
+const isShowModal = ref(false)
 
+export function useLoginModal() {
   function openModal() {
     isShowModal.value = true
   }

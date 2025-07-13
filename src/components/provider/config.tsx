@@ -14,14 +14,16 @@ export const NaiveContentProvider = defineComponent({
 
 // 全局主题配置
 export const themeOverrides: GlobalThemeOverrides = {
-  common: {},
+  common: {
+    borderRadius: '10px',
+  },
   Button: {
     textColor: '#F86',
   },
-  Dropdown: {
+  Modal: {
     borderRadius: '10px',
   },
-  Modal: {
+  Card: {
     borderRadius: '10px',
   },
 }

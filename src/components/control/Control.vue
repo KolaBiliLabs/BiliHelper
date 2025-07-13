@@ -103,7 +103,7 @@ const totalTime = ref(0)
   left: 0;
   right: 0;
   height: $h;
-  bottom: -$h;
+  bottom: 0;
   z-index: 100;
   transition: bottom 0.3s;
 

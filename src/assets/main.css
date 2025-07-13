@@ -1,6 +1,30 @@
 @import './base.css';
 @import './animate.css';
 
+.n-skeleton {
+  background: linear-gradient(90deg, var(--n-color-end) 25%, var(--n-color-start) 37%, var(--n-color-end) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+.n-modal-mask {
+  backdrop-filter: blur(10px);
+}
+
+.n-drawer-mask {
+  backdrop-filter: blur(10px);
+}
+
+.n-message-container {
+  bottom: 110px !important;
+
+  .n-message-wrapper {
+    .n-message {
+      border-radius: 12px;
+    }
+  }
+}
+
 @layer base {
   html,
   body {

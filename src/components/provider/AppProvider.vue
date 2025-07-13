@@ -28,17 +28,11 @@ watch(
   <NConfigProvider :theme="theme" :theme-overrides="themeOverrides" :locale="zhCN">
     <NNotificationProvider>
       <NDialogProvider>
-        <NDialogProvider>
-          <NMessageProvider :max="1" placement="bottom">
-            <slot />
-            <NaiveContentProvider />
-          </NMessageProvider>
-        </NDialogProvider>
+        <NMessageProvider :max="1" placement="bottom">
+          <slot />
+          <NaiveContentProvider />
+        </NMessageProvider>
       </NDialogProvider>
     </NNotificationProvider>
   </NConfigProvider>
 </template>
-
-<style scoped>
-
-</style>

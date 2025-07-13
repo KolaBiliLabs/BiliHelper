@@ -18,7 +18,7 @@ export const useSystemStore = defineStore('systemStore', {
   state: (): SystemStore => ({
     selectedMenuKey: 'history',
     siderWidth: 220,
-    themeType: 'light',
+    themeType: 'dark',
     searchFocus: false,
     collapsed: false,
     collapsedWidth: 64,
