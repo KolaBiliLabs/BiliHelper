@@ -3,11 +3,15 @@ import { useEventListener } from '@vueuse/core'
 import { NInput } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ref, useTemplateRef } from 'vue'
+import { useSearchStore } from '@/stores/searchStore'
 import { useSystemStore } from '@/stores/systemStore'
 import SearchSuggestions from './SearchSuggestions.vue'
 
 const systemStore = useSystemStore()
 const { searchFocus, fullScreen } = storeToRefs(systemStore)
+
+const searchStore = useSearchStore()
+const { currentSearchKeyword } = storeToRefs(searchStore)
 
 const searchInputRef = useTemplateRef<InstanceType<typeof NInput> | null>('searchInputRef')
 
@@ -15,7 +19,7 @@ const searchValue = ref('')
 
 // 搜索
 async function handleSearch(v: string) {
-  console.log('chosen item', v)
+  currentSearchKeyword.value = v
 
   // 关闭搜索框
   searchFocus.value = false
