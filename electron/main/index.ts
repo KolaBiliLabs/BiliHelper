@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
 import icon from '../../resources/icon.png?asset'
-import initAppServer from '../server'
+// import initAppServer from '../server'
 import { initIpcMain } from './ipcMain'
 import { initTray } from './tray'
 import { appName, isDev } from './utils'
@@ -20,7 +20,7 @@ app.on('ready', async () => {
   electronApp.setAppUserModelId('com.electron.bili.helper')
 
   // 启动主进程服务
-  await initAppServer()
+  // await initAppServer()
 
   // 创建主窗口
   createMainWindow()
@@ -114,6 +114,28 @@ function createMainWindow() {
   if (isDev) {
     // mainWindow.webContents.openDevTools()
   }
+
+  // mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+  //   (details, callback) => {
+  //     details.requestHeaders.Origin = '*'
+  //     details.requestHeaders.Referer = 'https://live.bilibili.com/'
+  //     details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+  //     details.requestHeaders.Cookie = ''
+
+  //     callback({ requestHeaders: details.requestHeaders })
+  //   },
+  // )
+
+  // mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  //   callback({
+  //     responseHeaders: {
+  //       'Access-Control-Allow-Origin': ['*'],
+  //       // We use this to bypass headers
+  //       'Access-Control-Allow-Headers': ['*'],
+  //       ...details.responseHeaders,
+  //     },
+  //   })
+  // })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
