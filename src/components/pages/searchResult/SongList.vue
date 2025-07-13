@@ -29,7 +29,7 @@ function handleThumb(thumb: string) {
 </script>
 
 <template>
-  <div v-auto-animate class="min-h-60vh space-y-4">
+  <div v-auto-animate class="min-h-[60vh] space-y-4">
     <!-- 歌曲列表 -->
     <template v-if="!loading">
       <NEmpty

@@ -7,10 +7,16 @@ import { getWbi } from './wbi'
  * 获取搜索结果
  * @param {string} keyword 关键词
  */
-export async function searchKeyword(keyword: string): PromiseData<{ result: IBilibiliVideoData[] }> {
+export async function searchKeyword(keyword: string, page = 1, page_size = 20): PromiseData<{
+  next: number
+  numResults: number
+  result: IBilibiliVideoData[]
+}> {
   const params = {
     keyword,
     search_type: 'video',
+    page,
+    page_size,
   }
   const { currentUser } = useAppStore()
 

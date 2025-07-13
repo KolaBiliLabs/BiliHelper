@@ -1,25 +1,9 @@
 import { defineStore } from 'pinia'
-import { ref, watchEffect } from 'vue'
-import { searchKeyword } from '@/api/search'
+import { ref } from 'vue'
 
 export const useSearchStore = defineStore('search', () => {
   const currentSearchKeyword = ref('')
   const currentSearchResult = ref<IBilibiliVideoData[]>([])
-
-  const loading = ref(false)
-
-  watchEffect(() => {
-    if (currentSearchKeyword.value) {
-      // todo  请求该 keyword 对应的歌单
-
-      ;(async () => {
-        const res = await searchKeyword(currentSearchKeyword.value)
-        console.log(res.data.result)
-
-        currentSearchResult.value = res.data.result
-      })()
-    }
-  })
 
   function clearupSearch() {
     currentSearchKeyword.value = ''
@@ -29,7 +13,6 @@ export const useSearchStore = defineStore('search', () => {
   return {
     currentSearchKeyword,
     currentSearchResult,
-    loading,
     clearupSearch,
   }
 }, {
