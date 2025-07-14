@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <script setup lang="ts">
 import { MusicIcon, TrashIcon } from 'lucide-vue-next'
 import { NButton, NDrawer, NDrawerContent, NText } from 'naive-ui'

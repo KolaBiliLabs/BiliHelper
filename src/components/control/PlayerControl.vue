@@ -6,7 +6,7 @@ import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { dayjs } from '@/utils/dayjs'
 import SongInfo from './SongInfo.vue'
-// import Volume from './Volume.vue'
+import Volume from './Volume.vue'
 
 const systemStore = useSystemStore()
 const { showPlayer, showPlaylist } = storeToRefs(systemStore)
@@ -90,7 +90,7 @@ function handlePlayOrPause() {
           <span class="mx-1">{{ dayjs(duration).format('mm:ss') }}</span>
         </div>
         <!-- 音量调节 -->
-        <!-- <Volume /> -->
+        <Volume />
 
         <!-- 播放列表 -->
         <NButton
