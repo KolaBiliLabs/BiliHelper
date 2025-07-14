@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { NEllipsis, NImage, NSkeleton, NSpace, NText } from 'naive-ui'
 import { ref } from 'vue'
+import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import IconI from '../common/IconI.vue'
 
 interface Props {
-  data: IBilibiliVideoData
+  data: ISong
 }
 
 defineProps<Props>()
 
 const systemStore = useSystemStore()
-const playStore = usePlayStoreWidthOut()
+const playStore = usePlayStore()
 
 // 用于显示全屏按钮
 const isShowOpenFull = ref(false)
@@ -49,18 +50,14 @@ const isShowOpenFull = ref(false)
       <div class="song-name">
         <NSkeleton v-if="!data.author" text width="100px" />
         <NEllipsis v-else>
-          {{ data?.title }}
+          {{ data?.name }}
         </NEllipsis>
       </div>
       <div class="singer-name">
-        <NSkeleton v-if="!data.title" text width="80px" />
+        <NSkeleton v-if="!data.name" text width="80px" />
         <Transition v-else name="fade" mode="out-in">
           <NText v-if="!systemStore.fullScreen && playStore.playState" :key="playStore.playingLyric">
             {{ playStore.playingLyric.trim() || '...' }}
-          </NText>
-
-          <NText v-else>
-            {{ data?.tag }}
           </NText>
         </Transition>
       </div>

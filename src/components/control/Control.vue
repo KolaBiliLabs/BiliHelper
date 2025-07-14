@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { ChevronLeft, ChevronLeftIcon, ChevronRightIcon, Pause, PauseIcon, PlayIcon } from 'lucide-vue-next'
 import { NButton, NCard, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { h, ref } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { dayjs } from '@/utils/dayjs'
@@ -31,6 +32,10 @@ function handlePlayAdjacentOne(type: 'prev' | 'next') {
 
 const currentTime = ref(0)
 const totalTime = ref(0)
+
+function PlayOrPause({ state }: { state: typeof playState['value'] }) {
+  return h(state === 'paused' ? PlayIcon : state === 'playing' ? PlayIcon : 'div', { class: 'size-4' })
+}
 </script>
 
 <template>
@@ -56,7 +61,7 @@ const totalTime = ref(0)
       <!-- 播放器 -->
       <div class="control">
         <NButton size="small" circle @click="handlePlayAdjacentOne('prev')">
-          <IconI icon-name="i-iconoir:skip-prev-solid" />
+          <ChevronLeftIcon class="size-4" />
         </NButton>
         <NButton
           circle
@@ -64,10 +69,10 @@ const totalTime = ref(0)
           size="large"
           @click="() => {}"
         >
-          <IconI :icon-name="!playState ? 'i-solar:play-bold-duotone' : 'i-solar:pause-bold-duotone'" :size="24" />
+          <PlayOrPause :state="playState" />
         </NButton>
         <NButton size="small" circle @click="handlePlayAdjacentOne('next')">
-          <IconI icon-name="i-iconoir:skip-next-solid" />
+          <ChevronRightIcon class="size-4" />
         </NButton>
       </div>
 
@@ -103,7 +108,7 @@ const totalTime = ref(0)
   left: 0;
   right: 0;
   height: $h;
-  bottom: 0;
+  bottom: -$h;
   z-index: 100;
   transition: bottom 0.3s;
 

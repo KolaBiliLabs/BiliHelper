@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { usePlaylistStore } from '@/stores/playlistStore'
+import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { formatTime } from '@/utils/dayjs'
 import SongList from '../searchResult/SongList.vue'
@@ -9,13 +9,14 @@ import SongList from '../searchResult/SongList.vue'
 const systemStore = useSystemStore()
 const { currentPage } = storeToRefs(systemStore)
 
-const playlistStore = usePlaylistStore()
-const { playlists } = storeToRefs(playlistStore)
+const playStore = usePlayStore()
+const { playlists } = storeToRefs(playStore)
 
 const playList = computed(() => playlists.value.find(v => v.id === currentPage.value)!)
 
 function chooseSong(v) {
   console.log('choose song in Playlist', v)
+  playStore.play(v)
 }
 </script>
 
