@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon } from 'lucide-vue-next'
+import { CatIcon, ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon } from 'lucide-vue-next'
 import { NButton, NCard, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import { formatTime } from '@/utils/dayjs'
 import SongInfo from './SongInfo.vue'
 import Volume from './Volume.vue'
 
@@ -13,15 +12,22 @@ const { showPlayer, showPlaylist } = storeToRefs(systemStore)
 const playStore = usePlayStore()
 const { isPlaying, currentSong, currentTime, duration } = storeToRefs(playStore)
 
-// 手动更改当前播放时间
+let seekTimeout: ReturnType<typeof setTimeout> | null = null
+
+// 更新当前时间
 function handleUpdateCurrentTime(v: number) {
-  console.log('update play time', v)
+  if (seekTimeout) {
+    clearTimeout(seekTimeout)
+  }
+  seekTimeout = setTimeout(() => {
+    playStore.seek(v)
+    console.log('seek v', v)
+  }, 200) // 200ms 可根据需要调整
 }
 
 // 打开播放列表
 function handleOpenPlayList() {
   showPlaylist.value = true
-  console.log('点击了 打开抽屉组件', showPlaylist)
 }
 
 // 播放上一首/下一首
@@ -41,6 +47,13 @@ function handlePlayOrPause() {
     playStore.play(currentSong.value)
   }
 }
+
+// 用于格式化当前时间戳
+function formatSongTime(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+  const s = Math.floor(seconds % 60)
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+}
 </script>
 
 <template>
@@ -56,8 +69,13 @@ function handlePlayOrPause() {
       v-if="showPlayer && !systemStore.fullScreen"
       :value="currentTime"
       :max="duration"
+      :format-tooltip=" formatSongTime"
       @update:value="handleUpdateCurrentTime"
-    />
+    >
+      <template #thumb>
+        <CatIcon class="size-4 fill-blue-100 scale-3d hover:scale-115 transition duration-300" />
+      </template>
+    </NSlider>
 
     <div class="grid grid-cols-3 items-center h-full gap-2.5">
       <!-- 歌曲信息 -->
@@ -84,11 +102,12 @@ function handlePlayOrPause() {
       <!-- 菜单 -->
       <div class="px-2 flex items-center justify-end h-full">
         <!-- 歌曲进度 -->
-        <div class="text-gray-900 mr-6 flex-center select-none">
-          <span class="mx-1">{{ formatTime(currentTime, 'mm:ss') }}</span>
+        <div class="text-gray-400 mr-6 flex-center select-none">
+          <span class="mx-1">{{ formatSongTime(currentTime) }}</span>
           <span class="mx-1">/</span>
-          <span class="mx-1">{{ formatTime(duration, 'mm:ss') }}</span>
+          <span class="mx-1">{{ formatSongTime(duration) }}</span>
         </div>
+
         <!-- 音量调节 -->
         <Volume />
 
