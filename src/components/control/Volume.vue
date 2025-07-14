@@ -1,11 +1,12 @@
 <!-- 音量 -->
 <script setup lang="ts">
-import { NPopover, NSlider } from 'naive-ui'
+import { Volume, Volume1, Volume2, VolumeOff } from 'lucide-vue-next'
+import { NButton, NPopover, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { usePlayStoreWidthOut } from '~/store'
-import { setVolume } from '~/utils/play'
+import { h } from 'vue'
+import { usePlayStore } from '@/stores/playStore'
 
-const playStore = usePlayStoreWidthOut()
+const playStore = usePlayStore()
 const { volume } = storeToRefs(playStore)
 
 let preVolume = 0
@@ -17,12 +18,27 @@ function handleToggleVolume() {
     preVolume = volume.value
     playStore.volume = 0
   }
-  setVolume(playStore.volume)
+  playStore.setVolume(playStore.volume)
 }
 
 function handleUpdateVolume(value: number) {
+  console.log(value)
+
   playStore.volume = value
-  setVolume(value)
+  playStore.setVolume(value)
+}
+
+function VolumeIcon({ volume }: { volume: number }) {
+  let _icon = Volume2
+  if (volume < 0.7) {
+    _icon = Volume1
+  } else if (volume < 0.4) {
+    _icon = Volume
+  } else if (volume === 0) {
+    _icon = VolumeOff
+  }
+
+  return h(_icon, { class: 'size-4' })
 }
 </script>
 
@@ -30,22 +46,22 @@ function handleUpdateVolume(value: number) {
   <NPopover trigger="hover">
     <template #trigger>
       <NButton circle secondary @click="handleToggleVolume">
-        <IconI :icon-name="volume ? 'i-icomoon-free:volume-medium' : 'i-icomoon-free:volume-mute2'" :size="18" />
+        <VolumeIcon :volume="volume" />
       </NButton>
     </template>
 
-    <div class="h100 w-25 flex-col-center">
+    <div class="h-25 w-5 flex-col-center">
       <NSlider
-        v-model:value="volume"
+        :value="volume"
         :tooltip="false"
         :max="1"
         :step="0.01"
         vertical
-        @update-value="handleUpdateVolume"
+        @update:value="handleUpdateVolume"
       />
     </div>
 
-    <div class="mt-5 text-12 flex-center select-none">
+    <div class="mt-2 text-xs flex-center select-none">
       {{ (volume * 100).toFixed(0) }}
     </div>
   </NPopover>
