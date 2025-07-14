@@ -42,3 +42,26 @@ interface IBilibiliVideoData {
   duration: string
   typename: string
 }
+
+interface ISong {
+  urls: string[]
+  name: string
+  author: string
+  pic: string
+  artist: string
+  bvid: string
+  duration: number
+}
+
+interface ICollection {
+  songs: ISong[]
+  name: string
+  id: string
+}
+
+interface IDemandMusic {
+  demand: string
+  uname: string
+  uid: number
+  isFree: boolean
+}

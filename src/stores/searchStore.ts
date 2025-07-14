@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 export const useSearchStore = defineStore('search', () => {
   const currentSearchKeyword = ref('')
-  const currentSearchResult = ref<IBilibiliVideoData[]>([])
+  const currentSearchResult = ref<ISong[]>([])
 
   function clearupSearch() {
     currentSearchKeyword.value = ''
