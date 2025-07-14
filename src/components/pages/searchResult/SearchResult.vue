@@ -5,13 +5,13 @@ import { onBeforeUnmount, ref, watchEffect } from 'vue'
 import { searchKeyword } from '@/api/search'
 import Pagination from '@/components/common/Pagination.vue'
 import SongList from '@/components/pages/searchResult/SongList.vue'
-import { usePlaylistStore } from '@/stores/playlistStore'
+import { usePlayStore } from '@/stores/playStore'
 import { useSearchStore } from '@/stores/searchStore'
 
 const searchStore = useSearchStore()
 const { currentSearchKeyword, currentSearchResult } = storeToRefs(searchStore)
 
-const playlistStore = usePlaylistStore()
+const playStore = usePlayStore()
 
 const loading = ref(false)
 // 分页相关
@@ -24,8 +24,8 @@ function pageChange(v: number) {
 }
 
 // 选择歌曲
-function chooseSong(song: IBilibiliVideoData) {
-  playlistStore.addToHistory(song)
+function chooseSong(song: ISong) {
+  playStore.addToHistory(song)
 }
 
 watchEffect(() => {

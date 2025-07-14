@@ -3,16 +3,17 @@ import { NCard, NEmpty, NText } from 'naive-ui'
 import Loading from '@/components/common/Loading.vue'
 
 interface Props {
-  data: IBilibiliVideoData[]
-  loading: boolean
+  data: ISong[]
+  loading?: boolean
   disabledHeader?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   disabledHeader: false,
+  loading: false,
 })
 defineEmits<{
-  choose: [song: IBilibiliVideoData]
+  choose: [song: ISong]
 }>()
 
 defineSlots<{
