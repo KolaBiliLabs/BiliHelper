@@ -4,7 +4,8 @@ import Header from '@/components/common/header/Header.vue'
 import Sider from '@/components/common/sidebar/Sidebar.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
 import Content from './components/Content.vue'
-import Control from './components/control/Control.vue'
+import Control from './components/control/PlayerControl.vue'
+import PlayQueue from './components/control/PlayQueue.vue'
 import LoginModal from './components/modals/LoginModal.vue'
 import { useSystemStore } from './stores/systemStore'
 
@@ -35,6 +36,8 @@ const systemStore = useSystemStore()
     </NLayout>
 
     <Control />
+
+    <PlayQueue />
 
     <!-- 所有的 modals -->
     <Teleport to="#modals">

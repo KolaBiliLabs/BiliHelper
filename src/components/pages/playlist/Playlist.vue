@@ -7,7 +7,7 @@ import { formatTime } from '@/utils/dayjs'
 import SongList from '../searchResult/SongList.vue'
 
 const systemStore = useSystemStore()
-const { currentPage } = storeToRefs(systemStore)
+const { currentPage, showPlayer } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
 const { playlists } = storeToRefs(playStore)
@@ -17,6 +17,7 @@ const playList = computed(() => playlists.value.find(v => v.id === currentPage.v
 function chooseSong(v) {
   console.log('choose song in Playlist', v)
   playStore.play(v)
+  showPlayer.value = true
 }
 </script>
 

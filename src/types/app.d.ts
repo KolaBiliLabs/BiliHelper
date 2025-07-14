@@ -46,6 +46,7 @@ interface IBilibiliVideoData {
 interface ISong {
   urls: string[]
   name: string
+  title: string
   author: string
   pic: string
   artist: string

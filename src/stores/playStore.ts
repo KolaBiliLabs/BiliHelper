@@ -109,8 +109,6 @@ export const usePlayStore = defineStore('play', () => {
   const playQueue = ref<ISong[]>([])
   // 当前播放索引
   const currentIndex = ref<number>(-1)
-  // 播放器显示
-  const isShowPlayer = ref(false)
   // 当前歌曲
   const currentSong = computed(() => playQueue.value[currentIndex.value] || null)
 
@@ -157,7 +155,6 @@ export const usePlayStore = defineStore('play', () => {
       },
       onplay: () => {
         isPlaying.value = true
-        isShowPlayer.value = true
         duration.value = player?.duration() || 0
         // 定时刷新 currentTime
         if (timer)
@@ -187,7 +184,6 @@ export const usePlayStore = defineStore('play', () => {
     })
     player.play()
     isPlaying.value = true
-    isShowPlayer.value = true
   }
 
   // 播放队列中的指定索引
@@ -195,7 +191,6 @@ export const usePlayStore = defineStore('play', () => {
     if (idx >= 0 && idx < playQueue.value.length) {
       currentIndex.value = idx
       isPlaying.value = true
-      isShowPlayer.value = true
     }
   }
 
@@ -255,7 +250,6 @@ export const usePlayStore = defineStore('play', () => {
         clearInterval(timer)
     }
     isPlaying.value = false
-    isShowPlayer.value = false
   }
 
   // 清空队列
@@ -303,7 +297,6 @@ export const usePlayStore = defineStore('play', () => {
     playQueue,
     currentIndex,
     currentSong,
-    isShowPlayer,
     isPlaying,
     currentTime,
     duration,

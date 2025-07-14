@@ -6,12 +6,12 @@ import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { dayjs } from '@/utils/dayjs'
 import SongInfo from './SongInfo.vue'
-// import SongInfo from './SongInfo.vue'
 // import Volume from './Volume.vue'
 
 const systemStore = useSystemStore()
+const { showPlayer, showPlaylist } = storeToRefs(systemStore)
 const playStore = usePlayStore()
-const { isShowPlayer, isPlaying, currentSong, currentTime, duration } = storeToRefs(playStore)
+const { isPlaying, currentSong, currentTime, duration } = storeToRefs(playStore)
 
 // 手动更改当前播放时间
 function handleUpdateCurrentTime(v: number) {
@@ -20,8 +20,8 @@ function handleUpdateCurrentTime(v: number) {
 
 // 打开播放列表
 function handleOpenPlayList() {
-  playStore.isShowPlayer = true
-  console.log('点击了 打开抽屉组件', playStore.isShowPlayer)
+  showPlaylist.value = true
+  console.log('点击了 打开抽屉组件', showPlaylist)
 }
 
 // 播放上一首/下一首
@@ -46,14 +46,14 @@ function handlePlayOrPause() {
 <template>
   <NCard
     class="control-wrap"
-    :class="[{ show: isShowPlayer && !systemStore.fullScreen }]"
+    :class="[{ show: showPlayer && !systemStore.fullScreen }]"
     :content-style="{
       padding: 0,
     }"
   >
     <!-- 进度条 -->
     <NSlider
-      v-if="isShowPlayer && !systemStore.fullScreen"
+      v-if="showPlayer && !systemStore.fullScreen"
       :value="currentTime"
       :max="duration"
       @update:value="handleUpdateCurrentTime"
@@ -64,7 +64,7 @@ function handlePlayOrPause() {
       <SongInfo :data="currentSong" />
 
       <!-- 播放器 -->
-      <div class="flex-center">
+      <div class="flex-center h-full">
         <NButton size="small" circle @click="handlePlayAdjacentOne('prev')">
           <ChevronLeftIcon class="size-4" />
         </NButton>
@@ -82,7 +82,7 @@ function handlePlayOrPause() {
       </div>
 
       <!-- 菜单 -->
-      <div class="px-2 flex items-center justify-end">
+      <div class="px-2 flex items-center justify-end h-full">
         <!-- 歌曲进度 -->
         <div class="text-gray-900 mr-6 flex-center select-none">
           <span class="mx-1">{{ dayjs(currentTime).format('mm:ss') }}</span>
@@ -128,19 +128,6 @@ function handlePlayOrPause() {
   .n-slider {
     position: absolute;
     top: -10px;
-  }
-}
-
-/* 主控 */
-.player {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: center;
-  height: 100%;
-  gap: 10px;
-
-  div {
-    height: 100%;
   }
 }
 </style>
