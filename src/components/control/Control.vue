@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronLeftIcon, ChevronRightIcon, Pause, PauseIcon, PlayIcon } from 'lucide-vue-next'
+import { ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon } from 'lucide-vue-next'
 import { NButton, NCard, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { h, ref } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { dayjs } from '@/utils/dayjs'
-import IconI from '../common/IconI.vue'
+import SongInfo from './SongInfo.vue'
 // import SongInfo from './SongInfo.vue'
 // import Volume from './Volume.vue'
 
 const systemStore = useSystemStore()
 const playStore = usePlayStore()
-const { isShowPlayer, playState } = storeToRefs(playStore)
+const { isShowPlayer, isPlaying, currentSong, currentTime, duration } = storeToRefs(playStore)
 
 // 手动更改当前播放时间
 function handleUpdateCurrentTime(v: number) {
@@ -30,11 +29,17 @@ function handlePlayAdjacentOne(type: 'prev' | 'next') {
   type === 'prev' ? playStore.playPrev() : playStore.playNext()
 }
 
-const currentTime = ref(0)
-const totalTime = ref(0)
-
-function PlayOrPause({ state }: { state: typeof playState['value'] }) {
-  return h(state === 'paused' ? PlayIcon : state === 'playing' ? PlayIcon : 'div', { class: 'size-4' })
+// 播放/暂停按钮点击
+function handlePlayOrPause() {
+  if (!currentSong.value)
+    return
+  if (isPlaying.value) {
+    console.log('暂停播放')
+    // 暂停播放
+    playStore.pause()
+  } else {
+    playStore.play(currentSong.value)
+  }
 }
 </script>
 
@@ -49,17 +54,17 @@ function PlayOrPause({ state }: { state: typeof playState['value'] }) {
     <!-- 进度条 -->
     <NSlider
       v-if="isShowPlayer && !systemStore.fullScreen"
-      v-model:value="currentTime"
-      :max="totalTime"
+      :value="currentTime"
+      :max="duration"
       @update:value="handleUpdateCurrentTime"
     />
 
-    <div class="player">
+    <div class="grid grid-cols-3 items-center h-full gap-2.5">
       <!-- 歌曲信息 -->
-      <!-- <SongInfo :data="currentSong" /> -->
+      <SongInfo :data="currentSong" />
 
       <!-- 播放器 -->
-      <div class="control">
+      <div class="flex-center">
         <NButton size="small" circle @click="handlePlayAdjacentOne('prev')">
           <ChevronLeftIcon class="size-4" />
         </NButton>
@@ -67,9 +72,9 @@ function PlayOrPause({ state }: { state: typeof playState['value'] }) {
           circle
           style="margin: 0 10px"
           size="large"
-          @click="() => {}"
+          @click="handlePlayOrPause"
         >
-          <PlayOrPause :state="playState" />
+          <component :is="isPlaying ? PauseIcon : PlayIcon" class="size-4" />
         </NButton>
         <NButton size="small" circle @click="handlePlayAdjacentOne('next')">
           <ChevronRightIcon class="size-4" />
@@ -77,12 +82,12 @@ function PlayOrPause({ state }: { state: typeof playState['value'] }) {
       </div>
 
       <!-- 菜单 -->
-      <div class="menu">
+      <div class="px-2 flex items-center justify-end">
         <!-- 歌曲进度 -->
-        <div class="time flex-center select-none">
-          <span>{{ dayjs(currentTime).format('mm:ss') }}</span>
-          <span>/</span>
-          <span>{{ dayjs(totalTime).format('mm:ss') }}</span>
+        <div class="text-gray-900 mr-6 flex-center select-none">
+          <span class="mx-1">{{ dayjs(currentTime).format('mm:ss') }}</span>
+          <span class="mx-1">/</span>
+          <span class="mx-1">{{ dayjs(duration).format('mm:ss') }}</span>
         </div>
         <!-- 音量调节 -->
         <!-- <Volume /> -->
@@ -94,9 +99,9 @@ function PlayOrPause({ state }: { state: typeof playState['value'] }) {
           style="margin-left: 10px"
           @click="handleOpenPlayList"
         >
-          <IconI icon-name="i-mingcute:playlist-fill" :size="18" />
+          <ListIcon class="size-4" />
         </NButton>
-      </div> -->
+      </div>
     </div>
   </NCard>
 </template>
@@ -136,35 +141,6 @@ function PlayOrPause({ state }: { state: typeof playState['value'] }) {
 
   div {
     height: 100%;
-  }
-
-  /* 中部播放器 */
-  .control {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* 右侧菜单 */
-  .menu {
-    padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    /* 时间显示 */
-    .time {
-      font-size: 12px;
-      color: #999;
-      line-height: 1.5;
-      margin-right: 24px;
-
-      span {
-        margin: 0 4px;
-      }
-    }
-
-    /* 音量调节 */
   }
 }
 </style>
