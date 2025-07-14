@@ -4,7 +4,7 @@ import { NButton, NCard, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import { dayjs } from '@/utils/dayjs'
+import { formatTime } from '@/utils/dayjs'
 import SongInfo from './SongInfo.vue'
 import Volume from './Volume.vue'
 
@@ -85,9 +85,9 @@ function handlePlayOrPause() {
       <div class="px-2 flex items-center justify-end h-full">
         <!-- 歌曲进度 -->
         <div class="text-gray-900 mr-6 flex-center select-none">
-          <span class="mx-1">{{ dayjs(currentTime).format('mm:ss') }}</span>
+          <span class="mx-1">{{ formatTime(currentTime, 'mm:ss') }}</span>
           <span class="mx-1">/</span>
-          <span class="mx-1">{{ dayjs(duration).format('mm:ss') }}</span>
+          <span class="mx-1">{{ formatTime(duration, 'mm:ss') }}</span>
         </div>
         <!-- 音量调节 -->
         <Volume />
