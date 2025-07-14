@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SEARCH_RESULT_PAGE } from '@constants/pageId'
 import { useEventListener } from '@vueuse/core'
 import { NInput } from 'naive-ui'
 import { storeToRefs } from 'pinia'
@@ -8,7 +9,7 @@ import { useSystemStore } from '@/stores/systemStore'
 import SearchSuggestions from './SearchSuggestions.vue'
 
 const systemStore = useSystemStore()
-const { searchFocus, fullScreen } = storeToRefs(systemStore)
+const { searchFocus, fullScreen, currentPage } = storeToRefs(systemStore)
 
 const searchStore = useSearchStore()
 const { currentSearchKeyword } = storeToRefs(searchStore)
@@ -20,6 +21,7 @@ const searchValue = ref('')
 // 搜索
 async function handleSearch(v: string) {
   currentSearchKeyword.value = v
+  currentPage.value = SEARCH_RESULT_PAGE
 
   // 关闭搜索框
   searchFocus.value = false

@@ -7,7 +7,7 @@ import { usePlaylistStore } from '@/stores/playlistStore'
 import { useSystemStore } from '@/stores/systemStore'
 
 const systemStore = useSystemStore()
-const { selectedMenuKey } = storeToRefs(systemStore)
+const { selectedMenuKey, currentPage } = storeToRefs(systemStore)
 
 const playlistStore = usePlaylistStore()
 const { defaultPlaylists, customPlaylists } = storeToRefs(playlistStore)
@@ -46,6 +46,10 @@ const menuOptions = computed<MenuOption[]>(() => [
     key: item.id,
   })),
 ])
+
+function selectedMenu(v: string) {
+  currentPage.value = v
+}
 </script>
 
 <template>
@@ -58,6 +62,7 @@ const menuOptions = computed<MenuOption[]>(() => [
     :collapsed-width="systemStore.collapsedWidth"
     :collapsed-icon-size="22"
     :options="menuOptions"
+    @select="selectedMenu"
   />
 </template>
 
