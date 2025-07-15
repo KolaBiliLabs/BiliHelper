@@ -74,7 +74,7 @@ function formatSongTime(seconds: number): string {
       @update:value="handleUpdateCurrentTime"
     >
       <template #thumb>
-        <CatIcon class="size-4 fill-blue-100 scale-3d hover:scale-115 transition duration-300" />
+        <CatIcon class="size-4 fill-blue-200 scale-3d hover:scale-115 transition duration-300" />
       </template>
     </NSlider>
 
@@ -154,6 +154,8 @@ function formatSongTime(seconds: number): string {
 
 .n-card {
   /* position: relative; */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 
   .n-slider {
     position: absolute;

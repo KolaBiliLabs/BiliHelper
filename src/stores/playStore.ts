@@ -149,18 +149,22 @@ export const usePlayStore = defineStore('play', () => {
         html5: true,
         volume: volume.value,
         onload() {
-        // 加载完成后取消loading
-          loading.value = true
+          // 加载完成后取消loading
+          loading.value = false
         },
         onend: () => {
           playNext()
         },
         onplay: () => {
+          // 加载完成后取消loading
+          loading.value = false
+
           isPlaying.value = true
           duration.value = player?.duration() || 0
           // 定时刷新 currentTime
-          if (timer)
+          if (timer) {
             clearInterval(timer)
+          }
           timer = setInterval(() => {
             if (player && isPlaying.value) {
               currentTime.value = player.seek() as number
@@ -169,8 +173,9 @@ export const usePlayStore = defineStore('play', () => {
         },
         onpause: () => {
           isPlaying.value = false
-          if (timer)
+          if (timer) {
             clearInterval(timer)
+          }
         },
         onstop: () => {
           isPlaying.value = false
