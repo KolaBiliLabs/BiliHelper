@@ -16,9 +16,7 @@ const systemStore = useSystemStore()
   <AppProvider>
     <NLayout class="all-layout overflow-auto" :class="[{ fullScreen: systemStore.fullScreen }]" position="absolute">
       <!-- 头部 -->
-      <NLayoutHeader bordered>
-        <Header />
-      </NLayoutHeader>
+      <Header />
 
       <NLayout
         class="body-layout"
@@ -55,13 +53,6 @@ const systemStore = useSystemStore()
   &.fullScreen {
     transform: scale3d(0.95, 0.95, -1);
     border-radius: 10px;
-  }
-
-  .n-layout-header {
-    height: $headerHeight;
-    padding: 0 14px;
-    display: flex;
-    align-items: center;
   }
 
   .body-layout {

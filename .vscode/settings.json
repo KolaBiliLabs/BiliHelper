@@ -56,5 +56,6 @@
     "onloaderror",
     "onplayerror",
     "qrcode"
-  ]
+  ],
+  "todo-tree.tree.scanMode": "workspace"
 }

@@ -9,12 +9,15 @@ import { useSystemStore } from '@/stores/systemStore'
 
 const systemStore = useSystemStore()
 const { showPlaylist } = storeToRefs(systemStore)
+
 const playStore = usePlayStore()
 const { playQueue } = storeToRefs(playStore)
 
 // 删除歌曲
 function handleDeleteSong(song: ISong) {
   playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
+
+  // [x]: 删除歌曲后 播放下一首
 }
 
 // 选择歌曲

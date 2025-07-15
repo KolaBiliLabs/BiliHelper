@@ -3,22 +3,17 @@ import { Moon, Sun } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useSystemStore } from '@/stores/systemStore'
-import { setTheme } from '@/utils/theme'
 
 const systemStore = useSystemStore()
 const { isDark } = storeToRefs(systemStore)
-
-function toggleTheme() {
-  const newTheme = isDark.value ? 'light' : 'dark'
-  setTheme(newTheme)
-}
 </script>
 
 <template>
   <NButton
-    shape="circle"
+    circle
     class="app-region-no-drag flex-center"
-    @click="toggleTheme"
+    tertiary
+    @click="systemStore.toggleTheme"
   >
     <template #icon>
       <template v-if="!isDark">
@@ -30,7 +25,3 @@ function toggleTheme() {
     </template>
   </NButton>
 </template>
-
-<style scoped>
-
-</style>

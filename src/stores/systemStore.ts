@@ -17,7 +17,7 @@ interface SystemStore {
   showPlaylist: boolean
 }
 
-export const useSystemStore = defineStore('systemStore', {
+export const useSystemStore = defineStore('system', {
   state: (): SystemStore => ({
     selectedMenuKey: 'history',
     siderWidth: 220,
@@ -33,6 +33,13 @@ export const useSystemStore = defineStore('systemStore', {
   getters: {
     isDark(state) {
       return state.themeType === 'dark'
+    },
+  },
+  actions: {
+    toggleTheme() {
+      const theme = this.$state.themeType === 'dark' ? 'light' : 'dark'
+      this.$state.themeType = theme
+      document.documentElement.setAttribute('data-theme', theme)
     },
   },
   persist: {

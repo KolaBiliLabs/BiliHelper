@@ -10,11 +10,10 @@ const { siderWidth } = storeToRefs(systemStore)
 
 <template>
   <NLayoutSider
-    class="main-sider"
     :collapsed="systemStore.collapsed"
     :collapsed-width="systemStore.collapsedWidth"
     :native-scrollbar="false"
-    :width="240"
+    :width="siderWidth"
     collapse-mode="width"
     show-trigger="bar"
     bordered

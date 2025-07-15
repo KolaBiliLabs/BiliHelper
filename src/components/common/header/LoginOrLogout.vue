@@ -6,8 +6,6 @@ import { getUserInfoApi } from '@/api/bilibili'
 import { useLoginModal } from '@/hooks/useLoginModal'
 import { useAppStore } from '@/stores/appStore'
 
-const isLogin = ref(true)
-
 const appStore = useAppStore()
 const { currentUser } = storeToRefs(appStore)
 
@@ -15,8 +13,14 @@ console.log('currentUser.value => ', currentUser.value)
 
 const { isShowModal, openModal } = useLoginModal()
 
+const isLogin = ref(true)
+
 function logout() {
   isLogin.value = false
+}
+
+function login() {
+  isLogin.value = true
 }
 
 // 进入时，获取用户信息
@@ -31,12 +35,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="app-region-no-drag">
+  <section class="app-region-no-drag px-3">
     <NButton
-      v-if="isLogin"
+      v-if="!isLogin"
       shape="round"
       type="primary"
-      @click="logout"
+      @click="login"
     >
       login
     </NButton>

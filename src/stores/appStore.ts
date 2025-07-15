@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getUserInfoApi } from '@/api/bilibili'
 
-export const useAppStore = defineStore('appStore', () => {
+export const useAppStore = defineStore('app', () => {
   // 当前选中的用户
   const currentUser = ref<IUser>({} as IUser)
 
