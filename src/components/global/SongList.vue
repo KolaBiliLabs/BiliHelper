@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { ActivityIcon } from 'lucide-vue-next'
-import { NCard, NEmpty, NText } from 'naive-ui'
+import { NEmpty, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useTemplateRef } from 'vue'
 import Loading from '@/components/global/Loading.vue'
 import SongListMenu from '@/components/menus/SongListMenu.vue'
-import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import { handleThumb } from '@/utils/core'
+import SongCard from '../card/SongCard.vue'
 
-interface Props {
+withDefaults(defineProps<{
   data: ISong[]
   loading?: boolean
   disabledHeader?: boolean
-}
-
-withDefaults(defineProps<Props>(), {
+}>(), {
   disabledHeader: false,
   loading: false,
 })
@@ -28,17 +24,10 @@ defineSlots<{
   header: () => void
 }>()
 
-const playStore = usePlayStore()
-const { currentSong } = storeToRefs(playStore)
-
 const systemStore = useSystemStore()
 const { selectedMenuKey } = storeToRefs(systemStore)
 
 const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songListMenuRef')
-
-// function removeSong(index: number[]) {
-//   console.log(index)
-// }
 </script>
 
 <template>
@@ -53,45 +42,16 @@ const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songL
       </NEmpty>
 
       <template v-else>
-        <NCard
-          v-for="(item, idx) of data"
-          :key="item.bvid"
-          hoverable
-          select-none
-          :class="{ active: currentSong.bvid === item.bvid }"
-          @dblclick="$emit('choose', item)"
+        <SongCard
+          v-for="(song, idx) in data"
+          :key="song.bvid"
+          :data="song"
+          :index="idx"
+          @dblclick="$emit('choose', song)"
           @contextmenu.stop="
-            songListMenuRef?.openDropdown($event, data, item, idx, selectedMenuKey)
+            songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
           "
-        >
-          <div v-auto-animate class="flex items-center h-full gap-2 w-full">
-            <!-- 头像 -->
-            <div
-              class="flex-none size-14 rounded-md overflow-hidden flex-center"
-            >
-              <img :src="handleThumb(item.pic)" :alt="item.bvid" class="size-full object-cover">
-            </div>
-
-            <!-- 介绍 -->
-            <div class="flex-1 flex justify-center flex-col pr-4">
-              <div class="flex flex-col justify-center">
-                <NText class="text-ellipsis" v-html="item.title" />
-                <NText depth="3" class="text-slate-200">
-                  {{ item.author }}
-                </NText>
-              </div>
-            </div>
-
-            <NText class="w-15 flex-none">
-              {{ item.duration }}
-            </NText>
-
-            <!-- playing icon -->
-            <div v-if="currentSong.bvid === item.bvid" class="px-4 music-playing-indicator">
-              <ActivityIcon class="size-4" />
-            </div>
-          </div>
-        </NCard>
+        />
       </template>
     </template>
 
@@ -112,7 +72,7 @@ const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songL
 .n-card {
   $transition: all 0.3s ease-in-out;
 
-  padding: 8px;
+  padding: 8px 16px;
   border: 1px solid #ffffff40;
   border-radius: 8px;
   cursor: pointer;

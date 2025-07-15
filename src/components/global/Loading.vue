@@ -14,5 +14,3 @@ withDefaults(defineProps<Props>(), {
     <FulfillingBouncingCircleSpinner :animation-duration="2000" :size="size" />
   </div>
 </template>
-
-<style scoped></style>

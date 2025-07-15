@@ -255,6 +255,18 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
+  function pauseOrResume() {
+    if (player) {
+      if (isPlaying.value) {
+        player.pause()
+        isPlaying.value = false
+      } else {
+        player.play()
+        isPlaying.value = true
+      }
+    }
+  }
+
   // 停止
   function stop() {
     if (player) {
@@ -316,6 +328,8 @@ export const usePlayStore = defineStore('play', () => {
     currentTime,
     duration,
     volume,
+    loading,
+
     setVolume,
     seek,
     play,
@@ -326,8 +340,7 @@ export const usePlayStore = defineStore('play', () => {
     stop,
     clearQueue,
     addToQueue,
-
-    loading,
+    pauseOrResume,
   }
 }, {
   persist: {
