@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { XIcon } from 'lucide-vue-next'
-import { NButton, NModal } from 'naive-ui'
+import { NButton, NCard, NModal } from 'naive-ui'
 import { useLoginModal } from '@/hooks/useLoginModal'
 import Qrcode from '../Qrcode.vue'
 
@@ -20,7 +20,7 @@ const { isShowModal, closeModal } = useLoginModal()
   >
     <div>
       <!-- 主体部分 -->
-      <div class="p-4 rounded-xl bg-white">
+      <NCard class="p-4 rounded-xl bg-white/50">
         <div class="mb-6 size-45 rounded-md mx-auto overflow-hidden flex-center">
           <Qrcode class="mt-2" @success="closeModal" />
         </div>
@@ -28,14 +28,14 @@ const { isShowModal, closeModal } = useLoginModal()
         <div class="text-center">
           使用 bilibili 扫码登录
         </div>
-      </div>
+      </NCard>
 
       <!-- 按钮 -->
       <div class="flex-center mt-4">
         <NButton
-          class="p-2.5 rounded-full"
           round
-          type="tertiary"
+          secondary
+          size="large"
           @click="closeModal"
         >
           <XIcon class="size-5" />
@@ -44,3 +44,9 @@ const { isShowModal, closeModal } = useLoginModal()
     </div>
   </NModal>
 </template>
+
+<style scoped>
+.n-card {
+  padding: 0;
+}
+</style>

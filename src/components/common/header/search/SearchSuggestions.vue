@@ -81,7 +81,7 @@ watchEffect(() => {
 
 <style scoped lang="scss">
 .search-suggestions {
-  z-index: 8999;
+  z-index: 1999;
   position: absolute;
   top: calc(35px + 22px);
   width: 300px;

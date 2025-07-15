@@ -101,7 +101,7 @@ useEventListener('keydown', handleSearchByCK, false)
 
 <style scoped>
 .n-input {
-  z-index: 8999;
+  z-index: 1999;
   position: relative;
   width: 200px;
   transition: width 0.3s;
@@ -119,7 +119,7 @@ useEventListener('keydown', handleSearchByCK, false)
   width: 100%;
   height: 100%;
   background-color: #00000050;
-  z-index: 8998;
+  z-index: 1996;
   backdrop-filter: blur(10px);
 }
 </style>

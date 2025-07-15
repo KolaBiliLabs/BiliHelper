@@ -1,13 +1,12 @@
 <script setup lang="ts">
+import { FullscreenIcon } from 'lucide-vue-next'
 import { NEllipsis, NImage, NSkeleton, NSpace } from 'naive-ui'
 import { ref } from 'vue'
 import { useSystemStore } from '@/stores/systemStore'
 
-interface Props {
-  data: ISong
-}
-
-defineProps<Props>()
+defineProps<{
+  data?: ISong
+}>()
 
 const systemStore = useSystemStore()
 
@@ -16,27 +15,23 @@ const isShowOpenFull = ref(false)
 </script>
 
 <template>
-  <div class="info" select-none @dblclick.stop="systemStore.fullScreen = true">
+  <div class="px-3 flex items-center select-none" @dblclick.stop="systemStore.fullScreen = true">
     <div
-      class="info-cover"
-      h-full
+      class="size-15 mr-2 rounded-lg overflow-hidden cursor-pointer relative"
       @mouseenter="isShowOpenFull = true"
       @mouseleave="isShowOpenFull = false"
       @click="systemStore.fullScreen = true"
     >
-      <!--
-        <Transition name="full-fade">
-        <div v-if="isShowOpenFull" class="full-mask" flex-center>
-        <IconI icon-name="i-mingcute:fullscreen-2-fill" :size="32" />
+      <Transition name="full-fade">
+        <div v-if="isShowOpenFull" class="flex-center absolute inset-0 h-full text-white/80 backdrop-blur-2xl rounded-sm">
+          <FullscreenIcon class="size-4" />
         </div>
-        </Transition>
-      -->
+      </Transition>
 
       <NImage
-        :src="data?.pic"
+        :src="data?.pic || ''"
         preview-disabled
-        w-full
-        h-full
+        class="size-full"
         lazy
       >
         <template #placeholder>
@@ -46,86 +41,22 @@ const isShowOpenFull = ref(false)
     </div>
 
     <NSpace vertical justify="center">
-      <div class="song-name">
-        <NSkeleton v-if="!data.author" text width="100px" />
+      <div>
+        <NSkeleton v-if="!data" text width="100px" />
         <NEllipsis v-else>
           {{ data?.name }}
         </NEllipsis>
       </div>
-      <!-- <div class="singer-name">
+      <!--
+        <div class="singer-name">
         <NSkeleton v-if="!data.name" text width="80px" />
         <Transition v-else name="fade" mode="out-in">
         <NText v-if="!systemStore.fullScreen && playStore.playState" :key="playStore.playingLyric">
         {{ playStore.playingLyric.trim() || '...' }}
         </NText>
         </Transition>
-        </div> -->
+        </div>
+      -->
     </NSpace>
   </div>
 </template>
-
-<style scoped lang="scss">
-/* 歌曲信息 */
-.info {
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-
-  .info-cover {
-    @mixin sizeFull() {
-      width: 100%;
-      height: 100%;
-    }
-    width: 60px;
-    height: 60px;
-    margin-right: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-
-    .full-mask {
-      position: absolute;
-      inset: 0;
-      height: 100%;
-      color: #ffffff80;
-      backdrop-filter: blur(10px);
-      border-radius: 4px;
-    }
-
-    img {
-      @include sizeFull();
-      object-fit: cover;
-    }
-
-    .placeholder {
-      @include sizeFull();
-      background-color: #eee;
-    }
-  }
-
-  .song-name {
-    font-size: 14px;
-    font-weight: bold;
-    line-height: 1.5;
-  }
-
-  .singer-name {
-    font-size: 12px;
-    color: #999;
-    line-height: 1.5;
-  }
-}
-
-// full-fade
-.full-fade-enter-active,
-.full-fade-leave-active {
-  transition: all 0.2s ease;
-}
-
-.full-fade-enter-from,
-.full-fade-leave-to {
-  opacity: 0;
-  transform: scale(0.85);
-}
-</style>

@@ -114,20 +114,14 @@ export const usePlayStore = defineStore('play', () => {
 
   // 播放指定歌曲（可选：插入到队列/直接播放）
   async function play(song: ISong) {
-    // // 当前有歌，且是同一首，并且处于暂停状态，直接恢复播放
-    // if (player && currentSong.value && currentSong.value.bvid === song.bvid && !isPlaying.value) {
-    //   player.play()
-    //   isPlaying.value = true
-    //   return
-    // }
-
     // 否则，切换新歌
     const idx = playQueue.value.findIndex(item => item.bvid === song.bvid)
     if (idx !== -1) {
       currentIndex.value = idx
     } else {
-      playQueue.value.push(song)
-      currentIndex.value = playQueue.value.length - 1
+      // 插入到第一位
+      playQueue.value.unshift(song)
+      currentIndex.value = 0
     }
 
     // 获取音频播放地址
@@ -196,8 +190,11 @@ export const usePlayStore = defineStore('play', () => {
 
   // 下一首
   function playNext() {
-    if (playQueue.value.length === 0)
+    if (playQueue.value.length === 0) {
+      // [ ] 当前播放列表为空， ui提示
       return
+    }
+
     if (currentIndex.value < playQueue.value.length - 1) {
       stop()
       currentIndex.value++
@@ -210,6 +207,7 @@ export const usePlayStore = defineStore('play', () => {
   // 上一首
   function playPrev() {
     if (playQueue.value.length === 0) {
+      // [ ] 当前播放列表为空，ui提示
       return
     }
     if (currentIndex.value > 0) {
