@@ -37,14 +37,14 @@ function handlePlayAdjacentOne(type: 'prev' | 'next') {
 
 // 播放/暂停按钮点击
 function handlePlayOrPause() {
-  if (!currentSong.value)
+  if (!currentSong.value) {
     return
+  }
+
   if (isPlaying.value) {
-    console.log('暂停播放')
-    // 暂停播放
     playStore.pause()
   } else {
-    playStore.play(currentSong.value)
+    playStore.resume()
   }
 }
 

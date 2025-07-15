@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
+import { NLayout, NLayoutContent } from 'naive-ui'
 import Header from '@/components/common/header/Header.vue'
 import Sider from '@/components/common/sidebar/Sidebar.vue'
 import AppProvider from '@/components/provider/AppProvider.vue'
