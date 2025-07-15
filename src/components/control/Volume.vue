@@ -22,19 +22,18 @@ function handleToggleVolume() {
 }
 
 function handleUpdateVolume(value: number) {
-  console.log(value)
-
-  playStore.volume = value
   playStore.setVolume(value)
 }
 
 function VolumeIcon({ volume }: { volume: number }) {
   let _icon = Volume2
-  if (volume < 0.7) {
+  if (volume > 0.5 && volume <= 1) {
+    _icon = Volume2
+  } else if (volume > 0.15 && volume <= 0.5) {
     _icon = Volume1
-  } else if (volume < 0.4) {
+  } else if (volume > 0 && volume <= 0.15) {
     _icon = Volume
-  } else if (volume === 0) {
+  } else {
     _icon = VolumeOff
   }
 
