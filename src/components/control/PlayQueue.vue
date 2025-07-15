@@ -17,7 +17,7 @@ const { playQueue } = storeToRefs(playStore)
 function handleDeleteSong(song: ISong) {
   playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
 
-  // [x]: 删除歌曲后 播放下一首
+  // [ ]: 删除歌曲后 播放下一首
 }
 
 // 选择歌曲
@@ -28,7 +28,7 @@ function handleChooseSong(song: ISong) {
 // 当进入动画结束
 async function afterDrawerEnter() {
   await nextTick()
-  const playingItem = document.querySelector(`.play-list-item.item-${playStore.currentIndex}`)
+  const playingItem = document.querySelector(`.item-${playStore.currentSong.bvid}`)
 
   playingItem?.scrollIntoView({
     behavior: 'smooth',
