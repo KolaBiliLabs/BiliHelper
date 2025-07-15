@@ -2,9 +2,12 @@
 import { ActivityIcon } from 'lucide-vue-next'
 import { NCard, NEmpty, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
+import { useTemplateRef } from 'vue'
 import Loading from '@/components/common/Loading.vue'
 import { usePlayStore } from '@/stores/playStore'
+import { useSystemStore } from '@/stores/systemStore'
 import { handleThumb } from '@/utils/core'
+import SongListMenu from './menus/SongListMenu.vue'
 
 interface Props {
   data: ISong[]
@@ -27,6 +30,15 @@ defineSlots<{
 
 const playStore = usePlayStore()
 const { currentSong } = storeToRefs(playStore)
+
+const systemStore = useSystemStore()
+const { selectedMenuKey } = storeToRefs(systemStore)
+
+const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songListMenuRef')
+
+// function removeSong(index: number[]) {
+//   console.log(index)
+// }
 </script>
 
 <template>
@@ -42,12 +54,15 @@ const { currentSong } = storeToRefs(playStore)
 
       <template v-else>
         <NCard
-          v-for="item of data"
+          v-for="(item, idx) of data"
           :key="item.bvid"
           hoverable
           select-none
           :class="{ active: currentSong.bvid === item.bvid }"
           @dblclick="$emit('choose', item)"
+          @contextmenu.stop="
+            songListMenuRef?.openDropdown($event, data, item, idx, selectedMenuKey)
+          "
         >
           <div v-auto-animate class="flex items-center h-full gap-2 w-full">
             <!-- 头像 -->
@@ -86,6 +101,9 @@ const { currentSong } = storeToRefs(playStore)
       :size="80"
       class="w-full h-50vw flex-center"
     />
+
+    <!-- 右键菜单 -->
+    <SongListMenu ref="songListMenuRef" />
   </div>
 </template>
 
