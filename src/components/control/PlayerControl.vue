@@ -59,7 +59,7 @@ function formatSongTime(seconds: number): string {
 <template>
   <NCard
     class="control-wrap"
-    :class="[{ show: showPlayer && !systemStore.fullScreen }]"
+    :class="[{ show: showPlayer && currentSong }]"
     :content-style="{
       padding: 0,
     }"

@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { onBeforeUnmount, ref, watchEffect } from 'vue'
 import { searchKeyword } from '@/api/search'
 import Pagination from '@/components/common/Pagination.vue'
-import SongList from '@/components/pages/searchResult/SongList.vue'
+import SongList from '@/components/SongList.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSearchStore } from '@/stores/searchStore'
 

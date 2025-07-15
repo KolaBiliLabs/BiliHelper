@@ -180,14 +180,6 @@ export const usePlayStore = defineStore('play', () => {
     isPlaying.value = true
   }
 
-  // 播放队列中的指定索引
-  function playByIndex(idx: number) {
-    if (idx >= 0 && idx < playQueue.value.length) {
-      currentIndex.value = idx
-      isPlaying.value = true
-    }
-  }
-
   // 下一首
   function playNext() {
     if (playQueue.value.length === 0) {
@@ -195,27 +187,29 @@ export const usePlayStore = defineStore('play', () => {
       return
     }
 
-    if (currentIndex.value < playQueue.value.length - 1) {
-      stop()
-      currentIndex.value++
-      if (playQueue.value[currentIndex.value]) {
-        play(playQueue.value[currentIndex.value])
-      }
-    }
+    const nextIndex = currentIndex.value < playQueue.value.length - 1 ? currentIndex.value + 1 : 0
+    playIndexInQueue(nextIndex)
   }
-
   // 上一首
   function playPrev() {
     if (playQueue.value.length === 0) {
       // [ ] 当前播放列表为空，ui提示
       return
     }
-    if (currentIndex.value > 0) {
-      stop()
-      currentIndex.value--
-      if (playQueue.value[currentIndex.value]) {
-        play(playQueue.value[currentIndex.value])
-      }
+
+    const prevIndex = currentIndex.value > 0 ? currentIndex.value - 1 : playQueue.value.length - 1
+    playIndexInQueue(prevIndex)
+  }
+
+  // 用于播放 上一曲/下一曲 in queue
+  function playIndexInQueue(index: number) {
+    // 先暂停当前歌曲
+    stop()
+
+    currentIndex.value = index
+
+    if (playQueue.value[currentIndex.value]) {
+      play(playQueue.value[currentIndex.value])
     }
   }
 
@@ -302,7 +296,6 @@ export const usePlayStore = defineStore('play', () => {
     setVolume,
     seek,
     play,
-    playByIndex,
     playNext,
     playPrev,
     pause,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NCard, NEmpty, NText } from 'naive-ui'
 import Loading from '@/components/common/Loading.vue'
+import { handleThumb } from '@/utils/core'
 
 interface Props {
   data: ISong[]
@@ -20,13 +21,6 @@ defineSlots<{
   default: () => void
   header: () => void
 }>()
-
-function handleThumb(thumb: string) {
-  if (thumb.startsWith('http') || thumb.startsWith('https')) {
-    return thumb
-  }
-  return `https:${thumb}`
-}
 </script>
 
 <template>
@@ -43,7 +37,7 @@ function handleThumb(thumb: string) {
       <template v-else>
         <NCard
           v-for="item of data"
-          :key="item.id"
+          :key="item.bvid"
           hoverable
           select-none
           @dblclick="$emit('choose', item)"
@@ -53,22 +47,20 @@ function handleThumb(thumb: string) {
             <div
               class="flex-none size-14 rounded-md overflow-hidden flex-center"
             >
-              <img :src="handleThumb(item.pic)" :alt="item.description" class="size-full object-cover">
+              <img :src="handleThumb(item.pic)" :alt="item.bvid" class="size-full object-cover">
             </div>
 
             <!-- 介绍 -->
             <div class="flex-1 flex justify-center flex-col pr-4">
               <div class="flex flex-col justify-center">
-                <NText class="text-ellipsis">
-                  <div v-html="item.title" />
-                </NText>
+                <NText class="text-ellipsis" v-html="item.title" />
                 <NText depth="3" class="text-slate-200">
                   {{ item.author }}
                 </NText>
               </div>
             </div>
             <NText class="w-20 flex-none">
-              {{ item.typename }}
+              {{ item.artist }}
             </NText>
             <NText class="w-20 flex-none">
               {{ item.duration }}
