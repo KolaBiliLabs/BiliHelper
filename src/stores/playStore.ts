@@ -100,7 +100,7 @@ export const usePlayStore = defineStore('play', () => {
   const currentTime = ref(0)
   const duration = ref(0)
   const volume = ref(1)
-  // const currentVolume = ref(50)
+  const loading = ref(false)
 
   let player: Howl | null = null
   let timer: ReturnType<typeof setInterval> | null = null
@@ -114,7 +114,9 @@ export const usePlayStore = defineStore('play', () => {
 
   // 播放指定歌曲（可选：插入到队列/直接播放）
   async function play(song: ISong) {
-    // 否则，切换新歌
+    // [x] cleanup 上一首歌 并初始化状态
+    resetPlayerState()
+
     const idx = playQueue.value.findIndex(item => item.bvid === song.bvid)
     if (idx !== -1) {
       currentIndex.value = idx
@@ -124,60 +126,76 @@ export const usePlayStore = defineStore('play', () => {
       currentIndex.value = 0
     }
 
-    // 获取音频播放地址
-    const songDetail = await getVideoDetail(song.bvid)
+    try {
+      // 获取音频播放地址
+      loading.value = true
+      const songDetail = await getVideoDetail(song.bvid)
 
-    // 停止并卸载上一个音频
-    if (player) {
-      player.unload()
-      player = null
+      // 停止并卸载上一个音频
+      if (player) {
+        player.unload()
+        player = null
+      }
+
+      // 取第一个可用 url
+      const url = songDetail.urls?.[0]
+      if (!url) {
+        console.error('未获取到音频播放地址')
+        return
+      }
+
+      player = new Howl({
+        src: [url],
+        html5: true,
+        volume: volume.value,
+        onload() {
+        // 加载完成后取消loading
+          loading.value = true
+        },
+        onend: () => {
+          playNext()
+        },
+        onplay: () => {
+          isPlaying.value = true
+          duration.value = player?.duration() || 0
+          // 定时刷新 currentTime
+          if (timer)
+            clearInterval(timer)
+          timer = setInterval(() => {
+            if (player && isPlaying.value) {
+              currentTime.value = player.seek() as number
+            }
+          }, 500)
+        },
+        onpause: () => {
+          isPlaying.value = false
+          if (timer)
+            clearInterval(timer)
+        },
+        onstop: () => {
+          isPlaying.value = false
+          if (timer)
+            clearInterval(timer)
+        },
+        onloaderror: (_id, err) => {
+          console.error('音频加载失败', err)
+        },
+        onplayerror: (_id, err) => {
+          console.error('音频播放失败', err)
+        },
+      })
+      player.play()
+      isPlaying.value = true
+    } catch (error) {
+      loading.value = false
+      console.error('playStore => play ', error)
     }
+  }
 
-    // 取第一个可用 url
-    const url = songDetail.urls?.[0]
-    if (!url) {
-      console.error('未获取到音频播放地址')
-      return
-    }
-
-    player = new Howl({
-      src: [url],
-      html5: true,
-      volume: volume.value,
-      onend: () => {
-        playNext()
-      },
-      onplay: () => {
-        isPlaying.value = true
-        duration.value = player?.duration() || 0
-        // 定时刷新 currentTime
-        if (timer)
-          clearInterval(timer)
-        timer = setInterval(() => {
-          if (player && isPlaying.value) {
-            currentTime.value = player.seek() as number
-          }
-        }, 500)
-      },
-      onpause: () => {
-        isPlaying.value = false
-        if (timer)
-          clearInterval(timer)
-      },
-      onstop: () => {
-        isPlaying.value = false
-        if (timer)
-          clearInterval(timer)
-      },
-      onloaderror: (_id, err) => {
-        console.error('音频加载失败', err)
-      },
-      onplayerror: (_id, err) => {
-        console.error('音频播放失败', err)
-      },
-    })
-    player.play()
-    isPlaying.value = true
+  /// 重置播放器的状态
+  function resetPlayerState() {
+    console.log('cleanup => ')
+    currentTime.value = 0
   }
 
   // 下一首
@@ -303,6 +321,8 @@ export const usePlayStore = defineStore('play', () => {
     stop,
     clearQueue,
     addToQueue,
+
+    loading,
   }
 }, {
   persist: {

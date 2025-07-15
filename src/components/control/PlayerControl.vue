@@ -10,7 +10,7 @@ import Volume from './Volume.vue'
 const systemStore = useSystemStore()
 const { showPlayer, showPlaylist } = storeToRefs(systemStore)
 const playStore = usePlayStore()
-const { isPlaying, currentSong, currentTime, duration } = storeToRefs(playStore)
+const { isPlaying, currentSong, currentTime, duration, loading } = storeToRefs(playStore)
 
 let seekTimeout: ReturnType<typeof setTimeout> | null = null
 
@@ -66,7 +66,8 @@ function formatSongTime(seconds: number): string {
   >
     <!-- 进度条 -->
     <NSlider
-      v-if="showPlayer && !systemStore.fullScreen"
+      v-if="showPlayer && currentSong"
+      :disabled="loading"
       :value="currentTime"
       :max="duration"
       :format-tooltip=" formatSongTime"
