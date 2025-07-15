@@ -50,14 +50,16 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <header class="flex items-center gap-2">
-      <span class="my-4 text-[32px]">
-        {{ currentSearchKeyword }}
-      </span>
-      <span class="text-[22px]"> 的相关搜索 </span>
-    </header>
+    <header>
+      <div class="flex items-baseline  gap-2">
+        <span class="my-4 text-3xl">
+          {{ currentSearchKeyword }}
+        </span>
+        <span class="text-[22px]"> 的相关搜索 </span>
+      </div>
 
-    <NDivider />
+      <NDivider />
+    </header>
 
     <!-- 歌曲列表 -->
     <SongList :data="currentSearchResult" :loading="loading" @choose="chooseSong" />

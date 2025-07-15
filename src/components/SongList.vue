@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { ActivityIcon } from 'lucide-vue-next'
 import { NCard, NEmpty, NText } from 'naive-ui'
+import { storeToRefs } from 'pinia'
 import Loading from '@/components/common/Loading.vue'
+import { usePlayStore } from '@/stores/playStore'
 import { handleThumb } from '@/utils/core'
 
 interface Props {
@@ -21,6 +24,9 @@ defineSlots<{
   default: () => void
   header: () => void
 }>()
+
+const playStore = usePlayStore()
+const { currentSong } = storeToRefs(playStore)
 </script>
 
 <template>
@@ -40,9 +46,10 @@ defineSlots<{
           :key="item.bvid"
           hoverable
           select-none
+          :class="{ active: currentSong.bvid === item.bvid }"
           @dblclick="$emit('choose', item)"
         >
-          <div class="flex items-center h-full gap-4 w-full">
+          <div v-auto-animate class="flex items-center h-full gap-2 w-full">
             <!-- 头像 -->
             <div
               class="flex-none size-14 rounded-md overflow-hidden flex-center"
@@ -59,12 +66,15 @@ defineSlots<{
                 </NText>
               </div>
             </div>
-            <NText class="w-20 flex-none">
-              {{ item.artist }}
-            </NText>
-            <NText class="w-20 flex-none">
+
+            <NText class="w-15 flex-none">
               {{ item.duration }}
             </NText>
+
+            <!-- playing icon -->
+            <div v-if="currentSong.bvid === item.bvid" class="px-4 music-playing-indicator">
+              <ActivityIcon class="size-4" />
+            </div>
           </div>
         </NCard>
       </template>
@@ -97,8 +107,8 @@ defineSlots<{
   }
 
   &.active {
-    border-color: #ffffff90;
-    background-color: #ffffff70;
+    border-color: #ffffff80;
+    background-color: #ffffff60;
   }
 
   &:active {
@@ -110,6 +120,22 @@ defineSlots<{
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+.music-playing-indicator {
+  animation: pulse 1.2s infinite cubic-bezier(0.65, 0.05, 0.36, 1); /* 动画名称、时长、无限循环、缓动函数 */
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.9); /* 缩小到 80% */
+  }
+  50% {
+    transform: scale(1.1); /* 放大到 120% */
+  }
+  100% {
+    transform: scale(0.9); /* 缩小回 80% */
   }
 }
 </style>
