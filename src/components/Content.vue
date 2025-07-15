@@ -8,7 +8,7 @@ import Playlist from './pages/playlist/Playlist.vue'
 import SearchResult from './pages/searchResult/SearchResult.vue'
 
 const systemStore = useSystemStore()
-const { currentPage } = storeToRefs(systemStore)
+const { currentPage, showPlayer } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
 const { playlists } = storeToRefs(playStore)
@@ -31,7 +31,7 @@ const showComp = computed(() => {
 </script>
 
 <template>
-  <div class="p-4 pl-6">
+  <div class="p-4 pl-6" :class="{ 'pb-27': showPlayer }">
     <Transition name="router" mode="out-in">
       <component :is="showComp" />
     </Transition>

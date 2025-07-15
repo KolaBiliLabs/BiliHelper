@@ -82,19 +82,29 @@ function formatSongTime(seconds: number): string {
       <SongInfo :data="currentSong" />
 
       <!-- 播放器 -->
-      <div class="flex-center h-full">
-        <NButton size="small" circle @click="handlePlayAdjacentOne('prev')">
+      <div class="flex-center h-full gap-3">
+        <NButton
+          tertiary
+          size="small"
+          circle
+          @click="handlePlayAdjacentOne('prev')"
+        >
           <ChevronLeftIcon class="size-4" />
         </NButton>
         <NButton
           circle
-          style="margin: 0 10px"
+          secondary
           size="large"
           @click="handlePlayOrPause"
         >
           <component :is="isPlaying ? PauseIcon : PlayIcon" class="size-4" />
         </NButton>
-        <NButton size="small" circle @click="handlePlayAdjacentOne('next')">
+        <NButton
+          size="small"
+          circle
+          tertiary
+          @click="handlePlayAdjacentOne('next')"
+        >
           <ChevronRightIcon class="size-4" />
         </NButton>
       </div>
