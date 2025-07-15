@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { GlobalTheme } from 'naive-ui'
-import { darkTheme, NConfigProvider, NDialogProvider, NMessageProvider, NNotificationProvider, zhCN } from 'naive-ui'
+import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
+import { darkTheme, NConfigProvider, NDialogProvider, NMessageProvider, NNotificationProvider, useDialog, useMessage, useNotification, zhCN } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { ref, watch } from 'vue'
+import { defineComponent, h, ref, watch } from 'vue'
 import { useSystemStore } from '@/stores/systemStore'
-import { NaiveContentProvider, themeOverrides } from './config'
 
 defineSlots<{
   default: () => void
@@ -22,6 +21,32 @@ watch(
     theme.value = v === 'dark' ? darkTheme : null
   },
 )
+
+const NaiveContentProvider = defineComponent({
+  setup() {
+    window.$message = useMessage()
+    window.$dialog = useDialog()
+    window.$notification = useNotification()
+
+    return () => h('div', { class: 'main-tools' })
+  },
+})
+
+// 全局主题配置
+const themeOverrides: GlobalThemeOverrides = {
+  common: {
+    borderRadius: '10px',
+  },
+  Button: {
+    textColor: '#F86',
+  },
+  Modal: {
+    borderRadius: '10px',
+  },
+  Card: {
+    borderRadius: '10px',
+  },
+}
 </script>
 
 <template>

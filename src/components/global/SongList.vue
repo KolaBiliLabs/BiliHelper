@@ -3,11 +3,11 @@ import { ActivityIcon } from 'lucide-vue-next'
 import { NCard, NEmpty, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useTemplateRef } from 'vue'
-import Loading from '@/components/common/Loading.vue'
+import Loading from '@/components/global/Loading.vue'
+import SongListMenu from '@/components/menus/SongListMenu.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { handleThumb } from '@/utils/core'
-import SongListMenu from './menus/SongListMenu.vue'
 
 interface Props {
   data: ISong[]

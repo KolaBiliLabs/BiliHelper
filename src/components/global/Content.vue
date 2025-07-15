@@ -2,10 +2,10 @@
 import { SEARCH_RESULT_PAGE } from '@constants/pageId'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import Playlist from '@/components/pages/playlist/Playlist.vue'
+import SearchResult from '@/components/pages/searchResult/SearchResult.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import Playlist from './pages/playlist/Playlist.vue'
-import SearchResult from './pages/searchResult/SearchResult.vue'
 
 const systemStore = useSystemStore()
 const { currentPage, showPlayer } = storeToRefs(systemStore)

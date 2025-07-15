@@ -4,7 +4,7 @@ import { NCard, NEmpty } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ref, watchEffect } from 'vue'
 import { searchSuggestion } from '@/api/search'
-import Loading from '@/components/common/Loading.vue'
+import Loading from '@/components/global/Loading.vue'
 import { useSystemStore } from '@/stores/systemStore'
 
 interface Props {

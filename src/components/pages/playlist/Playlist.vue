@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import { formatTime } from '@/utils/dayjs'
-import SongList from '../../SongList.vue'
+import SongList from '../../global/SongList.vue'
 
 const systemStore = useSystemStore()
 const { currentPage, showPlayer } = storeToRefs(systemStore)

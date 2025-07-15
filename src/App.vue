@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { NLayout, NLayoutContent } from 'naive-ui'
-import Header from '@/components/common/header/Header.vue'
-import Sider from '@/components/common/sidebar/Sidebar.vue'
-import AppProvider from '@/components/provider/AppProvider.vue'
-import Content from './components/Content.vue'
+import AppProvider from '@/components/global/AppProvider.vue'
+import Content from '@/components/global/Content.vue'
+import Header from '@/components/layout/header/Header.vue'
+import Sider from '@/components/layout/sidebar/Sidebar.vue'
 import Control from './components/control/PlayerControl.vue'
 import PlayQueue from './components/control/PlayQueue.vue'
 import LoginModal from './components/modals/LoginModal.vue'
