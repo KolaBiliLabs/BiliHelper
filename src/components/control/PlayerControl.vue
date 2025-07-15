@@ -9,7 +9,7 @@ import SongInfo from './SongInfo.vue'
 import Volume from './Volume.vue'
 
 const systemStore = useSystemStore()
-const { showPlayer, showPlaylist } = storeToRefs(systemStore)
+const { showPlayer, showPlayQueue } = storeToRefs(systemStore)
 const playStore = usePlayStore()
 const { isPlaying, currentSong, currentTime, duration, loading } = storeToRefs(playStore)
 
@@ -28,7 +28,7 @@ function handleUpdateCurrentTime(v: number) {
 
 // 打开播放列表
 function handleOpenPlayList() {
-  showPlaylist.value = true
+  showPlayQueue.value = true
 }
 
 // 播放上一首/下一首

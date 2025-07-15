@@ -132,10 +132,7 @@ export const usePlayStore = defineStore('play', () => {
       const songDetail = await getVideoDetail(song.bvid)
 
       // 停止并卸载上一个音频
-      if (player) {
-        player.unload()
-        player = null
-      }
+      unloadPlayer()
 
       // 取第一个可用 url
       const url = songDetail.urls?.[0]
@@ -270,17 +267,17 @@ export const usePlayStore = defineStore('play', () => {
   // 停止
   function stop() {
     if (player) {
-      player.stop()
-      player.unload()
-      player = null
-      if (timer)
+      unloadPlayer()
+      if (timer) {
         clearInterval(timer)
+      }
     }
     isPlaying.value = false
   }
 
   // 清空队列
   function clearQueue() {
+    unloadPlayer()
     playQueue.value = []
     currentIndex.value = -1
     isPlaying.value = false
@@ -305,6 +302,14 @@ export const usePlayStore = defineStore('play', () => {
     if (player) {
       player.seek(time)
       currentTime.value = time
+    }
+  }
+
+  function unloadPlayer() {
+    if (player) {
+      player.stop()
+      player.unload()
+      player = null
     }
   }
 

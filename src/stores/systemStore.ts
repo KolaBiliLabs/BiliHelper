@@ -14,7 +14,7 @@ interface SystemStore {
   currentPage: string
 
   showPlayer: boolean
-  showPlaylist: boolean
+  showPlayQueue: boolean
 }
 
 export const useSystemStore = defineStore('system', {
@@ -28,7 +28,7 @@ export const useSystemStore = defineStore('system', {
     fullScreen: false,
     currentPage: 'playList',
     showPlayer: false,
-    showPlaylist: false,
+    showPlayQueue: false,
   }),
   getters: {
     isDark(state) {

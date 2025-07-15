@@ -1,14 +1,14 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <script setup lang="ts">
-import { MusicIcon, TrashIcon } from 'lucide-vue-next'
-import { NButton, NDrawer, NDrawerContent, NText } from 'naive-ui'
+import { LocateIcon, MusicIcon, Trash2Icon, TrashIcon } from 'lucide-vue-next'
+import { NButton, NDrawer, NDrawerContent, NEmpty, NGi, NGrid, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { nextTick } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 
 const systemStore = useSystemStore()
-const { showPlaylist } = storeToRefs(systemStore)
+const { showPlayQueue } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
 const { playQueue } = storeToRefs(playStore)
@@ -26,7 +26,7 @@ function handleChooseSong(song: ISong) {
 }
 
 // 当进入动画结束
-async function afterDrawerEnter() {
+async function scrollToItem() {
   await nextTick()
   const playingItem = document.querySelector(`.item-${playStore.currentSong.bvid}`)
 
@@ -35,14 +35,19 @@ async function afterDrawerEnter() {
     block: 'center',
   })
 }
+
+function clearQueue() {
+  playStore.clearQueue()
+  showPlayQueue.value = false
+}
 </script>
 
 <template>
   <NDrawer
-    v-model:show="showPlaylist"
+    v-model:show="showPlayQueue"
     :class="{ 'full-screen': systemStore.fullScreen }"
     :width="400"
-    @after-enter="afterDrawerEnter"
+    @after-enter="scrollToItem"
   >
     <NDrawerContent :native-scrollbar="false" closable>
       <!-- 头部 -->
@@ -55,37 +60,82 @@ async function afterDrawerEnter() {
 
       <!-- 主体 -->
       <main v-auto-animate>
-        <div
-          v-for="(song, idx) of playQueue"
-          :key="song.bvid"
-          class="flex-center p-2 gap-6 bg-black/50 border border-black/50 mb-3 rounded-xl cursor-pointer box-border transition-all duration-300 select-none hover:border-white/50 hover:shadow-black/10 active:scale-3d active:scale-[0.992]"
-          :class="[
-            `item-${song.bvid}`,
-            { 'bg-white/50': song.bvid === playStore.currentSong?.bvid },
-          ]"
-          @click="handleChooseSong(song)"
-        >
-          <!-- 序号 -->
-          <div class="px-3">
-            <MusicIcon v-if="song.bvid === playStore.currentSong.bvid" class="size-4" />
-            <NText v-else>
-              {{ idx + 1 }}
-            </NText>
-          </div>
+        <template v-if="playQueue.length">
+          <div
+            v-for="(song, idx) of playQueue"
+            :key="song.bvid"
+            class="flex-center p-2 gap-6 bg-black/50 border border-black/50 mb-3 rounded-xl cursor-pointer box-border transition-all duration-300 select-none hover:border-white/50 hover:shadow-black/10 active:scale-3d active:scale-[0.992]"
+            :class="[
+              `item-${song.bvid}`,
+              { 'bg-white/50': song.bvid === playStore.currentSong?.bvid },
+            ]"
+            @click="handleChooseSong(song)"
+          >
+            <!-- 序号 -->
+            <div class="px-3">
+              <MusicIcon v-if="song.bvid === playStore.currentSong.bvid" class="size-4" />
+              <NText v-else>
+                {{ idx + 1 }}
+              </NText>
+            </div>
 
-          <!-- 歌曲信息 -->
-          <div class="flex-1">
-            <NText v-html="song.title" />
-          </div>
+            <!-- 歌曲信息 -->
+            <div class="flex-1">
+              <NText v-html="song.title" />
+            </div>
 
-          <!-- 操作 -->
-          <div class="action">
-            <NButton quaternary class="px-3" @click.stop="() => handleDeleteSong(song)">
-              <TrashIcon class="size-4" />
-            </NButton>
+            <!-- 操作 -->
+            <div class="action">
+              <NButton quaternary class="px-3" @click.stop="() => handleDeleteSong(song)">
+                <TrashIcon class="size-4" />
+              </NButton>
+            </div>
           </div>
-        </div>
+        </template>
+        <NEmpty
+          v-else
+          description="播放列表暂无歌曲，快去添加吧"
+          class="tip"
+          size="large"
+          style="margin-top: 60px"
+        />
       </main>
+
+      <template #footer>
+        <NGrid :cols="2" x-gap="16" class="playlist-menu">
+          <NGi>
+            <NButton
+              :focusable="false"
+              size="large"
+              strong
+              secondary
+              block
+              @click="clearQueue"
+            >
+              <template #icon>
+                <Trash2Icon class="size-4" />
+              </template>
+              清空列表
+            </NButton>
+          </NGi>
+          <NGi>
+            <NButton
+              :focusable="false"
+              :disabled="!playQueue.length"
+              size="large"
+              strong
+              secondary
+              block
+              @click="scrollToItem"
+            >
+              <template #icon>
+                <LocateIcon class="size-4" />
+              </template>
+              当前播放
+            </NButton>
+          </NGi>
+        </NGrid>
+      </template>
     </NDrawerContent>
   </NDrawer>
 </template>

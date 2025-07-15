@@ -38,7 +38,7 @@ const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songL
         v-if="!data || !data.length"
         class="w-full h-[50vh] flex-center"
       >
-        <NText> 暂无数据 </NText>
+        <NText> 当前歌单无歌曲 </NText>
       </NEmpty>
 
       <template v-else>
@@ -56,11 +56,12 @@ const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songL
     </template>
 
     <!-- loading -->
-    <Loading
-      v-else
-      :size="80"
-      class="w-full h-50vw flex-center"
-    />
+    <div v-else class="flex-center">
+      <Loading
+        :size="80"
+        class="w-full h-50vw flex-center"
+      />
+    </div>
 
     <!-- 右键菜单 -->
     <SongListMenu ref="songListMenuRef" />

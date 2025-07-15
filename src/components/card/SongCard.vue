@@ -18,15 +18,15 @@ const { currentSong, isPlaying, loading } = storeToRefs(playStore)
   <NCard
     hoverable
     select-none
-    :class="{ active: currentSong.bvid === data.bvid }"
+    :class="{ active: currentSong?.bvid === data.bvid }"
   >
     <div v-auto-animate class="flex items-center h-full gap-2 w-full group">
       <!-- 提示信息 -->
       <div class="w-10 flex-center">
         <Transition name="fade" mode="out-in">
-          <Loading v-if="loading && currentSong.bvid === data.bvid" :size="20" />
+          <Loading v-if="loading && currentSong?.bvid === data.bvid" :size="20" />
           <div v-else class="relative flex-center" @dblclick.stop>
-            <NText v-if="currentSong.bvid !== data.bvid" depth="3" class="num-transition group-hover:opacity-0">
+            <NText v-if="currentSong?.bvid !== data.bvid" depth="3" class="num-transition group-hover:opacity-0">
               {{ index + 1 }}
             </NText>
             <Music2Icon v-else class="num-transition size-4 group-hover:opacity-0" />
@@ -34,14 +34,14 @@ const { currentSong, isPlaying, loading } = storeToRefs(playStore)
             <component
               :is="isPlaying ? Pause : Play "
               class="num-transition size-6 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-0"
-              :class="{ 'group-hover:opacity-100': currentSong.bvid === data.bvid }"
+              :class="{ 'group-hover:opacity-100': currentSong?.bvid === data.bvid }"
               @click="playStore.pauseOrResume"
               @dblclick.stop
             />
             <!-- 播放 -->
             <Music2Icon
               class="num-transition size-5 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-100"
-              :class="{ 'group-hover:hidden': currentSong.bvid === data.bvid }"
+              :class="{ 'group-hover:hidden': currentSong?.bvid === data.bvid }"
               @click="playStore.play(data)"
             />
           </div>
