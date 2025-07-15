@@ -23,10 +23,15 @@ function chooseSong(v) {
 
 <template>
   <div>
-    <header class="space-y-1">
-      <h1>{{ playList.name }}</h1>
+    <header class="pb-3">
+      <h1 class="text-2xl font-bold tracking-wide mb-1">
+        {{ playList.name }}
+      </h1>
       <template v-if="!playList.isDefault">
-        {{ formatTime(playList.createTime, 'YYYY-MM-DD') }} 创建
+        <div class="flex items-center text-sm space-x-2">
+          <span class="inline-block">📅</span>
+          <span>{{ formatTime(playList.createTime, 'YYYY-MM-DD') }} 创建</span>
+        </div>
       </template>
     </header>
     <SongList :data="playList.musics" @choose="chooseSong" />

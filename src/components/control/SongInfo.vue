@@ -36,8 +36,8 @@ function enableFullscreen() {
     </div>
 
     <NSpace vertical justify="center">
-      <NMarquee v-if="data">
-        <NText v-html="data.title" />
+      <NMarquee v-if="data" :key="data.title">
+        <div v-html="data.title" />
       </NMarquee>
       <NText>
         {{ data?.author }}
