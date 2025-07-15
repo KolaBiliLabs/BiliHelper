@@ -4,6 +4,7 @@ import { NButton, NCard, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
+import Loading from '../global/Loading.vue'
 import SongInfo from './SongInfo.vue'
 import Volume from './Volume.vue'
 
@@ -98,7 +99,12 @@ function formatSongTime(seconds: number): string {
           size="large"
           @click="handlePlayOrPause"
         >
-          <component :is="isPlaying ? PauseIcon : PlayIcon" class="size-4" />
+          <Transition name="fade" mode="out-in">
+            <template v-if="loading">
+              <Loading :size="30" />
+            </template>
+            <component :is="isPlaying ? PauseIcon : PlayIcon" v-else class="size-4" />
+          </Transition>
         </NButton>
         <NButton
           size="small"

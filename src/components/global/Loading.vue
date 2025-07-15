@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
+import { IntersectingCirclesSpinner } from 'epic-spinners'
 
-interface Props {
+withDefaults(defineProps<{
   size?: number
-}
-withDefaults(defineProps<Props>(), {
+  color?: string
+}>(), {
   size: 30,
+  color: '#ffffff80',
 })
 </script>
 
 <template>
-  <div flex-center>
-    <FulfillingBouncingCircleSpinner :animation-duration="2000" :size="size" />
-  </div>
+  <IntersectingCirclesSpinner
+    :animation-duration="1200"
+    :size
+    :color
+  />
 </template>
