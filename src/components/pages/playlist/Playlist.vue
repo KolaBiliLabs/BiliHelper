@@ -19,6 +19,10 @@ function chooseSong(v) {
   playStore.play(v)
   showPlayer.value = true
 }
+
+function toggleLike(song: ISong) {
+  playStore.toggleLike(song)
+}
 </script>
 
 <template>
@@ -34,6 +38,6 @@ function chooseSong(v) {
         </div>
       </template>
     </header>
-    <SongList :data="playList.musics" @choose="chooseSong" />
+    <SongList :data="playList.musics" @choose="chooseSong" @toggle-like="toggleLike" />
   </div>
 </template>

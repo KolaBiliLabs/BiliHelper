@@ -22,10 +22,11 @@ function lruInsert<T = Record<string, any>>(arr: T[], item: T, max: number, key:
     arr.pop()
 }
 
+const HISTORY_MAX = 100
+
 export const usePlayStore = defineStore('play', () => {
   // 历史记录（LRU，最大100条）
   const history = ref<ISong[]>([])
-  const HISTORY_MAX = 100
 
   // 喜欢的音乐
   const liked = ref<ISong[]>([])

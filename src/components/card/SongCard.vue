@@ -1,17 +1,30 @@
 <script setup lang="ts">
-import { Music2Icon, Pause, Play } from 'lucide-vue-next'
+import { HeartIcon, Music2Icon, Pause, Play } from 'lucide-vue-next'
 import { NCard, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import Loading from '@/components/global/Loading.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { handleThumb } from '@/utils/core'
 
-defineProps<{
+const props = defineProps<{
   data: ISong
   index: number
 }>()
+
+const emit = defineEmits<{
+  toggleLike: [bvid: ISong]
+}>()
+
 const playStore = usePlayStore()
-const { currentSong, isPlaying, loading } = storeToRefs(playStore)
+const { currentSong, isPlaying, loading, liked } = storeToRefs(playStore)
+
+function isLicked(bvid: string) {
+  return liked.value.map(l => l.bvid).includes(bvid)
+}
+
+function toggleLike() {
+  emit('toggleLike', props.data)
+}
 </script>
 
 <template>
@@ -61,6 +74,14 @@ const { currentSong, isPlaying, loading } = storeToRefs(playStore)
             {{ data.author }}
           </NText>
         </div>
+      </div>
+
+      <div
+        class="flex-none mr-4"
+        @dblclick.stop
+        @click="toggleLike"
+      >
+        <HeartIcon :class="[{ 'fill-red-500': isLicked(data.bvid) }]" class="num-transition hover:fill-red-500" />
       </div>
 
       <NText class="text-xs w-15 flex-none">

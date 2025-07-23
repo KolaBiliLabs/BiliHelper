@@ -47,6 +47,10 @@ onBeforeUnmount(() => {
   searchStore.clearupSearch()
   console.log('----- searStore 已清理 -----')
 })
+
+function toggleLike(song: ISong) {
+  playStore.toggleLike(song)
+}
 </script>
 
 <template>
@@ -63,7 +67,12 @@ onBeforeUnmount(() => {
     </header>
 
     <!-- 歌曲列表 -->
-    <SongList :data="currentSearchResult" :loading="loading" @choose="chooseSong" />
+    <SongList
+      :data="currentSearchResult"
+      :loading="loading"
+      @choose="chooseSong"
+      @toggle-like="toggleLike"
+    />
 
     <!-- 分页 -->
     <Pagination

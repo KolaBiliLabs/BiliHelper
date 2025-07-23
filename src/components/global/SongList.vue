@@ -15,8 +15,9 @@ withDefaults(defineProps<{
   disabledHeader: false,
   loading: false,
 })
-defineEmits<{
+const emit = defineEmits<{
   choose: [song: ISong]
+  toggleLike: [bvid: ISong]
 }>()
 
 defineSlots<{
@@ -28,6 +29,10 @@ const systemStore = useSystemStore()
 const { selectedMenuKey } = storeToRefs(systemStore)
 
 const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songListMenuRef')
+
+function toggleLike(song: ISong) {
+  emit('toggleLike', song)
+}
 </script>
 
 <template>
@@ -51,6 +56,7 @@ const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songL
           @contextmenu.stop="
             songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
           "
+          @toggle-like="toggleLike"
         />
       </template>
     </template>
