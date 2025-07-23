@@ -81,7 +81,7 @@ function toggleLike() {
         @dblclick.stop
         @click="toggleLike"
       >
-        <HeartIcon :class="[{ 'fill-red-500': isLicked(data.bvid) }]" class="num-transition hover:fill-red-500" />
+        <HeartIcon :class="[{ 'fill-red-500': isLicked(data.bvid) }]" class="num-transition hover:fill-red-500 hover:scale-110" />
       </div>
 
       <NText class="text-xs w-15 flex-none">

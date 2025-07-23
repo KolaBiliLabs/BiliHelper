@@ -38,7 +38,7 @@ const themeOverrides: GlobalThemeOverrides = {
     borderRadius: '10px',
   },
   Button: {
-    textColor: '#F86',
+    // textColor: '#F86',
   },
   Modal: {
     borderRadius: '10px',
