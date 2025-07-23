@@ -6,6 +6,7 @@ import { getVideoDetail } from '@/api/search'
 export interface IPlaylist {
   id: string
   name: string
+  description: string
   musics: ISong[]
   createTime: number
   updateTime: number
@@ -33,8 +34,8 @@ export const usePlayStore = defineStore('play', () => {
 
   // 默认歌单
   const defaultPlaylists = computed<IPlaylist[]>(() => [
-    { id: 'history', name: '最近播放', musics: history.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
-    { id: 'liked', name: '我喜欢的', musics: liked.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
+    { id: 'history', name: '最近播放', description: '最近播放的歌曲', musics: history.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
+    { id: 'liked', name: '我喜欢的', description: '我喜欢的歌曲', musics: liked.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
   ])
 
   // 其他自定义歌单
@@ -58,11 +59,12 @@ export const usePlayStore = defineStore('play', () => {
   }
 
   // 歌单管理
-  function createPlaylist(name: string) {
+  function createPlaylist(name: string, description: string) {
     const id = `custom_${Date.now()}`
     customPlaylists.value.push({
       id,
       name,
+      description,
       musics: [],
       createTime: Date.now(),
       updateTime: Date.now(),

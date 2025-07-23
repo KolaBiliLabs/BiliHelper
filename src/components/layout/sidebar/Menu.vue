@@ -5,6 +5,8 @@ import { AudioLines, PlusIcon } from 'lucide-vue-next'
 import { NButton, NEllipsis, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h } from 'vue'
+import CreatePlaylistModal from '@/components/modals/CreatePlaylistModal.vue'
+import { useCreatePlaylistModal } from '@/hooks/useCreatePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 
@@ -13,6 +15,8 @@ const { selectedMenuKey, currentPage, collapsed } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
 const { defaultPlaylists, customPlaylists } = storeToRefs(playStore)
+
+const { openModal: openCreatePlaylistModal } = useCreatePlaylistModal()
 
 function renderMenuLabel(label: string, icon: Component) {
   return () =>
@@ -81,7 +85,7 @@ const menuOptions = computed<MenuOption[]>(() => [
  * 用于触发用户创建新的播放列表的操作
  */
 function openCreatePlaylist() {
-  console.log('open create playlist')
+  openCreatePlaylistModal()
 }
 </script>
 
@@ -97,6 +101,7 @@ function openCreatePlaylist() {
     :options="menuOptions"
     @update:value="selectedMenu"
   />
+  <CreatePlaylistModal />
 </template>
 
 <style lang="scss" scoped>
