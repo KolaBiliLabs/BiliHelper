@@ -68,7 +68,7 @@ useEventListener('keydown', handleSearchByCK, false)
 </script>
 
 <template>
-  <div relative>
+  <div class="relative">
     <NInput
       ref="searchInputRef"
       v-model:value="searchValue"

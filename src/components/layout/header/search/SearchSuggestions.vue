@@ -51,9 +51,9 @@ watchEffect(() => {
       <NCard>
         <div v-auto-animate>
           <!-- loading -->
-          <template v-if="loading">
+          <div v-if="loading" class="flex-center">
             <Loading py-12 flex-center w-full />
-          </template>
+          </div>
 
           <!-- empty -->
           <template v-else-if="!suggestSongs.length">
@@ -83,7 +83,7 @@ watchEffect(() => {
 .search-suggestions {
   z-index: 1999;
   position: absolute;
-  top: calc(35px + 22px);
+  top: calc(35px + 15px);
   width: 300px;
 }
 
