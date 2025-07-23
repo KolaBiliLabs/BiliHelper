@@ -42,11 +42,7 @@ function handlePlayOrPause() {
     return
   }
 
-  if (isPlaying.value) {
-    playStore.pause()
-  } else {
-    playStore.resume()
-  }
+  playStore.pauseOrResume()
 }
 
 // 用于格式化当前时间戳
@@ -103,7 +99,7 @@ function formatSongTime(seconds: number): string {
             <template v-if="loading">
               <Loading :size="30" />
             </template>
-            <component :is="isPlaying ? PauseIcon : PlayIcon" v-else class="size-4" />
+            <component :is="isPlaying ? PauseIcon : PlayIcon" v-else class="size-5" />
           </Transition>
         </NButton>
         <NButton
