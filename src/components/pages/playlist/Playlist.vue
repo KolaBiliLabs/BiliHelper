@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TimerIcon } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
@@ -27,13 +28,18 @@ function toggleLike(song: ISong) {
 
 <template>
   <div>
-    <header class="pb-3">
+    <header class="pb-4 border-b mb-6">
       <h1 class="text-2xl font-bold tracking-wide mb-1">
         {{ playList.name }}
       </h1>
+      <template v-if="playList.description">
+        <div class="text-gray-500 text-sm mt-1">
+          {{ playList.description }}
+        </div>
+      </template>
       <template v-if="!playList.isDefault">
-        <div class="flex items-center text-sm space-x-2">
-          <span class="inline-block">📅</span>
+        <div class="flex items-center text-xs text-gray-400 mt-2 space-x-2">
+          <TimerIcon class="size-4" />
           <span>{{ formatTime(playList.createTime, 'YYYY-MM-DD') }} 创建</span>
         </div>
       </template>
