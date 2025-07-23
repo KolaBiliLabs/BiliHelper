@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
+import type { IPlaylist } from '@/stores/playStore'
 import { AudioLines, AudioLinesIcon, HeartIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next'
-import { NButton, NEllipsis, NMenu, NText } from 'naive-ui'
+import { NButton, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { computed, h } from 'vue'
+import { computed, h, useTemplateRef } from 'vue'
+import PlayListMenu from '@/components/menus/PlayListMenu.vue'
 import CreatePlaylistModal from '@/components/modals/CreatePlaylistModal.vue'
 import { useCreatePlaylistModal } from '@/hooks/useCreatePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
@@ -17,13 +19,17 @@ const playStore = usePlayStore()
 const { defaultPlaylists, customPlaylists } = storeToRefs(playStore)
 
 const { openModal: openCreatePlaylistModal } = useCreatePlaylistModal()
+const playListMenuRef = useTemplateRef('playListMenuRef')
 
-function renderMenuLabel(label: string, icon: Component) {
+function renderMenuLabel(playList: IPlaylist, icon: Component) {
   return () =>
-    h(NEllipsis, {
+    h('div', {
       maxWidth: '20px',
+      onContextmenu(e) {
+        playListMenuRef.value?.openDropdown(e, playList.id)
+      },
     }, {
-      default: () => label,
+      default: () => playList.name,
       icon: () => h(icon, { class: 'size-5' }),
     })
 }
@@ -43,7 +49,7 @@ const menuOptions = computed<MenuOption[]>(() => [
     icon: () => h(AudioLines, { class: 'size-4' }),
   },
   ...defaultPlaylists.value.map(item => ({
-    label: renderMenuLabel(item.name, AudioLines),
+    label: renderMenuLabel(item, AudioLines),
     key: item.id,
     icon: () => h(item.id === 'history' ? HistoryIcon : HeartIcon, { class: 'size-4' }),
   })),
@@ -75,7 +81,7 @@ const menuOptions = computed<MenuOption[]>(() => [
     show: !systemStore.collapsed,
   },
   ...customPlaylists.value.map(item => ({
-    label: renderMenuLabel(item.name, AudioLines),
+    label: renderMenuLabel(item, AudioLines),
     key: item.id,
     icon: () => h(AudioLinesIcon, { class: 'size-4' }),
   })),
@@ -103,7 +109,11 @@ function openCreatePlaylist() {
       :options="menuOptions"
       @update:value="selectedMenu"
     />
+    <!-- 创建歌单 modal -->
     <CreatePlaylistModal />
+
+    <!-- 歌单 右键菜单 -->
+    <PlayListMenu ref="playListMenuRef" />
   </div>
 </template>
 

@@ -1,0 +1,94 @@
+<!-- 歌曲列表 - 右键菜单 -->
+<script setup lang="ts">
+import type { DropdownOption } from 'naive-ui'
+import type { FunctionalComponent } from 'vue'
+import { PlayIcon, Trash2Icon } from 'lucide-vue-next'
+import { NDropdown } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+import { h, nextTick, ref } from 'vue'
+import { usePlayStore } from '@/stores/playStore'
+
+defineEmits<{ removeSong: [index: number[]] }>()
+
+const playStore = usePlayStore()
+const { customPlaylists } = storeToRefs(playStore)
+
+// 右键菜单数据
+const dropdownX = ref<number>(0)
+const dropdownY = ref<number>(0)
+const dropdownShow = ref<boolean>(false)
+const dropdownOptions = ref<DropdownOption[]>([])
+
+function renderIcon(icon: FunctionalComponent) {
+  return () => h(icon, { class: 'size-4' })
+}
+
+// 开启右键菜单
+function openDropdown(e: MouseEvent, playListId: string) {
+  try {
+    e.preventDefault()
+    dropdownShow.value = false
+    // 是否为用户歌单
+    const isUserPlaylist = !!playListId && customPlaylists.value.some(pl => pl.id === playListId)
+    // 生成菜单
+    nextTick().then(() => {
+      const options: DropdownOption[] = [
+        {
+          label: '播放全部',
+          key: 'playAll',
+          icon: renderIcon(PlayIcon),
+          props: {
+            onClick() {
+              console.log('clicked play all => ')
+            },
+          },
+        },
+      ]
+      if (isUserPlaylist) {
+        options.push({
+          label: '删除歌单',
+          key: 'delete',
+          icon: renderIcon(Trash2Icon),
+          style: 'color: #e53e3e;',
+          props: {
+            onClick() {
+              console.log('clicked del => ')
+            },
+          },
+        })
+      }
+      dropdownOptions.value = options
+      // 显示菜单
+      dropdownX.value = e.clientX
+      dropdownY.value = e.clientY
+      dropdownShow.value = true
+    })
+  } catch (error) {
+    console.error('右键菜单出现异常：', error)
+    window.$message.error('右键菜单出现异常')
+  }
+}
+
+defineExpose({ openDropdown })
+</script>
+
+<template>
+  <NDropdown
+    :x="dropdownX"
+    :y="dropdownY"
+    :show="dropdownShow"
+    :options="dropdownOptions"
+    class="song-list-menu"
+    placement="bottom-start"
+    trigger="manual"
+    size="large"
+    @select="dropdownShow = false"
+    @clickoutside="dropdownShow = false"
+  />
+</template>
+
+<style lang="scss">
+.delete-mata {
+  display: flex;
+}
+</style>
