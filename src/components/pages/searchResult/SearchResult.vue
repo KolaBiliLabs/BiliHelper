@@ -7,6 +7,10 @@ import Pagination from '@/components/global/Pagination.vue'
 import SongList from '@/components/global/SongList.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSearchStore } from '@/stores/searchStore'
+import { useSystemStore } from '@/stores/systemStore'
+
+const systemStore = useSystemStore()
+const { showPlayer } = storeToRefs(systemStore)
 
 const searchStore = useSearchStore()
 const { currentSearchKeyword, currentSearchResult } = storeToRefs(searchStore)
@@ -27,6 +31,7 @@ function pageChange(v: number) {
 function chooseSong(song: ISong) {
   playStore.play(song)
   playStore.addToHistory(song)
+  showPlayer.value = true
 }
 
 watchEffect(() => {
