@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
-import { CopyIcon, DeleteIcon, ListPlusIcon, MenuIcon, Play, ShareIcon } from 'lucide-vue-next'
+import { CopyIcon, ListPlusIcon, MenuIcon, Play, ShareIcon } from 'lucide-vue-next'
 import { NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
@@ -53,12 +53,16 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
         {
           key: 'playlist-add',
           label: '添加到歌单',
-          props: {
-            onClick: () => {
-              console.log('click 添加到歌单')
-            },
-          },
           icon: renderIcon(ListPlusIcon),
+          children: [
+            ...customPlaylists.value.map(cp => ({
+              key: cp.id,
+              label: cp.name,
+              props: {
+                onClick: () => playStore.addMusicToPlaylist(cp.id, song),
+              },
+            })),
+          ],
         },
         {
           key: 'line-1',
