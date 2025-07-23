@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
-import { AudioLines, PlusIcon } from 'lucide-vue-next'
+import { AudioLines, AudioLinesIcon, HeartIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next'
 import { NButton, NEllipsis, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h } from 'vue'
@@ -45,10 +45,11 @@ const menuOptions = computed<MenuOption[]>(() => [
   ...defaultPlaylists.value.map(item => ({
     label: renderMenuLabel(item.name, AudioLines),
     key: item.id,
+    icon: () => h(item.id === 'history' ? HistoryIcon : HeartIcon, { class: 'size-4' }),
   })),
   {
     type: 'divider',
-    key: 'divider-1',
+    key: 'divider',
   },
   {
     type: 'group',
@@ -70,13 +71,13 @@ const menuOptions = computed<MenuOption[]>(() => [
           },
         }),
       ]),
-    children: [
-    ],
+    children: [],
     show: !systemStore.collapsed,
   },
   ...customPlaylists.value.map(item => ({
     label: renderMenuLabel(item.name, AudioLines),
     key: item.id,
+    icon: () => h(AudioLinesIcon, { class: 'size-4' }),
   })),
 ])
 
@@ -90,18 +91,20 @@ function openCreatePlaylist() {
 </script>
 
 <template>
-  <NMenu
-    v-model:value="selectedMenuKey"
-    class="main-menu"
-    :root-indent="32"
-    :indent="12"
-    :collapsed="systemStore.collapsed"
-    :collapsed-width="systemStore.collapsedWidth"
-    :collapsed-icon-size="22"
-    :options="menuOptions"
-    @update:value="selectedMenu"
-  />
-  <CreatePlaylistModal />
+  <div>
+    <NMenu
+      v-model:value="selectedMenuKey"
+      class="main-menu"
+      :root-indent="32"
+      :indent="12"
+      :collapsed="systemStore.collapsed"
+      :collapsed-width="systemStore.collapsedWidth"
+      :collapsed-icon-size="22"
+      :options="menuOptions"
+      @update:value="selectedMenu"
+    />
+    <CreatePlaylistModal />
+  </div>
 </template>
 
 <style lang="scss" scoped>
