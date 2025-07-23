@@ -99,46 +99,6 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
             },
           ],
         },
-        {
-          key: 'line-two',
-          type: 'divider',
-        },
-        {
-          key: 'delete',
-          label: '从歌单中删除',
-          show: isUserPlaylist,
-          props: {
-            onClick: () => {
-              console.log('click delete ')
-            },
-          },
-          icon: renderIcon(DeleteIcon),
-        },
-        // {
-        //   key: 'delete',
-        //   label: '从本地磁盘中删除',
-        //   show: isLocal && !isCurrent,
-        //   props: {
-        //     onClick: () => deleteLocalSong(song, data, index),
-        //   },
-        //   icon: renderIcon('Delete'),
-        // },
-        // {
-        //   key: 'open-folder',
-        //   label: '打开歌曲所在目录',
-        //   show: isLocal,
-        //   props: {
-        //     onClick: () => window.electron.ipcRenderer.send('open-folder', song.path),
-        //   },
-        //   icon: renderIcon('SnippetFolder'),
-        // },
-        // {
-        //   key: 'download',
-        //   label: '下载歌曲',
-        //   show: !isLocal && type === 'song',
-        //   props: { onClick: () => openDownloadSong(song) },
-        //   icon: renderIcon('Download'),
-        // },
       ]
       // 显示菜单
       dropdownX.value = e.clientX

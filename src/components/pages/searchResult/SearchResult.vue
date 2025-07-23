@@ -25,6 +25,7 @@ function pageChange(v: number) {
 
 // 选择歌曲
 function chooseSong(song: ISong) {
+  playStore.play(song)
   playStore.addToHistory(song)
 }
 
