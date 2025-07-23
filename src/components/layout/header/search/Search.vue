@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SEARCH_RESULT_PAGE } from '@constants/pageId'
 import { useEventListener } from '@vueuse/core'
+import { SearchIcon } from 'lucide-vue-next'
 import { NInput } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ref, useTemplateRef } from 'vue'
@@ -80,12 +81,7 @@ useEventListener('keydown', handleSearchByCK, false)
       @focus="searchInputFocus"
     >
       <template #prefix>
-        <div
-          i-carbon:search
-          color="#ccc"
-          w-15
-          h-15
-        />
+        <SearchIcon class="size-4" />
       </template>
     </NInput>
 
