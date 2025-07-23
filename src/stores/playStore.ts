@@ -201,15 +201,20 @@ export const usePlayStore = defineStore('play', () => {
   }
 
   // 下一首
-  function playNext() {
+  function playNext(fromDel: boolean = false) {
     if (playQueue.value.length === 0) {
       // [ ] 当前播放列表为空， ui提示
       return
     }
 
+    if (fromDel) {
+      playIndexInQueue(currentIndex.value)
+    }
+
     const nextIndex = currentIndex.value < playQueue.value.length - 1 ? currentIndex.value + 1 : 0
     playIndexInQueue(nextIndex)
   }
+
   // 上一首
   function playPrev() {
     if (playQueue.value.length === 0) {
@@ -285,6 +290,7 @@ export const usePlayStore = defineStore('play', () => {
 
   // 添加到队列但不播放
   function addToQueue(song: ISong) {
+    // [ ]: 这里是否需要修改 index?
     if (!playQueue.value.find(item => item.bvid === song.bvid)) {
       playQueue.value.push(song)
     }

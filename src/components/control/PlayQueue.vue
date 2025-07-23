@@ -11,24 +11,35 @@ const systemStore = useSystemStore()
 const { showPlayQueue } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
-const { playQueue } = storeToRefs(playStore)
+const { playQueue, currentSong } = storeToRefs(playStore)
 
 // 删除歌曲
 function handleDeleteSong(song: ISong) {
-  playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
+  // [ ] 删除播放队列中的歌曲
+  if (playQueue.value.length === 1) {
+    clearQueue()
+    return
+  }
 
-  // [ ]: 删除歌曲后 播放下一首
+  // 删除的是当前歌曲
+  if (currentSong.value?.bvid === song.bvid) {
+    playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
+    playStore.playNext(true)
+  }
+
+  playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
 }
 
 // 选择歌曲
 function handleChooseSong(song: ISong) {
   playStore.play(song)
+  showPlayQueue.value = false
 }
 
 // 当进入动画结束
 async function scrollToItem() {
   await nextTick()
-  const playingItem = document.querySelector(`.item-${playStore.currentSong.bvid}`)
+  const playingItem = document.querySelector(`.item-${currentSong?.bvid}`)
 
   playingItem?.scrollIntoView({
     behavior: 'smooth',
@@ -67,13 +78,13 @@ function clearQueue() {
             class="flex-center p-2 gap-6 bg-black/50 border border-black/50 mb-3 rounded-xl cursor-pointer box-border transition-all duration-300 select-none hover:border-white/50 hover:shadow-black/10 active:scale-3d active:scale-[0.992]"
             :class="[
               `item-${song.bvid}`,
-              { 'bg-white/50': song.bvid === playStore.currentSong?.bvid },
+              { 'bg-white/50': song.bvid === currentSong?.bvid },
             ]"
             @click="handleChooseSong(song)"
           >
             <!-- 序号 -->
             <div class="px-3">
-              <MusicIcon v-if="song.bvid === playStore.currentSong.bvid" class="size-4" />
+              <MusicIcon v-if="song.bvid === currentSong?.bvid" class="size-4" />
               <NText v-else>
                 {{ idx + 1 }}
               </NText>
