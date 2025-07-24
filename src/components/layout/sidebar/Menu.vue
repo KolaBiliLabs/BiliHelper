@@ -11,6 +11,7 @@ import CreatePlaylistModal from '@/components/modals/PlaylistModal.vue'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
+import { SEARCH_RESULT_PAGE } from '@constants/pageId'
 
 const systemStore = useSystemStore()
 const { selectedMenuKey, currentPage, collapsed } = storeToRefs(systemStore)
@@ -41,9 +42,14 @@ function selectedMenu(v: string) {
   currentPage.value = v
 }
 
+// 当currentPage 切换时，同步selectedKey
 watch(() => currentPage.value, (v) => {
   // 相同则不处理
   if (selectedMenuKey.value === v) {
+    return
+  }
+
+  if(v === SEARCH_RESULT_PAGE) {
     return
   }
   selectedMenuKey.value = v
@@ -106,10 +112,16 @@ function openCreatePlaylist() {
   openPlaylistModal()
 }
 
+/**
+ * 创建歌单
+ */
 function handleCreated({ name, desc }) {
   playStore.createPlaylist(name, desc)
 }
 
+/**
+ * 更新歌单
+ */
 function handleUpdated({ id, name, desc }) {
   playStore.updatePlaylist(id, name, desc)
 }

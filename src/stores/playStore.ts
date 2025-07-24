@@ -49,7 +49,10 @@ export const usePlayStore = defineStore('play', () => {
     lruInsert(history.value, music, HISTORY_MAX, 'bvid')
   }
 
-  // 添加/移除喜欢
+  /**
+   * 切换喜欢状态 （在喜欢列表中）
+   * @param music
+   */
   function toggleLike(music: ISong) {
     const idx = liked.value.findIndex(i => i.bvid === music.bvid)
     if (idx === -1) {
@@ -59,7 +62,11 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  // 歌单管理
+  /**
+   * 创建歌单
+   * @param name
+   * @param description
+   */
   function createPlaylist(name: string, description: string) {
     const id = `custom_${Date.now()}`
     customPlaylists.value.push({
@@ -72,6 +79,10 @@ export const usePlayStore = defineStore('play', () => {
     })
   }
 
+  /**
+   * 删除歌单
+   * @param id
+   */
   function removePlaylist(id: string) {
     const idx = customPlaylists.value.findIndex(p => p.id === id)
     if (idx !== -1) {
@@ -79,6 +90,11 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
+  /**
+   * 添加歌曲到播放列表
+   * @param playlistId
+   * @param music
+   */
   function addMusicToPlaylist(playlistId: string, music: ISong) {
     const playlist = customPlaylists.value.find(p => p.id === playlistId)
     if (playlist) {
@@ -89,6 +105,11 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
+  /**
+   * 从指定歌单中移除歌曲
+   * @param playlistId
+   * @param musicId
+   */
   function removeMusicFromPlaylist(playlistId: string, musicId: string | number) {
     const playlist = customPlaylists.value.find(p => p.id === playlistId)
     if (playlist) {
@@ -100,7 +121,12 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  // 新增：编辑歌单
+  /**
+   * 编辑歌单
+   * @param id
+   * @param name
+   * @param description
+   */
   function updatePlaylist(id: string, name: string, description: string) {
     const playlist = customPlaylists.value.find(p => p.id === id)
     if (playlist) {
@@ -283,6 +309,28 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
+  /**
+   * 播放指定歌单的全部歌曲
+   * @param id
+   */
+  function playAll(id: string) {
+    const allPlaylist = [...defaultPlaylists.value, ...customPlaylists.value]
+    const playlist = allPlaylist.find(p => p.id === id)
+
+    if(!playlist?.musics.length) {
+       window.$message.info('请添加歌曲至当前歌单')
+       return
+    }
+
+    if (playlist) {
+      // 将播放队列替换为指定歌单
+      playQueue.value = playlist.musics
+
+      const firstSong = playQueue.value[0]
+      play(firstSong)
+    }
+  }
+
   // 停止
   function stop() {
     if (player) {
@@ -366,6 +414,8 @@ export const usePlayStore = defineStore('play', () => {
     clearQueue,
     addToQueue,
     pauseOrResume,
+
+    playAll
   }
 }, {
   persist: {
