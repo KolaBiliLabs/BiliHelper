@@ -34,8 +34,10 @@ function handleDeleteSong(song: ISong) {
   }
   // 删除当前歌曲
   else {
+    const isLast = currentIndex.value === playQueue.value.length - 1
     playQueue.value.splice(chooseSongIndex, 1)
-    playStore.playIndexInQueue(currentIndex.value)
+
+    playStore.playIndexInQueue(isLast ? (currentIndex.value = 0) : currentIndex.value)
   }
 }
 
