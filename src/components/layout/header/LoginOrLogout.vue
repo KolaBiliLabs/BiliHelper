@@ -1,37 +1,38 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
-import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { getUserInfoApi } from '@/api/bilibili'
+import LoginModal from '@/components/modals/LoginModal.vue'
 import { useLoginModal } from '@/hooks/useLoginModal'
 import { useAppStore } from '@/stores/appStore'
 
 const appStore = useAppStore()
-const { currentUser } = storeToRefs(appStore)
 
-console.log('currentUser.value => ', currentUser.value)
-
-const { isShowModal, openModal } = useLoginModal()
+const { openModal } = useLoginModal()
 
 const isLogin = ref(true)
 
 function logout() {
+  appStore.clearUserInfo()
   isLogin.value = false
 }
 
 function login() {
-  isLogin.value = true
+  openModal()
 }
 
 // 进入时，获取用户信息
 onMounted(async () => {
   const userInfoResponse = await getUserInfoApi()
   if (userInfoResponse.code === -101) {
-    console.log('userInfoResponse', userInfoResponse)
+    isLogin.value = false
     openModal()
-    console.log('should open modal', isShowModal.value)
   }
 })
+
+function handleSuccess() {
+  isLogin.value = true
+}
 </script>
 
 <template>
@@ -44,6 +45,7 @@ onMounted(async () => {
     >
       login
     </NButton>
+
     <NButton
       v-else
       shape="round"
@@ -52,5 +54,9 @@ onMounted(async () => {
     >
       logout
     </NButton>
+
+    <Teleport to="#modals">
+      <LoginModal @success="handleSuccess" />
+    </Teleport>
   </section>
 </template>

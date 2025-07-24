@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { NButton } from 'naive-ui'
+import { NButton, NQrCode } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import QRCode from 'qrcode'
 import QS from 'qs'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { getLoginUrlApi, verifyQrCodeApi } from '@/api/bilibili'
 import { useAppStore } from '@/stores/appStore'
 import { ELoginState, EQRCodeState } from '@/utils/enums'
@@ -31,7 +30,7 @@ async function getQRCode() {
 
   const { qrcode_key, url } = data
 
-  qrCodeImage.value = await QRCode.toDataURL(url)
+  qrCodeImage.value = url
   verifyQrCode(qrcode_key)
 }
 
@@ -101,19 +100,16 @@ async function setUserInfo(access: IAccess) {
 
   currentUser.value = user
 
-  // 我在这里打印一下，
-  console.log('🚀 ~ setUserInfo ~ currentUser:', currentUser, currentUser.value.cookie)
-
   qrCodeImage.value = ''
   loginState.value = ELoginState.未登录
   emit('success')
 }
 
-onMounted(getQRCode)
+getQRCode()
 </script>
 
 <template>
-  <div class="size-40 center">
+  <div class="size-40 flex-center">
     <h5 v-if="loginState === ELoginState.已扫码">
       扫码成功
     </h5>
@@ -126,6 +122,12 @@ onMounted(getQRCode)
     <h5 v-else-if="loginState === ELoginState.扫码登陆成功">
       登录成功
     </h5>
-    <img v-else :src="qrCodeImage" class="h-full w-full">
+    <NQrCode
+      v-else
+      :value="qrCodeImage"
+      type="canvas"
+      class="size-40!"
+      :size="138"
+    />
   </div>
 </template>

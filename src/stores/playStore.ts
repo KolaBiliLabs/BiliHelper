@@ -231,6 +231,7 @@ export const usePlayStore = defineStore('play', () => {
     } catch (error) {
       loading.value = false
       console.error('playStore => play ', error)
+      window.$message.error((error as { message: string }).message)
     }
   }
 

@@ -4,7 +4,16 @@ import { NButton, NCard, NModal } from 'naive-ui'
 import { useLoginModal } from '@/hooks/useLoginModal'
 import Qrcode from '../Qrcode.vue'
 
+const emit = defineEmits<{
+  success: []
+}>()
+
 const { isShowModal, closeModal } = useLoginModal()
+
+function handleSuccess() {
+  closeModal()
+  emit('success')
+}
 </script>
 
 <template>
@@ -16,13 +25,12 @@ const { isShowModal, closeModal } = useLoginModal()
     :closable="false"
     :close-on-esc="false"
     :style="{ boxShadow: 'none' }"
-    @update-show="(v) => console.log(v)"
   >
     <div>
       <!-- 主体部分 -->
       <NCard class="p-4 rounded-xl bg-white/50">
         <div class="mb-6 size-45 rounded-md mx-auto overflow-hidden flex-center">
-          <Qrcode class="mt-2" @success="closeModal" />
+          <Qrcode class="mt-2" @success="handleSuccess" />
         </div>
 
         <div class="text-center">
