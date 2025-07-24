@@ -3,15 +3,18 @@
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
 import type { IPlaylist } from '@/stores/playStore'
+import { HISTORY_PAGE, SEARCH_RESULT_PAGE } from '@constants/pageId'
 import { Edit2Icon, PlayIcon, Trash2Icon } from 'lucide-vue-next'
 import { NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
+import { useSystemStore } from '@/stores/systemStore'
 
 defineEmits<{ removeSong: [index: number[]] }>()
 
+const systemStore = useSystemStore()
 const playStore = usePlayStore()
 const { customPlaylists } = storeToRefs(playStore)
 
@@ -25,6 +28,28 @@ const dropdownOptions = ref<DropdownOption[]>([])
 
 function renderIcon(icon: FunctionalComponent) {
   return () => h(icon, { class: 'size-4' })
+}
+
+/**
+ * 删除歌单
+ * @param playList
+ */
+function handleDelPlayList(playList: IPlaylist) {
+  if (playList.musics.length >= 5) {
+    window.$dialog.info({
+      title: '确定删除此歌单？',
+      positiveText: '确认',
+      negativeText: '取消',
+      onPositiveClick() {
+        playStore.removePlaylist(playList.id)
+      },
+    })
+    return
+  }
+
+  playStore.removePlaylist(playList.id)
+
+  systemStore.currentPage = HISTORY_PAGE
 }
 
 // 开启右键菜单
@@ -66,9 +91,7 @@ function openDropdown(e: MouseEvent, playList: IPlaylist) {
             icon: renderIcon(Trash2Icon),
             style: 'color: #e53e3e;',
             props: {
-              onClick() {
-                console.log('clicked del => ')
-              },
+              onClick: () => handleDelPlayList(playList),
             },
           },
         )

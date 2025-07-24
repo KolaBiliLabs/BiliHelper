@@ -5,7 +5,7 @@ import type { IPlaylist } from '@/stores/playStore'
 import { AudioLines, AudioLinesIcon, HeartIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next'
 import { NButton, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { computed, h, useTemplateRef } from 'vue'
+import { computed, h, useTemplateRef, watch } from 'vue'
 import PlayListMenu from '@/components/menus/PlayListMenu.vue'
 import CreatePlaylistModal from '@/components/modals/PlaylistModal.vue'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
@@ -40,6 +40,14 @@ function renderIcon(icon: Component) {
 function selectedMenu(v: string) {
   currentPage.value = v
 }
+
+watch(() => currentPage.value, (v) => {
+  // 相同则不处理
+  if (selectedMenuKey.value === v) {
+    return
+  }
+  selectedMenuKey.value = v
+})
 
 // 菜单项
 const menuOptions = computed<MenuOption[]>(() => [

@@ -1,3 +1,4 @@
+import { HISTORY_PAGE } from '@constants/pageId'
 import { defineStore } from 'pinia'
 
 type Theme = 'light' | 'dark'
@@ -19,14 +20,14 @@ interface SystemStore {
 
 export const useSystemStore = defineStore('system', {
   state: (): SystemStore => ({
-    selectedMenuKey: 'history',
+    selectedMenuKey: HISTORY_PAGE,
     siderWidth: 220,
     themeType: 'dark',
     searchFocus: false,
     collapsed: false,
     collapsedWidth: 64,
     fullScreen: false,
-    currentPage: 'playList',
+    currentPage: HISTORY_PAGE,
     showPlayer: false,
     showPlayQueue: false,
   }),

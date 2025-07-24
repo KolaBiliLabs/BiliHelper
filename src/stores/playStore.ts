@@ -1,3 +1,4 @@
+import { HISTORY_PAGE, LIKED_PAGE } from '@constants/pageId'
 import { Howl } from 'howler'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -34,8 +35,8 @@ export const usePlayStore = defineStore('play', () => {
 
   // 默认歌单
   const defaultPlaylists = computed<IPlaylist[]>(() => [
-    { id: 'history', name: '最近播放', description: '最近播放的歌曲', musics: history.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
-    { id: 'liked', name: '我喜欢的', description: '我喜欢的歌曲', musics: liked.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
+    { id: HISTORY_PAGE, name: '最近播放', description: '最近播放的歌曲', musics: history.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
+    { id: LIKED_PAGE, name: '我喜欢的', description: '我喜欢的歌曲', musics: liked.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
   ])
 
   // 其他自定义歌单
