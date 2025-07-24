@@ -11,23 +11,32 @@ const systemStore = useSystemStore()
 const { showPlayQueue } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
-const { playQueue, currentSong } = storeToRefs(playStore)
+const { playQueue, currentSong, currentIndex } = storeToRefs(playStore)
 
 // 删除歌曲
 function handleDeleteSong(song: ISong) {
   // [ ] 删除播放队列中的歌曲
   if (playQueue.value.length === 1) {
     clearQueue()
-    return
   }
 
-  // 删除的是当前歌曲
-  if (currentSong.value?.bvid === song.bvid) {
-    playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
-    playStore.playNext(true)
-  }
+  // 选中歌曲的 idx
+  const chooseSongIndex = playQueue.value.findIndex(pq => pq.bvid === song.bvid)
 
-  playQueue.value = playQueue.value.filter(s => s.bvid !== song.bvid)
+  // 删除的歌曲位于当前播放歌曲之前
+  if (chooseSongIndex < currentIndex.value) {
+    playQueue.value.splice(chooseSongIndex, 1)
+    currentIndex.value--
+  }
+  // 删除的歌曲位于当前播放歌曲之后
+  else if (chooseSongIndex > currentIndex.value) {
+    playQueue.value.splice(chooseSongIndex, 1)
+  }
+  // 删除当前歌曲
+  else {
+    playQueue.value.splice(chooseSongIndex, 1)
+    playStore.playIndexInQueue(currentIndex.value)
+  }
 }
 
 // 选择歌曲
@@ -47,6 +56,7 @@ async function scrollToItem() {
   })
 }
 
+// 清空播放队列
 function clearQueue() {
   playStore.clearQueue()
   showPlayQueue.value = false

@@ -111,7 +111,7 @@ export const usePlayStore = defineStore('play', () => {
    * @param musicId
    */
   function removeMusicFromPlaylist(playlistId: string, musicId: string | number) {
-    const playlist = [...defaultPlaylists.value,...customPlaylists.value].find(p => p.id === playlistId)
+    const playlist = [...defaultPlaylists.value, ...customPlaylists.value].find(p => p.id === playlistId)
     if (playlist) {
       const idx = playlist.musics.findIndex(i => i.bvid === musicId)
       if (idx !== -1) {
@@ -273,8 +273,9 @@ export const usePlayStore = defineStore('play', () => {
 
     currentIndex.value = index
 
-    if (playQueue.value[currentIndex.value]) {
-      play(playQueue.value[currentIndex.value])
+    const song = playQueue.value[currentIndex.value]
+    if (song) {
+      play(song)
     }
   }
 
@@ -317,14 +318,14 @@ export const usePlayStore = defineStore('play', () => {
     const allPlaylist = [...defaultPlaylists.value, ...customPlaylists.value]
     const playlist = allPlaylist.find(p => p.id === id)
 
-    if(!playlist?.musics.length) {
-       window.$message.info('请添加歌曲至当前歌单')
-       return
+    if (!playlist?.musics.length) {
+      window.$message.info('请添加歌曲至当前歌单')
+      return
     }
 
     if (playlist) {
       // 将播放队列替换为指定歌单
-      playQueue.value = playlist.musics
+      playQueue.value = [...playlist.musics]
 
       const firstSong = playQueue.value[0]
       play(firstSong)
@@ -408,6 +409,7 @@ export const usePlayStore = defineStore('play', () => {
     play,
     playNext,
     playPrev,
+    playIndexInQueue,
     pause,
     resume,
     stop,
@@ -415,7 +417,7 @@ export const usePlayStore = defineStore('play', () => {
     addToQueue,
     pauseOrResume,
 
-    playAll
+    playAll,
   }
 }, {
   persist: {
