@@ -8,7 +8,7 @@ import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 
 const systemStore = useSystemStore()
-const { showPlayQueue } = storeToRefs(systemStore)
+const { showPlayQueue, showPlayer } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
 const { playQueue, currentSong, currentIndex } = storeToRefs(playStore)
@@ -62,6 +62,7 @@ async function scrollToItem() {
 function clearQueue() {
   playStore.clearQueue()
   showPlayQueue.value = false
+  showPlayer.value = false
 }
 </script>
 
