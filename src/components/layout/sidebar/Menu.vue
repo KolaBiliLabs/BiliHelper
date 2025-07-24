@@ -2,16 +2,16 @@
 import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
 import type { IPlaylist } from '@/stores/playStore'
+import { SEARCH_RESULT_PAGE } from '@constants/pageId'
 import { AudioLines, AudioLinesIcon, HeartIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next'
 import { NButton, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h, useTemplateRef, watch } from 'vue'
 import PlayListMenu from '@/components/menus/PlayListMenu.vue'
-import CreatePlaylistModal from '@/components/modals/PlaylistModal.vue'
+import PlaylistModal from '@/components/modals/PlaylistModal.vue'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import { SEARCH_RESULT_PAGE } from '@constants/pageId'
 
 const systemStore = useSystemStore()
 const { selectedMenuKey, currentPage, collapsed } = storeToRefs(systemStore)
@@ -49,7 +49,7 @@ watch(() => currentPage.value, (v) => {
     return
   }
 
-  if(v === SEARCH_RESULT_PAGE) {
+  if (v === SEARCH_RESULT_PAGE) {
     return
   }
   selectedMenuKey.value = v
@@ -142,7 +142,9 @@ function handleUpdated({ id, name, desc }) {
     />
 
     <!-- 创建歌单 modal -->
-    <CreatePlaylistModal @created="handleCreated" @updated="handleUpdated" />
+    <Teleport to="#modals">
+      <PlaylistModal @created="handleCreated" @updated="handleUpdated" />
+    </Teleport>
 
     <!-- 歌单 右键菜单 -->
     <PlayListMenu ref="playListMenuRef" />
