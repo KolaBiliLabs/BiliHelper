@@ -40,7 +40,7 @@ function enableFullscreen() {
 
     <NSpace vertical justify="center">
       <div class="flex items-center gap-2">
-        <NMarquee v-if="data" :key="data.title">
+        <NMarquee v-if="data" :key="data.title" class="max-w-[200px]">
           <template #default>
             <div v-html="data.title" />
           </template>
