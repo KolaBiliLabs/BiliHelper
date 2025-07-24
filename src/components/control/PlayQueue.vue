@@ -39,7 +39,7 @@ function handleChooseSong(song: ISong) {
 // 当进入动画结束
 async function scrollToItem() {
   await nextTick()
-  const playingItem = document.querySelector(`.item-${currentSong?.bvid}`)
+  const playingItem = document.querySelector(`.item-${currentSong.value?.bvid}`)
 
   playingItem?.scrollIntoView({
     behavior: 'smooth',
