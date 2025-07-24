@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { NButton, NCard, NInput, NModal } from 'naive-ui'
 import { ref, watch } from 'vue'
-import { useCreatePlaylistModal } from '@/hooks/usePlaylistModal'
+import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 
 const emit = defineEmits<{
   created: [props: { name: string, desc: string }]
   updated: [props: { id: string, name: string, desc: string }]
 }>()
 
-const { isShowModal, isEdit, editData, closeModal } = useCreatePlaylistModal()
+const { isShowModal, isEdit, editData, closeModal } = usePlaylistModal()
 
 const playlistName = ref('')
 const playlistDesc = ref('')

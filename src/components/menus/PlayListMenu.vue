@@ -2,16 +2,20 @@
 <script setup lang="ts">
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
-import { PlayIcon, Trash2Icon } from 'lucide-vue-next'
+import type { IPlaylist } from '@/stores/playStore'
+import { Edit2Icon, PlayIcon, Trash2Icon } from 'lucide-vue-next'
 import { NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
+import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 
 defineEmits<{ removeSong: [index: number[]] }>()
 
 const playStore = usePlayStore()
 const { customPlaylists } = storeToRefs(playStore)
+
+const { openModal: openPlayListModal } = usePlaylistModal()
 
 // 右键菜单数据
 const dropdownX = ref<number>(0)
@@ -24,12 +28,12 @@ function renderIcon(icon: FunctionalComponent) {
 }
 
 // 开启右键菜单
-function openDropdown(e: MouseEvent, playListId: string) {
+function openDropdown(e: MouseEvent, playList: IPlaylist) {
   try {
     e.preventDefault()
     dropdownShow.value = false
     // 是否为用户歌单
-    const isUserPlaylist = !!playListId && customPlaylists.value.some(pl => pl.id === playListId)
+    const isUserPlaylist = !!playList.id && customPlaylists.value.find(pl => pl.id === playList.id)
     // 生成菜单
     nextTick().then(() => {
       const options: DropdownOption[] = [
@@ -45,17 +49,29 @@ function openDropdown(e: MouseEvent, playListId: string) {
         },
       ]
       if (isUserPlaylist) {
-        options.push({
-          label: '删除歌单',
-          key: 'delete',
-          icon: renderIcon(Trash2Icon),
-          style: 'color: #e53e3e;',
-          props: {
-            onClick() {
-              console.log('clicked del => ')
+        options.push(
+          {
+            label: '修改歌单',
+            key: 'update',
+            icon: renderIcon(Edit2Icon),
+            props: {
+              onClick() {
+                openPlayListModal(true, { id: playList.id, name: playList.name, desc: playList.description })
+              },
             },
           },
-        })
+          {
+            label: '删除歌单',
+            key: 'delete',
+            icon: renderIcon(Trash2Icon),
+            style: 'color: #e53e3e;',
+            props: {
+              onClick() {
+                console.log('clicked del => ')
+              },
+            },
+          },
+        )
       }
       dropdownOptions.value = options
       // 显示菜单

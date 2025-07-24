@@ -8,7 +8,7 @@ import { storeToRefs } from 'pinia'
 import { computed, h, useTemplateRef } from 'vue'
 import PlayListMenu from '@/components/menus/PlayListMenu.vue'
 import CreatePlaylistModal from '@/components/modals/PlaylistModal.vue'
-import { useCreatePlaylistModal } from '@/hooks/usePlaylistModal'
+import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 
@@ -18,20 +18,23 @@ const { selectedMenuKey, currentPage, collapsed } = storeToRefs(systemStore)
 const playStore = usePlayStore()
 const { defaultPlaylists, customPlaylists } = storeToRefs(playStore)
 
-const { openModal: openCreatePlaylistModal } = useCreatePlaylistModal()
+const { openModal: openPlaylistModal } = usePlaylistModal()
 const playListMenuRef = useTemplateRef('playListMenuRef')
 
-function renderMenuLabel(playList: IPlaylist, icon: Component) {
+function renderMenuLabel(playList: IPlaylist) {
   return () =>
     h('div', {
       maxWidth: '20px',
       onContextmenu(e) {
-        playListMenuRef.value?.openDropdown(e, playList.id)
+        playListMenuRef.value?.openDropdown(e, playList)
       },
     }, {
       default: () => playList.name,
-      icon: () => h(icon, { class: 'size-5' }),
     })
+}
+
+function renderIcon(icon: Component) {
+  return () => h(icon, { class: 'size-4' })
 }
 
 function selectedMenu(v: string) {
@@ -46,12 +49,12 @@ const menuOptions = computed<MenuOption[]>(() => [
     key: 'my-playlist',
     children: [],
     show: !systemStore.collapsed,
-    icon: () => h(AudioLines, { class: 'size-4' }),
+    icon: renderIcon(AudioLines),
   },
   ...defaultPlaylists.value.map(item => ({
-    label: renderMenuLabel(item, AudioLines),
+    label: renderMenuLabel(item),
     key: item.id,
-    icon: () => h(item.id === 'history' ? HistoryIcon : HeartIcon, { class: 'size-4' }),
+    icon: renderIcon(item.id === 'history' ? HistoryIcon : HeartIcon),
   })),
   {
     type: 'divider',
@@ -60,7 +63,7 @@ const menuOptions = computed<MenuOption[]>(() => [
   {
     type: 'group',
     key: 'user-playlists',
-    icon: collapsed ? () => h(AudioLines, { class: 'size-4' }) : undefined,
+    icon: collapsed ? renderIcon(AudioLines) : undefined,
     label: () =>
       h('div', { class: 'flex items-center' }, [
         h(NText, { depth: 3 }, () => ['创建的歌单']),
@@ -70,7 +73,7 @@ const menuOptions = computed<MenuOption[]>(() => [
           round: true,
           size: 'small',
           class: 'ml-3!',
-          renderIcon: () => h(PlusIcon, { class: 'size-4' }),
+          renderIcon: renderIcon(PlusIcon),
           onclick: (event: Event) => {
             event.stopPropagation()
             openCreatePlaylist()
@@ -81,9 +84,9 @@ const menuOptions = computed<MenuOption[]>(() => [
     show: !systemStore.collapsed,
   },
   ...customPlaylists.value.map(item => ({
-    label: renderMenuLabel(item, AudioLines),
+    label: renderMenuLabel(item),
     key: item.id,
-    icon: () => h(AudioLinesIcon, { class: 'size-4' }),
+    icon: renderIcon(AudioLinesIcon),
   })),
 ])
 
@@ -92,7 +95,7 @@ const menuOptions = computed<MenuOption[]>(() => [
  * 用于触发用户创建新的播放列表的操作
  */
 function openCreatePlaylist() {
-  openCreatePlaylistModal()
+  openPlaylistModal()
 }
 
 function handleCreated({ name, desc }) {
@@ -117,6 +120,7 @@ function handleUpdated({ id, name, desc }) {
       :options="menuOptions"
       @update:value="selectedMenu"
     />
+
     <!-- 创建歌单 modal -->
     <CreatePlaylistModal @created="handleCreated" @updated="handleUpdated" />
 

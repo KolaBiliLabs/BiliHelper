@@ -22,7 +22,7 @@ function closeModal() {
   editData.value = null
 }
 
-export function useCreatePlaylistModal() {
+export function usePlaylistModal() {
   return {
     isShowModal,
     isEdit,
