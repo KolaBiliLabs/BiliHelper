@@ -2,14 +2,12 @@
 import { NImage, NMarquee, NSpace, NText } from 'naive-ui'
 import { ref } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
-import { useSystemStore } from '@/stores/systemStore'
 import Like from '../global/Like.vue'
 
 defineProps<{
   data?: ISong
 }>()
 
-const systemStore = useSystemStore()
 const playStore = usePlayStore()
 
 // 用于显示全屏按钮
@@ -22,7 +20,7 @@ function enableFullscreen() {
 </script>
 
 <template>
-  <div class="px-3 flex items-center select-none" @dblclick.stop="systemStore.fullScreen = true">
+  <div class="px-3 flex items-center select-none">
     <div
       class="flex-none size-15 mr-2 rounded-lg overflow-hidden"
       @mouseenter="isShowOpenFull = true"
