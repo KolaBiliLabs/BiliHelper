@@ -99,6 +99,16 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
+  // 新增：编辑歌单
+  function updatePlaylist(id: string, name: string, description: string) {
+    const playlist = customPlaylists.value.find(p => p.id === id)
+    if (playlist) {
+      playlist.name = name
+      playlist.description = description
+      playlist.updateTime = Date.now()
+    }
+  }
+
   const isPlaying = ref(false)
   const currentTime = ref(0)
   const duration = ref(0)
@@ -334,7 +344,7 @@ export const usePlayStore = defineStore('play', () => {
     removePlaylist,
     addMusicToPlaylist,
     removeMusicFromPlaylist,
-
+    updatePlaylist, // 新增
     playQueue,
     currentIndex,
     currentSong,

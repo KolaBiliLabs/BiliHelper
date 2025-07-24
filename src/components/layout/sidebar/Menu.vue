@@ -7,8 +7,8 @@ import { NButton, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h, useTemplateRef } from 'vue'
 import PlayListMenu from '@/components/menus/PlayListMenu.vue'
-import CreatePlaylistModal from '@/components/modals/CreatePlaylistModal.vue'
-import { useCreatePlaylistModal } from '@/hooks/useCreatePlaylistModal'
+import CreatePlaylistModal from '@/components/modals/PlaylistModal.vue'
+import { useCreatePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 
@@ -94,6 +94,14 @@ const menuOptions = computed<MenuOption[]>(() => [
 function openCreatePlaylist() {
   openCreatePlaylistModal()
 }
+
+function handleCreated({ name, desc }) {
+  playStore.createPlaylist(name, desc)
+}
+
+function handleUpdated({ id, name, desc }) {
+  playStore.updatePlaylist(id, name, desc)
+}
 </script>
 
 <template>
@@ -110,7 +118,7 @@ function openCreatePlaylist() {
       @update:value="selectedMenu"
     />
     <!-- 创建歌单 modal -->
-    <CreatePlaylistModal />
+    <CreatePlaylistModal @created="handleCreated" @updated="handleUpdated" />
 
     <!-- 歌单 右键菜单 -->
     <PlayListMenu ref="playListMenuRef" />

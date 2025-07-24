@@ -1,18 +1,41 @@
 <script setup lang="ts">
 import { NButton, NCard, NInput, NModal } from 'naive-ui'
-import { ref } from 'vue'
-import { useCreatePlaylistModal } from '@/hooks/useCreatePlaylistModal'
-import { usePlayStore } from '@/stores/playStore'
+import { ref, watch } from 'vue'
+import { useCreatePlaylistModal } from '@/hooks/usePlaylistModal'
 
-const { isShowModal, closeModal } = useCreatePlaylistModal()
-const playStore = usePlayStore()
+const emit = defineEmits<{
+  created: [props: { name: string, desc: string }]
+  updated: [props: { id: string, name: string, desc: string }]
+}>()
+
+const { isShowModal, isEdit, editData, closeModal } = useCreatePlaylistModal()
+
 const playlistName = ref('')
 const playlistDesc = ref('')
 
-function handleCreate() {
+// 弹窗打开时填充数据
+watch(
+  () => isShowModal.value,
+  (show) => {
+    if (show && isEdit.value && editData.value) {
+      playlistName.value = editData.value.name || ''
+      playlistDesc.value = editData.value.desc || ''
+    } else if (show && !isEdit.value) {
+      playlistName.value = ''
+      playlistDesc.value = ''
+    }
+  },
+)
+
+function handleSubmit() {
   if (playlistName.value.trim()) {
-    // 这里可以扩展 playStore.createPlaylist 支持描述
-    playStore.createPlaylist(playlistName.value.trim(), playlistDesc.value.trim())
+    if (isEdit.value && editData.value) {
+      // 编辑模式
+      emit('updated', { id: editData.value.id, name: playlistName.value.trim(), desc: playlistDesc.value.trim() })
+    } else {
+      // 新建模式
+      emit('created', { name: playlistName.value.trim(), desc: playlistDesc.value.trim() })
+    }
     playlistName.value = ''
     playlistDesc.value = ''
     closeModal()
@@ -37,13 +60,12 @@ function handleCancel() {
     <div>
       <NCard class="p-4 rounded-xl bg-white/80">
         <div class="mb-4 text-lg font-bold text-center">
-          新建歌单
+          {{ isEdit ? '编辑歌单' : '新建歌单' }}
         </div>
         <div class="mb-3 text-gray-500 text-sm text-center">
-          创建属于你自己的专属歌单，支持自定义名称和描述。
+          {{ isEdit ? '修改歌单信息' : '创建属于你自己的专属歌单，支持自定义名称和描述。' }}
         </div>
         <div class="flex items-center gap-4 mb-4">
-          <!-- 封面占位图 -->
           <div class="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-2xl">
             🎵
           </div>
@@ -65,8 +87,8 @@ function handleCancel() {
           <NButton secondary @click="handleCancel">
             取消
           </NButton>
-          <NButton type="primary" :disabled="!playlistName.trim()" @click="handleCreate">
-            创建
+          <NButton type="primary" :disabled="!playlistName.trim()" @click="handleSubmit">
+            {{ isEdit ? '保存' : '创建' }}
           </NButton>
         </div>
       </NCard>
