@@ -80,7 +80,7 @@ const menuOptions = computed<MenuOption[]>(() => [
           secondary: true,
           round: true,
           size: 'tiny',
-          class: 'ml-3!',
+          class: 'ml-12!',
           renderIcon: renderIcon(PlusIcon),
           onclick: (event: Event) => {
             event.stopPropagation()

@@ -1,6 +1,6 @@
 import type { BrowserWindow } from 'electron'
 // @ts-expect-error don't known why
-import { WINDOW_CLOSE, WINDOW_IS_MAXIMIZED, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '@constants/win'
+import { WINDOW_CLOSE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '@constants/win'
 import axios from 'axios'
 import { ipcMain } from 'electron'
 
@@ -30,14 +30,6 @@ function initMainIpcMain(win: BrowserWindow) {
 
   ipcMain.on(WINDOW_CLOSE, () => {
     win.close()
-  })
-
-  ipcMain.on(WINDOW_IS_MAXIMIZED, () => {
-    return win.isMaximized()
-  })
-
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date()).toLocaleString())
   })
 
   // 在主进程中处理网络请求

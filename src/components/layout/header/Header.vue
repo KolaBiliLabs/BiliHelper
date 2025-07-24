@@ -5,6 +5,7 @@ import { useSystemStore } from '@/stores/systemStore'
 import LoginOrLogout from './LoginOrLogout.vue'
 import Search from './search/Search.vue'
 import Theme from './Theme.vue'
+import TrafficLights from './TrafficLights.vue'
 
 const systemStore = useSystemStore()
 const { siderWidth } = storeToRefs(systemStore)
@@ -28,6 +29,8 @@ const { siderWidth } = storeToRefs(systemStore)
         <!-- 用户信息 -->
         <LoginOrLogout />
       </div>
+
+      <TrafficLights />
     </div>
   </NLayoutHeader>
 </template>
