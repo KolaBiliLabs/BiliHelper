@@ -79,7 +79,7 @@ const menuOptions = computed<MenuOption[]>(() => [
           type: 'tertiary',
           secondary: true,
           round: true,
-          size: 'small',
+          size: 'tiny',
           class: 'ml-3!',
           renderIcon: renderIcon(PlusIcon),
           onclick: (event: Event) => {
