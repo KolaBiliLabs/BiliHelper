@@ -111,7 +111,7 @@ export const usePlayStore = defineStore('play', () => {
    * @param musicId
    */
   function removeMusicFromPlaylist(playlistId: string, musicId: string | number) {
-    const playlist = customPlaylists.value.find(p => p.id === playlistId)
+    const playlist = [...defaultPlaylists.value,...customPlaylists.value].find(p => p.id === playlistId)
     if (playlist) {
       const idx = playlist.musics.findIndex(i => i.bvid === musicId)
       if (idx !== -1) {

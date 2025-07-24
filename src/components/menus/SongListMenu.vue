@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
-import { CopyIcon, ListPlusIcon, MenuIcon, Play, ShareIcon } from 'lucide-vue-next'
+import { CopyIcon, ListPlusIcon, MenuIcon, Play, ShareIcon, TrashIcon } from 'lucide-vue-next'
 import { NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
@@ -65,6 +65,16 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
           ],
         },
         {
+          key: 'playlist-remove',
+          label: '删除歌曲',
+          icon: renderIcon(TrashIcon),
+          props: {
+            onClick(){
+              playStore.removeMusicFromPlaylist(playListId, song.bvid)
+            }
+          }
+        },
+        {
           key: 'line-1',
           type: 'divider',
         },
@@ -77,7 +87,10 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
               key: 'code-name',
               label: `复制歌曲名称`,
               props: {
-                onClick: () => {},
+                onClick: () => {
+                  // [ ]: 复制歌曲名称
+                  window.$message.info('施工中')
+                },
               },
               icon: renderIcon(CopyIcon),
             },
@@ -86,7 +99,8 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
               label: `复制歌曲ID`,
               props: {
                 onClick: () => {
-                  console.log('click copy id')
+                  // [ ]: 复制歌曲id
+                  window.$message.info('施工中')
                 },
               },
               icon: renderIcon(CopyIcon),
@@ -96,7 +110,8 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
               label: `分享链接`,
               props: {
                 onClick: () => {
-                  console.log('click share ')
+                  // [ ]: 分享链接
+                  window.$message.info('施工中')
                 },
               },
               icon: renderIcon(ShareIcon),
