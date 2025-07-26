@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { getUserInfoApi } from '@/api/bilibili'
 
 export const useAppStore = defineStore('app', () => {
   // 当前用户
-  const currentUser = ref<IUser | null>(null)
+  const currentUser = ref<IUser>({} as IUser)
+
+  const isLogin = computed(() => currentUser.value.cookie)
 
   // 刷新当前用户信息
   async function refreshCurrentUser() {
@@ -24,11 +26,12 @@ export const useAppStore = defineStore('app', () => {
   }
 
   function clearUserInfo() {
-    currentUser.value = null
+    currentUser.value = {} as IUser
   }
 
   return {
     currentUser,
+    isLogin,
     refreshCurrentUser,
     clearUserInfo,
   }
