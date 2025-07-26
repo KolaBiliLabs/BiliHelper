@@ -35,7 +35,7 @@ export function getUserInfoApi(): PromiseData<IUser> {
   return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
     headers: {
-      cookie: currentUser!.cookie,
+      cookie: currentUser?.cookie,
     },
   })
 }

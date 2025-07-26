@@ -28,9 +28,6 @@ const systemStore = useSystemStore()
 
         <!-- 主体部分 -->
         <NLayoutContent :native-scrollbar="false" embedded>
-          <div class="size-20">
-            <UserAvatarDropdown :is-logged-in="false" current-theme="light" />
-          </div>
           <Content />
         </NLayoutContent>
       </NLayout>
