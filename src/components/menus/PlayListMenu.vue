@@ -3,7 +3,7 @@
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
 import type { IPlaylist } from '@/stores/playStore'
-import { HISTORY_PAGE, SEARCH_RESULT_PAGE } from '@constants/pageId'
+import { HISTORY_PAGE } from '@constants/pageId'
 import { Edit2Icon, PlayIcon, Trash2Icon } from 'lucide-vue-next'
 import { NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'

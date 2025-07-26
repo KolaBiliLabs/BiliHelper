@@ -4,8 +4,9 @@ import path, { resolve } from 'node:path'
 // @ts-ignore it's a vite plugin, don't have types
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
+// @ts-ignore it's a vite plugin, don't have types
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite'
+import { bytecodePlugin, defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig(({ command, mode }) => {
@@ -18,10 +19,14 @@ export default defineConfig(({ command, mode }) => {
   const servePort: number = Number(getEnv('VITE_SERVER_PORT') || 25884)
   return {
     main: {
+      plugins: [externalizeDepsPlugin(), bytecodePlugin()],
       build: {
-        lib: {
-          entry: resolve(__dirname, 'electron/main/index.ts'),
-          name: 'main',
+        outDir: 'dist/main',
+        publicDir: resolve(__dirname, 'public'),
+        rollupOptions: {
+          input: {
+            index: resolve(__dirname, 'electron/main/index.ts'),
+          },
         },
       },
       resolve: {
@@ -29,16 +34,17 @@ export default defineConfig(({ command, mode }) => {
           '@constants': path.resolve(__dirname, 'constants'),
         },
       },
-      plugins: [externalizeDepsPlugin()],
     },
     preload: {
+      plugins: [externalizeDepsPlugin(), bytecodePlugin()],
+      outDir: 'dist/preload',
       build: {
-        lib: {
-          entry: resolve(__dirname, 'electron/preload/index.ts'),
-          name: 'preload',
+        rollupOptions: {
+          input: {
+            index: resolve(__dirname, 'electron/preload/index.ts'),
+          },
         },
       },
-      plugins: [externalizeDepsPlugin()],
     },
     renderer: {
       root: '.',
@@ -68,8 +74,8 @@ export default defineConfig(({ command, mode }) => {
         },
       },
       build: {
-        outDir: 'dist/renderer',
-        emptyOutDir: true,
+        publicDir: resolve(__dirname, 'public'),
+        // outDir: 'dist/renderer',
         rollupOptions: {
           input: {
             index: resolve(__dirname, 'index.html'),

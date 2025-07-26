@@ -1,4 +1,5 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
+<!-- eslint-disable style/brace-style -->
 <script setup lang="ts">
 import { LocateIcon, MusicIcon, Trash2Icon, TrashIcon } from 'lucide-vue-next'
 import { NButton, NDrawer, NDrawerContent, NEmpty, NGi, NGrid, NText } from 'naive-ui'

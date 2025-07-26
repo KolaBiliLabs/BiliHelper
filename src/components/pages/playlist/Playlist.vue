@@ -18,7 +18,7 @@ const playList = computed(() => playlists.value.find(v => v.id === currentPage.v
 
 /**
  * 选择歌单中的歌曲
- * @param v 
+ * @param v
  */
 function chooseSong(v: ISong) {
   console.log('choose song in Playlist', v)

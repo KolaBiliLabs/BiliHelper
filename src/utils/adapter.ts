@@ -33,7 +33,7 @@ export function createElectronAdapter() {
         })
         .catch((error) => {
           // 构造 axios 期望的错误格式
-          const axiosError = new Error(error.message)
+          const axiosError: Error & { code?: number, response?: any, config?: any } = new Error(error.message)
           axiosError.code = error.code
           axiosError.response = error.status
             ? {

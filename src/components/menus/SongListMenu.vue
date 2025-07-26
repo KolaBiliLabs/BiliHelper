@@ -25,11 +25,12 @@ function renderIcon(icon: FunctionalComponent) {
 
 // 开启右键菜单
 function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, playListId: string) {
+  console.log(data, index)
   try {
     e.preventDefault()
     dropdownShow.value = false
     // 是否为用户歌单
-    const isUserPlaylist = !!playListId && customPlaylists.value.some(pl => pl.id === playListId)
+    // const isUserPlaylist = !!playListId && customPlaylists.value.some(pl => pl.id === playListId)
     // 生成菜单
     nextTick().then(() => {
       dropdownOptions.value = [
@@ -69,10 +70,10 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
           label: '删除歌曲',
           icon: renderIcon(TrashIcon),
           props: {
-            onClick(){
+            onClick() {
               playStore.removeMusicFromPlaylist(playListId, song.bvid)
-            }
-          }
+            },
+          },
         },
         {
           key: 'line-1',

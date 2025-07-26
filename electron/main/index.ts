@@ -1,6 +1,6 @@
 /* eslint-disable node/prefer-global/process */
 import type { BrowserWindowConstructorOptions } from 'electron'
-import { join } from 'node:path'
+import path, { join } from 'node:path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
 import icon from '../../resources/icon.png?asset'
@@ -151,7 +151,8 @@ function createMainWindow() {
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
   } else {
-    mainWindow.loadFile(join(__dirname, '../../index.html'))
+    // mainWindow.loadFile(join(__dirname, '../../index.html'))
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
 
   return mainWindow
