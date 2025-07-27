@@ -1,8 +1,8 @@
 {
-  "name": "electron-app",
+  "name": "colaHelper",
   "version": "1.0.0",
-  "description": "An Electron application with Vue and TypeScript",
-  "author": "example.com",
+  "description": "A Music favorite helper for bilibili",
+  "author": "https://github/imddc",
   "homepage": "https://electron-vite.org",
   "main": "./out/main/index.js",
   "scripts": {
@@ -31,6 +31,7 @@
     "electron-log": "^5.4.1",
     "electron-updater": "^6.3.9",
     "epic-spinners": "^2.0.0",
+    "express": "^5.1.0",
     "fastify": "^5.3.3",
     "howler": "^2.2.4",
     "lucide-vue-next": "^0.517.0",
@@ -38,6 +39,7 @@
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.3.0",
     "qs": "^6.14.0",
+    "socket.io": "^4.8.1",
     "tailwindcss": "^4.1.10",
     "vue-router": "^4.5.1"
   },
@@ -46,6 +48,7 @@
     "@electron-toolkit/eslint-config-prettier": "3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@types/express": "^5.0.3",
     "@types/howler": "^2.2.12",
     "@types/node": "^22.14.1",
     "@vitejs/plugin-vue": "^5.2.3",

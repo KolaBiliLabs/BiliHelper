@@ -22,7 +22,7 @@ log.transports.file.format = '{y}-{m}-{d} {h}:{i}:{s}:{ms} {text}'
 // 本地输出
 if (!isDev) {
   log.transports.file.resolvePathFn = () =>
-    join(app.getPath('documents'), '/SPlayer/SPlayer-log.txt')
+    join(app.getPath('documents'), '/colaHelper/colaHelper-log.txt')
 } else {
   log.transports.file.level = false
 }
