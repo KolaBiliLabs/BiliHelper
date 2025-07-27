@@ -19,10 +19,9 @@ export default defineConfig(({ command, mode }) => {
   const servePort: number = Number(getEnv('VITE_SERVER_PORT') || 25884)
   return {
     main: {
-      plugins: [externalizeDepsPlugin(), bytecodePlugin()],
+      plugins: [externalizeDepsPlugin()],
+      publicDir: resolve(__dirname, 'public'),
       build: {
-        outDir: 'dist/main',
-        publicDir: resolve(__dirname, 'public'),
         rollupOptions: {
           input: {
             index: resolve(__dirname, 'electron/main/index.ts'),
@@ -37,7 +36,6 @@ export default defineConfig(({ command, mode }) => {
     },
     preload: {
       plugins: [externalizeDepsPlugin(), bytecodePlugin()],
-      outDir: 'dist/preload',
       build: {
         rollupOptions: {
           input: {
@@ -74,8 +72,6 @@ export default defineConfig(({ command, mode }) => {
         },
       },
       build: {
-        publicDir: resolve(__dirname, 'public'),
-        // outDir: 'dist/renderer',
         rollupOptions: {
           input: {
             index: resolve(__dirname, 'index.html'),
