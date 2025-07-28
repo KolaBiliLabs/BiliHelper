@@ -1,6 +1,6 @@
-import type { App } from 'electron'
+import type { App, BrowserWindow } from 'electron'
 import * as http from 'node:http' // Socket.IO 可以直接依附于 http.Server
-import Express from 'express'
+import { ipcMain } from 'electron'
 import { Server } from 'socket.io'
 import log from '../main/logger'
 
@@ -8,7 +8,7 @@ const SERVER_PORT = 25885 // 定义服务器监听端口
 // eslint-disable-next-line import/no-mutable-exports
 export let io: Server | null = null
 
-export function startSocketIOServer(app: App): void {
+export function startSocketIOServer(app: App, mainWindow: BrowserWindow): void {
   // 创建一个基本的 HTTP 服务器，Socket.IO 将依附于它
   const httpServer = http.createServer((_req, res) => {
     // 尽管 Socket.IO 依附于 HTTP 服务器，但对于浏览器插件的通信，我们主要通过 Socket.IO
@@ -33,10 +33,12 @@ export function startSocketIOServer(app: App): void {
 
       // 在这里处理来自浏览器插件的数据
       // 例如：调用 Bilibili API，或将数据转发到 Electron 的渲染进程
-      // mainWindow?.webContents.send('data-from-plugin', data);
+      ipcMain.emit('dataFromPlugin', data)
+      mainWindow.webContents.send('dataFromPlugin', data)
+      log.info('数据已发送到renderer', data)
 
       // 向浏览器插件发送确认消息
-      socket.emit('dataReceivedAck', { status: 'success', message: 'Electron 已收到您的数据' })
+      socket.emit('dataReceivedAck', { status: 'success', message: 'Electron 已收到您的数据', data })
     })
 
     // 监听 'disconnect' 事件
@@ -62,17 +64,5 @@ export function startSocketIOServer(app: App): void {
         log.log('Socket.IO 服务器已关闭')
       })
     }
-  })
-}
-
-export function startServer() {
-  const app = Express()
-  app.get('/', (_, res) => {
-    res.json({
-      name: 11,
-    })
-  })
-  app.listen(25885, () => {
-    log.info('服务启动在 25885')
   })
 }

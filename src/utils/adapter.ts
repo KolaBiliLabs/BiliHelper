@@ -17,7 +17,7 @@ export function createElectronAdapter() {
       }
 
       // 使用 electron 的 IPC 发送请求
-      window.electronAPI.httpRequest(cleanConfig)
+      window.electron.httpRequest(cleanConfig)
         .then((response) => {
           // 构造 axios 期望的响应格式
           const axiosResponse = {

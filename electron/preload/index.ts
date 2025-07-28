@@ -7,9 +7,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 // just add to the DOM global.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-
-    contextBridge.exposeInMainWorld('electronAPI', {
+    contextBridge.exposeInMainWorld('electron', {
+      ...electronAPI,
       httpRequest: config => ipcRenderer.invoke('http-request', config),
     })
   } catch (error) {

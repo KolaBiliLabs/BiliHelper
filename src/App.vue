@@ -6,6 +6,7 @@ import AppProvider from '@/components/global/AppProvider.vue'
 import Content from '@/components/global/Content.vue'
 import Header from '@/components/layout/header/Header.vue'
 import Sider from '@/components/layout/sidebar/Sidebar.vue'
+import MessageReceived from './components/global/MessageReceived.vue'
 import { useSystemStore } from './stores/systemStore'
 
 const systemStore = useSystemStore()
@@ -35,6 +36,8 @@ const systemStore = useSystemStore()
     <Control />
 
     <PlayQueue />
+
+    <MessageReceived />
   </AppProvider>
 </template>
 

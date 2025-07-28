@@ -7,6 +7,9 @@ import log from './logger'
 import { initTray } from './tray'
 import { createMainWindow } from './windows'
 
+// [ ]: 应用关闭时选择后台运行或直接退出
+// [ ]: 快捷键关闭应用时，应用不完全退出
+
 log.info('🦄 写在 ready 前')
 
 class MainProcess {
@@ -31,14 +34,8 @@ class MainProcess {
       // 创建主窗口
       this.mainWindow = createMainWindow()
 
-      if (this.mainWindow) {
-        log.info('--------------prepare to start socket --------------')
-
-        // 启动主进程服务
-        startSocketIOServer(app)
-
-        log.info('--------------start socket done --------------')
-      }
+      // 启动主进程服务
+      startSocketIOServer(app, this.mainWindow)
 
       // 处理app事件
       this.handleAppEvents()
