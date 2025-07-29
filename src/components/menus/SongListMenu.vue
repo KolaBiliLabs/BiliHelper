@@ -3,15 +3,18 @@
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
 import { CopyIcon, ListPlusIcon, MenuIcon, Play, ShareIcon, TrashIcon } from 'lucide-vue-next'
-import { NDropdown } from 'naive-ui'
+import { NButton, NDropdown, NEmpty, NSpace } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
+import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 
 defineEmits<{ removeSong: [index: number[]] }>()
 
 const playStore = usePlayStore()
 const { customPlaylists } = storeToRefs(playStore)
+
+const { openModal } = usePlaylistModal()
 
 // 右键菜单数据
 const dropdownX = ref<number>(0)
@@ -31,6 +34,31 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
     dropdownShow.value = false
     // 是否为用户歌单
     // const isUserPlaylist = !!playListId && customPlaylists.value.some(pl => pl.id === playListId)
+
+    function genAddToCustomPlaylistChildren() {
+      const haveCustomPlaylist = customPlaylists.value.length > 0
+      if (haveCustomPlaylist) {
+        return customPlaylists.value.map(cp => ({
+          key: cp.id,
+          label: cp.name,
+          props: {
+            onClick: () => playStore.addMusicToPlaylist(cp.id, song),
+          },
+        }))
+      } else {
+        return [{
+          type: 'render',
+          key: 'customPlaylistEmpty',
+          render() {
+            return h('div', { class: 'flex-center p-2' }, h(NSpace, { vertical: true }, [
+              h(NEmpty, { size: 'tiny' }, { default: '没有歌单' }),
+              h(NButton, { size: 'small', onClick: () => openModal() }, { default: () => '去创建' }),
+            ]))
+          },
+        }]
+      }
+    }
+
     // 生成菜单
     nextTick().then(() => {
       dropdownOptions.value = [
@@ -55,15 +83,7 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
           key: 'playlist-add',
           label: '添加到歌单',
           icon: renderIcon(ListPlusIcon),
-          children: [
-            ...customPlaylists.value.map(cp => ({
-              key: cp.id,
-              label: cp.name,
-              props: {
-                onClick: () => playStore.addMusicToPlaylist(cp.id, song),
-              },
-            })),
-          ],
+          children: genAddToCustomPlaylistChildren(),
         },
         {
           key: 'playlist-remove',
