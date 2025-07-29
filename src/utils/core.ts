@@ -9,3 +9,14 @@ export function handleThumb(thumb: string) {
   }
   return `https:${thumb}`
 }
+
+/**
+ * 用于延迟 timer s 执行
+ */
+export function delay(timer: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true)
+    }, timer)
+  })
+}

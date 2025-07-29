@@ -1,4 +1,4 @@
-import { HISTORY_PAGE, LIKED_PAGE } from '@constants/pageId'
+import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE } from '@constants/pageId'
 import { Howl } from 'howler'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -33,10 +33,13 @@ export const usePlayStore = defineStore('play', () => {
   // 喜欢的音乐
   const liked = ref<ISong[]>([])
 
+  const fromPlugin = ref<ISong[]>([])
+
   // 默认歌单
   const defaultPlaylists = computed<IPlaylist[]>(() => [
     { id: HISTORY_PAGE, name: '最近播放', description: '最近播放的歌曲', musics: history.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
     { id: LIKED_PAGE, name: '我喜欢的', description: '我喜欢的歌曲', musics: liked.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
+    { id: PLUGIN_PAGE, name: '来自插件', description: '从浏览器插件添加的歌曲', musics: fromPlugin.value, createTime: Date.now(), updateTime: Date.now(), isDefault: true },
   ])
 
   // 其他自定义歌单
@@ -59,6 +62,13 @@ export const usePlayStore = defineStore('play', () => {
       liked.value.unshift(music)
     } else {
       liked.value.splice(idx, 1)
+    }
+  }
+
+  function addToPlugin(music: ISong) {
+    const idx = fromPlugin.value.findIndex(i => i.bvid === music.bvid)
+    if (idx === -1) {
+      fromPlugin.value.unshift(music)
     }
   }
 
@@ -391,6 +401,7 @@ export const usePlayStore = defineStore('play', () => {
     playlists,
     addToHistory,
     toggleLike,
+    addToPlugin,
     createPlaylist,
     removePlaylist,
     addMusicToPlaylist,

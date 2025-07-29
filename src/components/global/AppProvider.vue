@@ -51,7 +51,7 @@ const themeOverrides: GlobalThemeOverrides = {
 
 <template>
   <NConfigProvider :theme="theme" :theme-overrides="themeOverrides" :locale="zhCN">
-    <NNotificationProvider to="#modals" :max="2">
+    <NNotificationProvider to="#modals" :max="5" scrollable>
       <NDialogProvider>
         <NMessageProvider :max="1" placement="bottom">
           <slot />

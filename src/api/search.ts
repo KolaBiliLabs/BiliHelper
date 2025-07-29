@@ -10,8 +10,9 @@ import { getWbi } from './wbi'
  */
 export async function getVideoDetail(bvid: string) {
   const { currentUser } = useAppStore()
-  if (!currentUser?.cookie || !currentUser?.csrf)
+  if (!currentUser?.cookie || !currentUser?.csrf) {
     throw new Error('请先登录')
+  }
 
   const { data } = await request({
     url: `${BASE_URL_PREFIX}/x/web-interface/view`,
@@ -37,8 +38,6 @@ export async function getVideoDetail(bvid: string) {
     console.error('getVideoDetail', err)
   })
 
-  console.log('🚀 ~ getVideoDetail ~ res:', res)
-
   const urls = [
     res?.data.durl[0].url,
   ]
@@ -50,11 +49,10 @@ export async function getVideoDetail(bvid: string) {
   // ]
 
   return {
+    ...data,
     name: data.title,
     urls,
-    pic: data.pic,
     artist: data.owner.name,
-    bvid: data.bvid,
   } as ISong
 }
 
@@ -119,7 +117,7 @@ export async function searchKeyword(keyword: string, page = 1, page_size = 20): 
 }
 
 /**
- * 获取搜索结果
+ * 获取搜索建议
  * @param {string} keyword 关键词
  */
 export async function searchSuggestion(keyword: string): Promise<{ result: { tag: ISuggestion[] } }> {

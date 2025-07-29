@@ -2,8 +2,8 @@
 import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
 import type { IPlaylist } from '@/stores/playStore'
-import { SEARCH_RESULT_PAGE } from '@constants/pageId'
-import { AudioLines, AudioLinesIcon, HeartIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next'
+import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE, SEARCH_RESULT_PAGE } from '@constants/pageId'
+import { ActivityIcon, AudioLines, HeartIcon, HistoryIcon, PlugIcon, PlusIcon } from 'lucide-vue-next'
 import { NButton, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h, useTemplateRef, watch } from 'vue'
@@ -37,6 +37,22 @@ function renderMenuLabel(playList: IPlaylist) {
 function renderIcon(icon: Component) {
   return () => h(icon, { class: 'size-4' })
 }
+function renderDefaultPlaylistIcon(playlistId: string) {
+  switch (playlistId) {
+    case HISTORY_PAGE: {
+      return renderIcon(HistoryIcon)
+    }
+    case LIKED_PAGE: {
+      return renderIcon(HeartIcon)
+    }
+    case PLUGIN_PAGE: {
+      return renderIcon(PlugIcon)
+    }
+    default: {
+      return renderIcon(ActivityIcon)
+    }
+  }
+}
 
 function selectedMenu(v: string) {
   currentPage.value = v
@@ -68,7 +84,7 @@ const menuOptions = computed<MenuOption[]>(() => [
   ...defaultPlaylists.value.map(item => ({
     label: renderMenuLabel(item),
     key: item.id,
-    icon: renderIcon(item.id === 'history' ? HistoryIcon : HeartIcon),
+    icon: renderDefaultPlaylistIcon(item.id),
   })),
   {
     type: 'divider',
@@ -100,7 +116,7 @@ const menuOptions = computed<MenuOption[]>(() => [
   ...customPlaylists.value.map(item => ({
     label: renderMenuLabel(item),
     key: item.id,
-    icon: renderIcon(AudioLinesIcon),
+    icon: renderIcon(ActivityIcon),
   })),
 ])
 

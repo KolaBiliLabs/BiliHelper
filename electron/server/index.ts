@@ -27,7 +27,7 @@ export function startSocketIOServer(app: App, mainWindow: BrowserWindow): void {
     log.info(`一个新的浏览器插件已连接: ${socket.id}`)
 
     // 监听来自浏览器插件的 'sendDataToElectron' 事件
-    socket.on('sendDataToElectron', (data: any) => {
+    socket.on('sendDataToElectron', async (data: any) => {
       log.info(`收到来自插件 (${socket.id}) 的数据:`, data)
 
       mainWindow.webContents.send('dataFromPlugin', data)
