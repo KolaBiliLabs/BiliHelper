@@ -1,6 +1,5 @@
 import type { App, BrowserWindow } from 'electron'
 import * as http from 'node:http' // Socket.IO 可以直接依附于 http.Server
-import { ipcMain } from 'electron'
 import { Server } from 'socket.io'
 import log from '../main/logger'
 
@@ -31,11 +30,7 @@ export function startSocketIOServer(app: App, mainWindow: BrowserWindow): void {
     socket.on('sendDataToElectron', (data: any) => {
       log.info(`收到来自插件 (${socket.id}) 的数据:`, data)
 
-      // 在这里处理来自浏览器插件的数据
-      // 例如：调用 Bilibili API，或将数据转发到 Electron 的渲染进程
-      ipcMain.emit('dataFromPlugin', data)
       mainWindow.webContents.send('dataFromPlugin', data)
-      log.info('数据已发送到renderer', data)
 
       // 向浏览器插件发送确认消息
       socket.emit('dataReceivedAck', { status: 'success', message: 'Electron 已收到您的数据', data })

@@ -61,3 +61,5 @@ coverage/ # 测试覆盖率报告
 *.tgz # npm pack 打包的文件
 
 out
+
+test-ws

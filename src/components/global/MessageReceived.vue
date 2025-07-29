@@ -1,7 +1,12 @@
 <script setup lang="ts">
-window.electron.ipcRenderer.on('dataFromPlugin', async (ev) => {
-  console.log('接收到了 => ', ev)
+window.electron.ipcRenderer.on('dataFromPlugin', (_e, ...[payload]) => {
+  console.log('接收到了 => ', payload)
+  window.$notification.info({
+    title: payload.bvId || 'no title',
+    description: 'hh',
+  })
 })
+
 </script>
 
 <template>
