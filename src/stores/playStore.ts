@@ -400,6 +400,7 @@ export const usePlayStore = defineStore('play', () => {
   return {
     history,
     liked,
+    fromPlugin,
     defaultPlaylists,
     customPlaylists,
     playlists,
