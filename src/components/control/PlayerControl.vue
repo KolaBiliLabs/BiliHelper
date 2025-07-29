@@ -36,7 +36,6 @@ function handleOpenPlayList() {
 function handlePlayAdjacentOne(type: 'prev' | 'next') {
   type === 'prev' ? playStore.playPrev() : playStore.playNext()
 }
-
 // 播放/暂停按钮点击
 function handlePlayOrPause() {
   if (!currentSong.value) {
@@ -94,17 +93,19 @@ function toggleLike(song: ISong) {
       <div class="flex-center h-full gap-3">
         <NButton
           tertiary
-          size="small"
           circle
+          :disabled="loading"
           @click="handlePlayAdjacentOne('prev')"
         >
-          <ChevronLeftIcon class="size-4" />
+          <template #icon>
+            <ChevronLeftIcon class="size-4" />
+          </template>
         </NButton>
         <NButton
           circle
           secondary
           size="large"
-          :disabled="loading || !currentSong"
+          :disabled="loading"
           @click="handlePlayOrPause"
         >
           <Transition name="fade" mode="out-in">
@@ -118,9 +119,12 @@ function toggleLike(song: ISong) {
           size="small"
           circle
           tertiary
+          :disabled="loading"
           @click="handlePlayAdjacentOne('next')"
         >
-          <ChevronRightIcon class="size-4" />
+          <template #icon>
+            <ChevronRightIcon class="size-4" />
+          </template>
         </NButton>
       </div>
 

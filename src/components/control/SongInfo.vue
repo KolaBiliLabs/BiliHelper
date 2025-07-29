@@ -34,7 +34,7 @@ function toggleLike(song: ISong) {
       @mouseleave="isShowOpenFull = false"
       @click="enableFullscreen"
     >
-      <WithSkeleton :loading="loading || !data" :width="60" :height="60">
+      <WithSkeleton :loading :width="60" :height="60">
         <NImage
           :src="data?.pic || ''"
           preview-disabled
@@ -48,7 +48,7 @@ function toggleLike(song: ISong) {
     <NSpace vertical justify="center">
       <div class="flex items-center gap-2">
         <WithSkeleton
-          :loading="loading || !data"
+          :loading
           :width="100"
           :height="16"
           transition-name="left"
@@ -59,17 +59,17 @@ function toggleLike(song: ISong) {
         </WithSkeleton>
 
         <WithSkeleton
-          :loading="loading || !data"
+          :loading
           :width="16"
           :height="16"
-          transition-name="left"
+          transition-name="left-sm"
         >
           <Like :data="data!" @toggle-like="toggleLike" />
         </WithSkeleton>
       </div>
 
       <WithSkeleton
-        :loading="loading || !data"
+        :loading
         :width="50"
         :height="16"
         transition-name="left-sm"
