@@ -11,21 +11,23 @@ withDefaults(defineProps<{
 })
 
 defineSlots<{
-  default: () => void
+  default: () => any
 }>()
 </script>
 
 <template>
   <Transition mode="out-in" name="fade">
-    <template v-if="!loading">
-      <slot />
+    <div v-if="loading">
+      <NSkeleton
+        :height
+        :width
+        class="size-15"
+        round
+        animated
+      />
+    </div>
+    <template v-else>
+      <slot name="default" />
     </template>
-    <NSkeleton
-      v-else
-      :height
-      :width
-      class="size-15"
-      round
-    />
   </Transition>
 </template>

@@ -401,6 +401,7 @@ export const usePlayStore = defineStore('play', () => {
       player.stop()
       player.unload()
       player = null
+      console.log('🦄 unloadingPlayer => ')
     }
   }
 
