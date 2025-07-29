@@ -4,7 +4,7 @@ import { LogInIcon, LogOutIcon, MoonStarIcon, SunIcon } from 'lucide-vue-next'
 import { NAvatar, NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h, onMounted } from 'vue'
-import { getUserInfoApi } from '@/api/bilibili'
+// import { getUserInfoApi } from '@/api/bilibili'
 import LoginModal from '@/components/modals/LoginModal.vue'
 import { useLoginModal } from '@/hooks/useLoginModal'
 import { useAppStore } from '@/stores/appStore'
@@ -22,17 +22,17 @@ function logout() {
 }
 // 进入时，获取用户信息
 onMounted(async () => {
-  try {
-    const userInfoResponse = await getUserInfoApi()
-    if (userInfoResponse.code === -101) {
-      openModal()
-      console.log('未登录')
-    } else {
-      console.log(' 用户信息 => ', userInfoResponse)
-    }
-  } catch {
-    console.log('it gonna be false')
-  }
+  // try {
+  //   const userInfoResponse = await getUserInfoApi()
+  //   if (userInfoResponse.code === -101) {
+  //     openModal()
+  //     console.log('未登录')
+  //   } else {
+  //     console.log(' 用户信息 => ', userInfoResponse)
+  //   }
+  // } catch {
+  //   console.log('it gonna be false')
+  // }
 })
 
 function loginSuccess() {

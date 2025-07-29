@@ -15,6 +15,7 @@
     "src/types/app.d.ts",
     "src/types/provider.d.ts",
     "src/**/*",
+    "src/utils/*",
     "constants/**/*"
   ]
 }
