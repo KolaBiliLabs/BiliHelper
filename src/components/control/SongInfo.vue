@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { NImage, NMarquee, NSpace, NText } from 'naive-ui'
 import { ref } from 'vue'
-import { usePlayStore } from '@/stores/playStore'
+import WithSkeleton from '@/components/global/WithSkeleton.vue'
 import Like from '../global/Like.vue'
 
 defineProps<{
   data?: ISong
+  loading: boolean
 }>()
 
-const playStore = usePlayStore()
+const emit = defineEmits<{
+  toggleLike: [song: ISong]
+}>()
 
 // 用于显示全屏按钮
 const isShowOpenFull = ref(false)
@@ -16,6 +19,10 @@ const isShowOpenFull = ref(false)
 function enableFullscreen() {
   console.log('enable fullscreen')
   // systemStore.fullScreen = true
+}
+
+function toggleLike(song: ISong) {
+  emit('toggleLike', song)
 }
 </script>
 
@@ -27,30 +34,48 @@ function enableFullscreen() {
       @mouseleave="isShowOpenFull = false"
       @click="enableFullscreen"
     >
-      <NImage
-        :src="data?.pic || ''"
-        preview-disabled
-        class="size-full"
-        lazy
-        object-fit="cover"
-      />
+      <WithSkeleton :loading="loading || !data" :width="60" :height="60">
+        <NImage
+          :src="data?.pic || ''"
+          preview-disabled
+          class="size-full"
+          lazy
+          object-fit="cover"
+        />
+      </WithSkeleton>
     </div>
 
     <NSpace vertical justify="center">
       <div class="flex items-center gap-2">
-        <NMarquee v-if="data" :key="data.title" class="max-w-[200px]">
-          <template #default>
-            <div v-html="data.title" />
-          </template>
-        </NMarquee>
+        <WithSkeleton
+          :loading="loading || !data"
+          :width="100"
+          :height="16"
+          transition-name="left"
+        >
+          <NMarquee>
+            <div><span v-html="data?.title" /></div>
+          </NMarquee>
+        </WithSkeleton>
 
-        <Transition name="fade" mode="out-in">
-          <Like v-if="data" :data @toggle-like="() => data && playStore.toggleLike(data)" />
-        </Transition>
+        <WithSkeleton
+          :loading="loading || !data"
+          :width="16"
+          :height="16"
+          transition-name="left"
+        >
+          <Like :data="data!" @toggle-like="toggleLike" />
+        </WithSkeleton>
       </div>
-      <NText>
-        {{ data?.author }}
-      </NText>
+
+      <WithSkeleton
+        :loading="loading || !data"
+        :width="50"
+        :height="16"
+        transition-name="left-sm"
+      >
+        <NText>  {{ data?.author }}</NText>
+      </WithSkeleton>
     </NSpace>
   </div>
 </template>

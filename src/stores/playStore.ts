@@ -183,10 +183,12 @@ export const usePlayStore = defineStore('play', () => {
     try {
       // 获取音频播放地址
       loading.value = true
-      const songDetail = await getVideoDetail(song.bvid)
 
       // 停止并卸载上一个音频
       unloadPlayer()
+
+      // 获取即将播放的歌曲
+      const songDetail = await getVideoDetail(song.bvid)
 
       // 取第一个可用 url
       const url = songDetail.urls?.[0]
@@ -199,19 +201,20 @@ export const usePlayStore = defineStore('play', () => {
         src: [url],
         html5: true,
         volume: volume.value,
-        onload() {
-          // 加载完成后取消loading
-          loading.value = false
-        },
         onend: () => {
           playNext()
         },
-        onplay: () => {
-          // 加载完成后取消loading
+        onload() {
           loading.value = false
-
+        },
+        onplay: () => {
+          loading.value = false
           isPlaying.value = true
           duration.value = player?.duration() || 0
+          currentTime.value = player?.seek() as number
+
+          console.log('start playing => ', player?.duration(), player?.seek(), loading.value)
+
           // 定时刷新 currentTime
           if (timer) {
             clearInterval(timer)
@@ -251,6 +254,10 @@ export const usePlayStore = defineStore('play', () => {
 
   /// 重置播放器的状态
   function resetPlayerState() {
+    if (player) {
+      player.seek(0)
+      player.stop()
+    }
     console.log('cleanup => ')
     currentTime.value = 0
   }

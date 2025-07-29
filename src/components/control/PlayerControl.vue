@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import Loading from '../global/Loading.vue'
+import WithSkeleton from '../global/WithSkeleton.vue'
 import SongInfo from './SongInfo.vue'
 import Volume from './Volume.vue'
 
@@ -51,6 +52,16 @@ function formatSongTime(seconds: number): string {
   const s = Math.floor(seconds % 60)
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
+
+/**
+ * 切换喜欢
+ */
+function toggleLike(song: ISong) {
+  if (!song) {
+    return
+  }
+  playStore.toggleLike(song)
+}
 </script>
 
 <template>
@@ -77,7 +88,7 @@ function formatSongTime(seconds: number): string {
 
     <div class="grid grid-cols-3 items-center h-full gap-2.5">
       <!-- 歌曲信息 -->
-      <SongInfo :data="currentSong" />
+      <SongInfo :data="currentSong" :loading @toggle-like="toggleLike" />
 
       <!-- 播放器 -->
       <div class="flex-center h-full gap-3">
@@ -93,6 +104,7 @@ function formatSongTime(seconds: number): string {
           circle
           secondary
           size="large"
+          :disabled="loading || !currentSong"
           @click="handlePlayOrPause"
         >
           <Transition name="fade" mode="out-in">
@@ -113,13 +125,15 @@ function formatSongTime(seconds: number): string {
       </div>
 
       <!-- 菜单 -->
-      <div class="px-2 flex items-center justify-end h-full">
+      <div class="px-2 flex items-center justify-end h-full gap-3">
         <!-- 歌曲进度 -->
-        <div class="text-gray-400 mr-6 flex-center select-none">
-          <span class="mx-1">{{ formatSongTime(currentTime) }}</span>
-          <span class="mx-1">/</span>
-          <span class="mx-1">{{ formatSongTime(duration) }}</span>
-        </div>
+        <WithSkeleton :loading :width="110" :height="25">
+          <div class="text-gray-400 flex-center select-none space-x-1">
+            <span>{{ formatSongTime(currentTime) }}</span>
+            <span>/</span>
+            <span>{{ formatSongTime(duration) }}</span>
+          </div>
+        </WithSkeleton>
 
         <!-- 音量调节 -->
         <Volume />
@@ -128,7 +142,6 @@ function formatSongTime(seconds: number): string {
         <NButton
           circle
           secondary
-          style="margin-left: 10px"
           @click="handleOpenPlayList"
         >
           <ListIcon class="size-4" />
