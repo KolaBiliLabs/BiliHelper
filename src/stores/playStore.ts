@@ -167,6 +167,7 @@ export const usePlayStore = defineStore('play', () => {
     // [x] cleanup 上一首歌 并初始化状态
     resetPlayerState()
 
+    // 插入到播放队列
     const idx = playQueue.value.findIndex(item => item.bvid === song.bvid)
     if (idx !== -1) {
       currentIndex.value = idx
@@ -175,6 +176,9 @@ export const usePlayStore = defineStore('play', () => {
       playQueue.value.unshift(song)
       currentIndex.value = 0
     }
+
+    // 添加到历史记录
+    addToHistory(song)
 
     try {
       // 获取音频播放地址
