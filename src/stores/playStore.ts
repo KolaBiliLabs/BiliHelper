@@ -1,3 +1,4 @@
+import { LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE } from '@constants/ipcChannels'
 import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE } from '@constants/pageId'
 import { Howl } from 'howler'
 import { defineStore } from 'pinia'
@@ -47,10 +48,22 @@ export const usePlayStore = defineStore('play', () => {
 
   const playlists = computed(() => [...defaultPlaylists.value, ...customPlaylists.value])
 
-  // 添加到历史（LRU）
-  function addToHistory(music: ISong) {
-    lruInsert(history.value, music, HISTORY_MAX, 'bvid')
-  }
+  const isPlaying = ref(false)
+  const currentTime = ref(0)
+  const duration = ref(0)
+  const volume = ref(1)
+  const loading = ref(false)
+
+  let player: Howl | null = null
+  let timer: ReturnType<typeof setInterval> | null = null
+
+  // 播放队列
+  const playQueue = ref<ISong[]>([])
+  // 当前播放索引
+  const currentIndex = ref<number>(-1)
+
+  // 当前歌曲
+  const currentSong = computed(() => playQueue.value[currentIndex.value] || null)
 
   /**
    * 切换喜欢状态 （在喜欢列表中）
@@ -63,8 +76,20 @@ export const usePlayStore = defineStore('play', () => {
     } else {
       liked.value.splice(idx, 1)
     }
+    // 更新托盘喜欢状态
+    if (currentSong.value && currentSong.value.bvid === music.bvid) {
+      window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, idx === -1)
+    }
   }
 
+  // 添加到历史（LRU）
+  function addToHistory(music: ISong) {
+    lruInsert(history.value, music, HISTORY_MAX, 'bvid')
+  }
+
+  /**
+   * @description 添加到插件列表
+   */
   function addToPlugin(music: ISong) {
     const idx = fromPlugin.value.findIndex(i => i.bvid === music.bvid)
     if (idx === -1) {
@@ -146,22 +171,6 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  const isPlaying = ref(false)
-  const currentTime = ref(0)
-  const duration = ref(0)
-  const volume = ref(1)
-  const loading = ref(false)
-
-  let player: Howl | null = null
-  let timer: ReturnType<typeof setInterval> | null = null
-
-  // 播放队列
-  const playQueue = ref<ISong[]>([])
-  // 当前播放索引
-  const currentIndex = ref<number>(-1)
-  // 当前歌曲
-  const currentSong = computed(() => playQueue.value[currentIndex.value] || null)
-
   // 播放指定歌曲（可选：插入到队列/直接播放）
   async function play(song: ISong) {
     // [x] cleanup 上一首歌 并初始化状态
@@ -179,6 +188,9 @@ export const usePlayStore = defineStore('play', () => {
 
     // 添加到历史记录
     addToHistory(song)
+
+    window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, liked.value.find(l => l.bvid === currentSong.value.bvid) !== undefined)
+    window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
 
     try {
       // 获取音频播放地址
@@ -306,6 +318,7 @@ export const usePlayStore = defineStore('play', () => {
     if (player && isPlaying.value) {
       player.pause()
       isPlaying.value = false
+      window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, false)
       if (timer) {
         clearInterval(timer)
       }
@@ -317,6 +330,7 @@ export const usePlayStore = defineStore('play', () => {
     if (player && !isPlaying.value) {
       player.play()
       isPlaying.value = true
+      window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
     }
   }
 
@@ -325,9 +339,11 @@ export const usePlayStore = defineStore('play', () => {
       if (isPlaying.value) {
         player.pause()
         isPlaying.value = false
+        window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, false)
       } else {
         player.play()
         isPlaying.value = true
+        window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
       }
     }
   }
@@ -363,6 +379,7 @@ export const usePlayStore = defineStore('play', () => {
       }
     }
     isPlaying.value = false
+    window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, false)
   }
 
   // 清空队列
@@ -443,6 +460,10 @@ export const usePlayStore = defineStore('play', () => {
     pauseOrResume,
 
     playAll,
+
+    hasPlayer() {
+      return player !== null
+    },
   }
 }, {
   persist: {

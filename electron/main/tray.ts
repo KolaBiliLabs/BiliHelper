@@ -1,9 +1,13 @@
 import type { BrowserWindow, MenuItemConstructorOptions } from 'electron'
+import type { PLAY_STATUS_LOADING } from '../../constants/playStatus'
 import { join } from 'node:path'
 import { app, Menu, nativeImage, Tray } from 'electron'
+import { LIKE_STATUS_CHANGE, PLAY_NEXT, PLAY_PREV } from '../../constants/ipcChannels'
+import { PLAY_STATUS_PAUSE, PLAY_STATUS_PLAY } from '../../constants/playStatus'
+import log from './logger'
 import { appName, isWin } from './utils'
 
-type PlayState = 'play' | 'pause' | 'loading'
+type PlayState = typeof PLAY_STATUS_PLAY | typeof PLAY_STATUS_PAUSE | typeof PLAY_STATUS_LOADING
 
 // 全局数据
 let playState: PlayState = 'pause'
@@ -12,6 +16,10 @@ let likeSong: boolean = false
 // 托盘图标
 function trayIcon(filename: string) {
   return nativeImage.createFromPath(join(__dirname, `../../resources/${filename}`))
+}
+
+function isPause() {
+  return playState === PLAY_STATUS_PAUSE
 }
 
 function createTrayMenu(mainWindow: BrowserWindow): MenuItemConstructorOptions[] {
@@ -29,22 +37,31 @@ function createTrayMenu(mainWindow: BrowserWindow): MenuItemConstructorOptions[]
         console.log('-------------------- > toggle client from tray')
       },
     },
+
+    { type: 'separator' }, // 分隔符
+    {
+      id: 'toggleLikeSong',
+      label: likeSong ? '从我喜欢中移除' : '添加到我喜欢',
+      icon: showIcon(likeSong ? 'like' : 'unlike'),
+      click: () => mainWindow.webContents.send(LIKE_STATUS_CHANGE),
+    },
+
     { type: 'separator' }, // 分隔符
     {
       label: '上一首',
       icon: showIcon('prev'),
       click: () => {
         console.log('------------ > 上一首 playPrev from tray')
-        mainWindow.webContents.send('playPrev')
+        mainWindow.webContents.send(PLAY_PREV)
       },
     },
     {
       id: 'playOrPause',
-      label: playState === 'pause' ? '播放' : '暂停',
-      icon: showIcon(playState === 'pause' ? 'play' : 'pause'),
+      label: isPause() ? '播放' : '暂停',
+      icon: showIcon(isPause() ? PLAY_STATUS_PLAY : PLAY_STATUS_PAUSE),
       click: () => {
         console.log('------------ > 播放或暂停 playOrPause from tray')
-        mainWindow.webContents.send(playState === 'pause' ? 'play' : 'pause')
+        mainWindow.webContents.send(isPause() ? PLAY_STATUS_PLAY : PLAY_STATUS_PAUSE)
       },
     },
     {
@@ -53,7 +70,7 @@ function createTrayMenu(mainWindow: BrowserWindow): MenuItemConstructorOptions[]
       icon: showIcon('next'),
       click: () => {
         console.log('------------ > 下一首 playNext from tray')
-        mainWindow.webContents.send('playNext')
+        mainWindow.webContents.send(PLAY_NEXT)
       },
     },
 
@@ -72,7 +89,7 @@ function createTrayMenu(mainWindow: BrowserWindow): MenuItemConstructorOptions[]
   return menu
 }
 
-class MyTray {
+export class MyTray {
   // 窗口
   private _win: BrowserWindow
   // 托盘
@@ -145,13 +162,28 @@ class MyTray {
       this._win.focus() // 聚焦窗口
     }
   }
+
+  // 设置播放状态
+  setPlayState(state: PlayState) {
+    playState = state
+    // 更新菜单
+    this.initTrayMenu()
+  }
+
+  // 设置喜欢状态
+  setLikeState(like: boolean) {
+    likeSong = like
+    // 更新菜单
+    this.initTrayMenu()
+  }
 }
 
 export function initTray(mainWindow: BrowserWindow) {
   try {
+    log.info('🚀 Tray Process Startup')
     return new MyTray(mainWindow)
   } catch (error) {
-    console.error(error)
+    log.error('❌ Tray Process Error', error)
     return null
   }
 }

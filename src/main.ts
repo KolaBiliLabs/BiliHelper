@@ -6,11 +6,12 @@ import { initIpc } from './utils/initIpc'
 
 import './assets/main.css'
 
+// 初始化 ipc
+initIpc()
+
 function bootstrap() {
   const app = createApp(App)
   setupPinia(app)
-
-  initIpc()
 
   app.use(autoAnimatePlugin)
   app.mount('#app')

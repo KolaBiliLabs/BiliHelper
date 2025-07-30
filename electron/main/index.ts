@@ -1,4 +1,5 @@
 /* eslint-disable node/prefer-global/process */
+import type { MyTray } from './tray'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow } from 'electron'
 import { startSocketIOServer } from '../server'
@@ -14,7 +15,8 @@ log.info('🦄 写在 ready 前')
 
 class MainProcess {
   // 主窗口
-  mainWindow?: BrowserWindow = undefined
+  mainWindow: BrowserWindow | null = null
+  mainTray: MyTray | null = null
 
   constructor() {
     // 单例锁
@@ -41,10 +43,10 @@ class MainProcess {
       this.handleAppEvents()
 
       // 初始化托盘
-      initTray(this.mainWindow)
+      this.mainTray = initTray(this.mainWindow)
 
       // 注册窗口控制IPC
-      initIpcMain(this.mainWindow)
+      initIpcMain(this.mainWindow, this.mainTray)
     })
   }
 

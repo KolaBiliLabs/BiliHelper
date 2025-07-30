@@ -1,3 +1,4 @@
+import { LIKE_STATUS_CHANGE, PAUSE, PLAY, PLAY_NEXT, PLAY_PREV } from '@constants/ipcChannels'
 import { usePlayStore } from '@/stores/playStore'
 import { isElectron } from './helper'
 
@@ -8,17 +9,40 @@ export function initIpc() {
       console.log('⚠️ not electron')
       return
     }
-    const playStore = usePlayStore()
     // 播放
-    window.electron.ipcRenderer.on('play', () => playStore.play(playStore.currentSong))
+    window.electron.ipcRenderer.on(PLAY, () => {
+      const playStore = usePlayStore()
+      // 存在播放器则恢复播放
+      if (playStore.hasPlayer()) {
+        playStore.resume()
+      } else {
+        // 否则播放上次的歌曲
+        playStore.play(playStore.currentSong)
+      }
+    })
     // 暂停
-    window.electron.ipcRenderer.on('pause', () => playStore.pause())
-    // 播放或暂停
-    window.electron.ipcRenderer.on('playOrPause', () => playStore.pauseOrResume())
+    window.electron.ipcRenderer.on(PAUSE, () => {
+      const playStore = usePlayStore()
+      playStore.pause()
+    })
+    // // 播放或暂停
+    // window.electron.ipcRenderer.on('playOrPause', () => playStore.pauseOrResume())
     // 上一曲
-    window.electron.ipcRenderer.on('playPrev', () => playStore.playNext())
+    window.electron.ipcRenderer.on(PLAY_PREV, () => {
+      const playStore = usePlayStore()
+      playStore.playNext()
+    })
     // 下一曲
-    window.electron.ipcRenderer.on('playNext', () => playStore.playPrev())
+    window.electron.ipcRenderer.on(PLAY_NEXT, () => {
+      const playStore = usePlayStore()
+      playStore.playPrev()
+    })
+
+    // 切换喜欢
+    window.electron.ipcRenderer.on(LIKE_STATUS_CHANGE, () => {
+      const playStore = usePlayStore()
+      playStore.toggleLike(playStore.currentSong)
+    })
     // // 音量加
     // window.electron.ipcRenderer.on('volumeUp', () => player.setVolume('up'))
     // // 音量减
