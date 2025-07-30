@@ -4,7 +4,7 @@ import { NCard, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import Loading from '@/components/global/Loading.vue'
 import { usePlayStore } from '@/stores/playStore'
-import { handleThumb } from '@/utils/core'
+import { handleThumb } from '@/utils/helper'
 import Like from '../global/Like.vue'
 
 const props = defineProps<{
