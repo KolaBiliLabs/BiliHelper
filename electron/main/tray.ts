@@ -1,7 +1,7 @@
 import type { BrowserWindow, MenuItemConstructorOptions } from 'electron'
 import type { PLAY_STATUS_LOADING } from '../../constants/playStatus'
 import { join } from 'node:path'
-import { app, Menu, nativeImage, Tray } from 'electron'
+import { app, Menu, nativeImage, nativeTheme, Tray } from 'electron'
 import { LIKE_STATUS_CHANGE, PLAY_NEXT, PLAY_PREV } from '../../constants/ipcChannels'
 import { PLAY_STATUS_PAUSE, PLAY_STATUS_PLAY } from '../../constants/playStatus'
 import log from './logger'
@@ -24,7 +24,8 @@ function isPause() {
 
 function createTrayMenu(mainWindow: BrowserWindow): MenuItemConstructorOptions[] {
   const showIcon = (iconName: string) => {
-    return trayIcon(`tray/${iconName}.png`).resize({
+    const isDark = nativeTheme.shouldUseDarkColors
+    return trayIcon(`tray/${iconName}${isDark ? '-dark' : '-light'}.png`).resize({
       width: 16,
       height: 16,
     })

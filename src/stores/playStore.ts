@@ -76,7 +76,7 @@ export const usePlayStore = defineStore('play', () => {
     } else {
       liked.value.splice(idx, 1)
     }
-    // 更新托盘喜欢状态
+    // 同步托盘喜欢状态
     if (currentSong.value && currentSong.value.bvid === music.bvid) {
       window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, idx === -1)
     }
