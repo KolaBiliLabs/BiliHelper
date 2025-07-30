@@ -1,18 +1,18 @@
 <script setup lang="ts">
+import { WINDOW_CLOSE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '@constants/ipcChannels'
 import { SlashIcon, SquareIcon, XIcon } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
-import { winClose, winMax, winMin } from '@/utils/ipcMainEvent'
 
 function close() {
-  winClose()
+  window.electron.ipcRenderer.send(WINDOW_CLOSE)
 }
 
 function min() {
-  winMin()
+  window.electron.ipcRenderer.send(WINDOW_MINIMIZE)
 }
 
 function max() {
-  winMax()
+  window.electron.ipcRenderer.send(WINDOW_MAXIMIZE)
 }
 </script>
 
