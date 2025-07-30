@@ -7,6 +7,7 @@ import { ref } from 'vue'
 import CloseAppModal from '@/components/modals/CloseAppModal.vue'
 import { useSystemStore } from '@/stores/systemStore'
 
+// [ ] 增加设置界面, 用于管理 是否记住关闭行为
 const systemStore = useSystemStore()
 const { rememberNotAsk, closeAppMethod, showCloseAppTip } = storeToRefs(systemStore)
 
