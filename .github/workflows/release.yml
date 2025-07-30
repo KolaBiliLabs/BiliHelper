@@ -1,0 +1,38 @@
+name: Release Electron App # 流水线的名称，显示在 GitHub Actions 界面
+
+on:
+  push:
+    tags:
+      - 'v*' # 监听以 'v' 开头的标签推送，例如 v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ${{ matrix.os }} # 根据矩阵变量选择操作系统
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest] # 定义需要构建的操作系统
+        node-version: [20] # Node.js 版本，推荐使用 LTS
+    
+    steps:
+      - name: Checkout code # 步骤1: 检出仓库代码
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 是必需的，因为 electron-builder 可能需要完整的 Git 历史来获取版本信息
+          # 尤其是当你使用 `electron-builder --publish always` 时，它会尝试发布到 GitHub Release
+          fetch-depth: 0 
+
+      - name: Setup Node.js # 步骤2: 设置 Node.js 环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm' # 使用 npm 缓存依赖，如果你用 pnpm 或 yarn 请对应修改
+
+      - name: Install dependencies # 步骤3: 安装项目依赖
+        run: npm install # 或 pnpm install 或 yarn install
+
+      - name: Build Electron App # 步骤4: 构建 Electron 应用程序
+        env:
+          # GITHUB_TOKEN 是 GitHub Actions 提供的默认 token，用于认证
+          # 它拥有创建 Release 和上传资产的权限，前提是仓库权限设置正确
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run build # 或 pnpm run build 或 yarn run build
