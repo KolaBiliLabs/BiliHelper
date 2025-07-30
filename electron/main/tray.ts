@@ -33,9 +33,16 @@ function createTrayMenu(mainWindow: BrowserWindow): MenuItemConstructorOptions[]
 
   const menu: MenuItemConstructorOptions[] = [
     {
-      label: 'toggleClient',
+      label: '隐藏/显示窗口',
+      icon: showIcon('window'),
       click: () => {
-        console.log('-------------------- > toggle client from tray')
+        log.info('-------------------- > toggle client window from tray')
+        if (mainWindow.isVisible()) {
+          mainWindow.hide()
+        } else {
+          mainWindow.show()
+          mainWindow.focus()
+        }
       },
     },
 
@@ -119,10 +126,10 @@ export class MyTray {
 
   initEvents() {
     // 点击
-    this._tray.on('click', () => {
-      this._win.show()
-      this._win.focus()
-    })
+    // this._tray.on('click', () => {
+    //   this._win.show()
+    //   this._win.focus()
+    // })
 
     // 在应用即将退出时，确保托盘也被销毁
     app.on('before-quit', () => {
