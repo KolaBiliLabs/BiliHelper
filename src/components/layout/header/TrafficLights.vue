@@ -1,18 +1,43 @@
 <script setup lang="ts">
+import { WINDOW_CLOSE, WINDOW_HIDE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '@constants/ipcChannels'
 import { SlashIcon, SquareIcon, XIcon } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
-import { winClose, winMax, winMin } from '@/utils/ipcMainEvent'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import CloseAppModal from '@/components/modals/CloseAppModal.vue'
+import { useSystemStore } from '@/stores/systemStore'
 
-function close() {
-  winClose()
+// [ ] 增加设置界面, 用于管理 是否记住关闭行为
+const systemStore = useSystemStore()
+const { rememberNotAsk, closeAppMethod, showCloseAppTip } = storeToRefs(systemStore)
+
+const showCloseModal = ref(false)
+
+// 隐藏或关闭
+function hideOrClose(action: 'hide' | 'exit') {
+  if (rememberNotAsk.value) {
+    showCloseAppTip.value = false
+    closeAppMethod.value = action
+  }
+  showCloseModal.value = false
+  window.electron.ipcRenderer.send(action === 'hide' ? WINDOW_HIDE : WINDOW_CLOSE)
+}
+
+// 尝试关闭软件
+function tryClose() {
+  if (showCloseAppTip.value) {
+    showCloseModal.value = true
+  } else {
+    hideOrClose(closeAppMethod.value)
+  }
 }
 
 function min() {
-  winMin()
+  window.electron.ipcRenderer.send(WINDOW_MINIMIZE)
 }
 
 function max() {
-  winMax()
+  window.electron.ipcRenderer.send(WINDOW_MAXIMIZE)
 }
 </script>
 
@@ -47,11 +72,17 @@ function max() {
       secondary
       circle
       class="app-region-no-drag"
-      @click="close"
+      @click="tryClose"
     >
       <template #icon>
         <XIcon class="size-4" />
       </template>
     </NButton>
+
+    <CloseAppModal
+      v-model="showCloseModal"
+      @exit="hideOrClose('exit')"
+      @hide="hideOrClose('hide')"
+    />
   </div>
 </template>

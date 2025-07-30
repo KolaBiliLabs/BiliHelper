@@ -1,7 +1,7 @@
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
 import { usePlayStore } from '@/stores/playStore'
-import { delay } from '@/utils/core'
+import { delay } from '@/utils/helper'
 
 const notificationSimpleConfig = {
   duration: 1500,

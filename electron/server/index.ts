@@ -7,7 +7,7 @@ const SERVER_PORT = 25885 // 定义服务器监听端口
 // eslint-disable-next-line import/no-mutable-exports
 export let io: Server | null = null
 
-export function startSocketIOServer(app: App, mainWindow: BrowserWindow): void {
+export function startSocketIOServer(app: App, mainWindow: BrowserWindow | null): void {
   // 创建一个基本的 HTTP 服务器，Socket.IO 将依附于它
   const httpServer = http.createServer((_req, res) => {
     // 尽管 Socket.IO 依附于 HTTP 服务器，但对于浏览器插件的通信，我们主要通过 Socket.IO
@@ -30,7 +30,7 @@ export function startSocketIOServer(app: App, mainWindow: BrowserWindow): void {
     socket.on('sendDataToElectron', async (data: any) => {
       log.info(`收到来自插件 (${socket.id}) 的数据:`, data)
 
-      mainWindow.webContents.send('dataFromPlugin', data)
+      mainWindow?.webContents.send('dataFromPlugin', data)
 
       // 向浏览器插件发送确认消息
       socket.emit('dataReceivedAck', { status: 'success', message: 'Electron 已收到您的数据', data })

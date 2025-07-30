@@ -16,6 +16,10 @@ interface SystemStore {
 
   showPlayer: boolean
   showPlayQueue: boolean
+
+  rememberNotAsk: boolean
+  closeAppMethod: 'hide' | 'exit'
+  showCloseAppTip: boolean
 }
 
 export const useSystemStore = defineStore('system', {
@@ -30,6 +34,11 @@ export const useSystemStore = defineStore('system', {
     currentPage: HISTORY_PAGE,
     showPlayer: false,
     showPlayQueue: false,
+
+    // 关闭行为
+    rememberNotAsk: false,
+    closeAppMethod: 'hide',
+    showCloseAppTip: true,
   }),
   getters: {
     isDark(state) {
