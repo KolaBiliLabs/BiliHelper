@@ -1,9 +1,10 @@
 import type { BrowserWindow } from 'electron'
 import type { MyTray } from './tray'
 import axios from 'axios'
-import { ipcMain } from 'electron'
-import { LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE, WINDOW_CLOSE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE } from '../../constants/ipcChannels'
+import { app, ipcMain } from 'electron'
+import { LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE, WINDOW_CLOSE, WINDOW_HIDE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE, WINDOW_RELOAD, WINDOW_SHOW } from '../../constants/ipcChannels'
 import { PLAY_STATUS_PAUSE, PLAY_STATUS_PLAY } from '../../constants/playStatus'
+import { isDev } from './utils'
 
 /**
  * 注册窗口控制IPC
@@ -29,8 +30,35 @@ function initMainIpc(win: BrowserWindow | null, tray: MyTray | null) {
     return win?.isMaximized()
   })
 
-  ipcMain.on(WINDOW_CLOSE, () => {
+  // 关闭
+  ipcMain.on(WINDOW_CLOSE, (ev) => {
+    ev.preventDefault()
     win?.close()
+    app.quit()
+  })
+
+  // 隐藏
+  ipcMain.on(WINDOW_HIDE, () => {
+    win?.hide()
+  })
+
+  // 显示
+  ipcMain.on(WINDOW_SHOW, () => {
+    win?.show()
+  })
+
+  // 重启
+  ipcMain.on(WINDOW_RELOAD, () => {
+    app.quit()
+    app.relaunch()
+  })
+
+  // 开启控制台
+  ipcMain.on('open-dev-tools', () => {
+    win?.webContents.openDevTools({
+      title: 'Cola Bili Helper DevTools',
+      mode: isDev ? 'right' : 'detach',
+    })
   })
 
   // 音乐播放状态更改
