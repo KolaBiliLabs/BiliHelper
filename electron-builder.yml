@@ -39,7 +39,12 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  # 更新提供商
+  provider: github
+  # 自动更新检查的 URL
+  # url: https://example.com/auto-updates
+  owner: colaBiliHelper
+  repo: cola-bili-helper
+
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
