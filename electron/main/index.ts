@@ -79,10 +79,22 @@ class MainProcess {
 
     // 应用被激活 especially macos
     app.on('activate', () => {
-      const allWindows = BrowserWindow.getAllWindows()
-      if (allWindows.length) {
-        allWindows[0].focus()
+      if (this.mainWindow) { // 检查 mainWindow 是否已存在（而不是被销毁）
+        if (this.mainWindow.isDestroyed()) {
+          // 如果窗口被销毁了（比如通过 app.quit()），则重新创建
+          this.createMainWindow()
+        } else if (!this.mainWindow.isVisible()) {
+          // 如果窗口存在但不可见（被 hide() 或最小化），则显示并聚焦
+          this.mainWindow.show()
+          this.mainWindow.focus() // 确保窗口获得焦点
+          console.log('通过 Dock 或 Cmd+Tab 激活，窗口已显示并聚焦。')
+        } else {
+          // 如果窗口已经可见，只是简单地把它带到最前面并聚焦
+          this.mainWindow.focus()
+          console.log('通过 Dock 或 Cmd+Tab 激活，窗口已聚焦。')
+        }
       } else {
+        // 第一次启动应用，或者 mainWindow 被设置为 null 后，重新创建
         this.createMainWindow()
       }
     })
