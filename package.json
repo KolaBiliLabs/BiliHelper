@@ -1,9 +1,13 @@
 {
   "name": "KolaBiliHelper",
+  "productName": "KolaBiliHelper",
   "version": "0.1.0",
   "description": "An Electron-Vue application to help manage Bilibili music/video favorites.",
   "author": "imddc",
-  "homepage": "https://github.com/KolaBiliLabs/KolaBiliHelper",
+  "github": "https://github.com/KolaBiliLabs/BiliHelper",
+  "license": "MIT",
+  "repository": "github:KolaBiliLabs/BiliHelper",
+  "licenses-file": "LICENSE",
   "main": "./out/main/index.js",
   "scripts": {
     "lint": "eslint --cache .",
