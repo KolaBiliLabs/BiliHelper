@@ -114,6 +114,18 @@ class MainProcess {
     app.on('before-quit', () => {
       this.isQuit = true
     })
+
+    // 根据开发或生产环境加载不同的URL
+    if (isDev) {
+      // 在开发模式下打开开发者工具
+      // this.mainWindow?.webContents.openDevTools()
+      // console.log('Electron 处于开发模式，DevTools 已开启。')
+    } else {
+    // 在生产模式下关闭开发者工具
+      this.mainWindow?.webContents.closeDevTools() // 明确关闭
+      // 或者更简洁地，直接不调用 openDevTools()
+      console.log('Electron 处于生产模式，DevTools 已禁用。')
+    }
   }
 
   /**
@@ -155,10 +167,6 @@ class MainProcess {
       ...(process.platform === 'linux' ? { icon } : {}),
     })
     this.mainWindow = mainWindow
-
-    if (isDev) {
-    // mainWindow.webContents.openDevTools()
-    }
 
     mainWindow.on('ready-to-show', () => {
       mainWindow.show()

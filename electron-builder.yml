@@ -1,5 +1,6 @@
-appId: com.kola.bili.helper
-productName: kolaBiliHelper
+appId: com.itsimddc.KolaBiliHelper
+productName: KolaBiliHelper
+copyright: Copyright © itsimddc 2025
 directories:
   buildResources: build
 files:

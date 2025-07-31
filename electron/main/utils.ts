@@ -11,7 +11,7 @@ export const isMac = process.platform === 'darwin'
 export const isLinux = process.platform === 'linux'
 
 // 程序名称
-export const appName = app.getName() || 'colaHelper'
+export const appName = app.getName() || 'KolaBiliHelper'
 
 // 生成唯一ID
 export function getFileID(filePath: string): number {

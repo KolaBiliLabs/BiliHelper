@@ -173,6 +173,11 @@ export const usePlayStore = defineStore('play', () => {
 
   // 播放指定歌曲（可选：插入到队列/直接播放）
   async function play(song: ISong) {
+    if (!song) {
+      // 提示用户歌曲不存在 当未选择歌曲时，从托盘点击播放相关行为的按钮会导致这个 bug
+      window.$message.error('歌曲不存在')
+      return
+    }
     // [x] cleanup 上一首歌 并初始化状态
     resetPlayerState()
 

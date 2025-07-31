@@ -59,7 +59,7 @@ function toggleLike(song: ISong) {
         </WithSkeleton>
 
         <WithSkeleton
-          :loading
+          :loading="loading && !data"
           :width="16"
           :height="16"
           transition-name="left-sm"

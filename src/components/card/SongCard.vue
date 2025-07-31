@@ -28,7 +28,7 @@ function toggleLike() {
   <NCard
     hoverable
     select-none
-    :class="{ active: currentSong?.bvid === data.bvid }"
+    :class="{ active: currentSong?.bvid === data?.bvid }"
   >
     <div v-auto-animate class="flex items-center h-full gap-2 w-full group">
       <!-- 提示信息 -->
@@ -73,7 +73,14 @@ function toggleLike() {
         </div>
       </div>
 
-      <Like class="flex-none mr-4" :data @toggle-like="toggleLike" />
+      <Transition name="fade" mode="out-in">
+        <Like
+          v-if="data"
+          class="flex-none mr-4"
+          :data
+          @toggle-like="toggleLike"
+        />
+      </Transition>
 
       <NText class="text-xs w-15 flex-none">
         {{ data.duration }}
