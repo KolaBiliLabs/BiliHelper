@@ -1,5 +1,5 @@
-appId: com.cola.bili.helper
-productName: colaBiliHelper
+appId: com.kola.bili.helper
+productName: kolaBiliHelper
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: cola-bili-helper
+  executableName: kolaBiliHelper
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -43,8 +43,8 @@ publish:
   provider: github
   # 自动更新检查的 URL
   # url: https://example.com/auto-updates
-  owner: colaBiliHelper
-  repo: cola-bili-helper
+  owner: KolaBiliLabs
+  repo: BiliHelper
 
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
