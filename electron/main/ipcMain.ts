@@ -56,7 +56,7 @@ function initMainIpc(win: BrowserWindow | null, tray: MyTray | null) {
   // 开启控制台
   ipcMain.on('open-dev-tools', () => {
     win?.webContents.openDevTools({
-      title: 'Cola Bili Helper DevTools',
+      title: 'KolaBiliHelper DevTools',
       mode: isDev ? 'right' : 'detach',
     })
   })
