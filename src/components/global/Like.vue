@@ -32,7 +32,7 @@ function toggleLike() {
   >
     <NPopover>
       <template #trigger>
-        <HeartIcon :class="[{ 'fill-red-500': isLicked(data.bvid) }]" class="num-transition hover:fill-red-500 hover:scale-110" />
+        <HeartIcon :class="[{ 'fill-red-500': isLicked(data?.bvid) }]" class="num-transition hover:fill-red-500 hover:scale-110" />
       </template>
 
       添加/移除 我喜欢的歌曲

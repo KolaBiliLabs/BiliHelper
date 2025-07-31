@@ -47,17 +47,21 @@ function toggleLike(song: ISong) {
       </NEmpty>
 
       <template v-else>
-        <SongCard
+        <template
           v-for="(song, idx) in data"
-          :key="song.bvid"
-          :data="song"
-          :index="idx"
-          @dblclick="$emit('choose', song)"
-          @contextmenu.stop="
-            songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
-          "
-          @toggle-like="toggleLike"
-        />
+          :key="song?.bvid"
+        >
+          <SongCard
+            v-if="song"
+            :data="song"
+            :index="idx"
+            @dblclick="$emit('choose', song)"
+            @contextmenu.stop="
+              songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
+            "
+            @toggle-like="toggleLike"
+          />
+        </template>
       </template>
     </template>
 
