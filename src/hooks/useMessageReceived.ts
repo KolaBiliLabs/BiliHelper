@@ -1,5 +1,6 @@
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
+import { useAppStore } from '@/stores/appStore'
 import { usePlayStore } from '@/stores/playStore'
 import { delay } from '@/utils/helper'
 
@@ -15,6 +16,7 @@ const channelName = 'dataFromPlugin'
  */
 export function useMessageReceived() {
   const playStore = usePlayStore()
+  const appStore = useAppStore()
 
   onMounted(() => {
     window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]) => {
@@ -25,6 +27,11 @@ export function useMessageReceived() {
         description: '正在解析参数...',
         ...notificationSimpleConfig,
       })
+
+      if (!appStore.currentUser || !appStore.currentUser.cookie) {
+        window.$message.error('请先登录')
+        return
+      }
 
       await delay(200)
 

@@ -11,6 +11,7 @@ import { getWbi } from './wbi'
 export async function getVideoDetail(bvid: string) {
   const { currentUser } = useAppStore()
   if (!currentUser?.cookie || !currentUser?.csrf) {
+    window.$message.error('请先登录')
     throw new Error('请先登录')
   }
 
