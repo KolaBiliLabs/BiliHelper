@@ -63,3 +63,6 @@ coverage/ # 测试覆盖率报告
 out
 
 test-ws
+
+
+.cursorrules
