@@ -158,8 +158,8 @@ class MainProcess {
     const mainWindow = this.createWindow({
       width: 1200,
       height: 800,
-      minHeight: 800,
-      minWidth: 1280,
+      minWidth: 1000,
+      minHeight: 700,
       // 立即显示窗口
       show: false,
       frame: false,
@@ -194,9 +194,9 @@ class MainProcess {
   createWindow(options: BrowserWindowConstructorOptions = {}): BrowserWindow {
     const defaultOptions: BrowserWindowConstructorOptions = {
       title: appName,
-      width: 1280,
-      height: 720,
-      frame: false,
+      width: 1200,
+      height: 800,
+      frame: true,
       center: true,
       // 图标
       icon,
