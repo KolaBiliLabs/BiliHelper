@@ -1,5 +1,5 @@
 import { BASE_URL_PREFIX, LOGIN_URL_PREFIX } from '@constants/urls'
-import { useAppStore } from '@/stores/appStore'
+import { useUserStore } from '@/stores/userStore'
 import { request } from '@/utils/request'
 
 /**
@@ -30,7 +30,7 @@ export function verifyQrCodeApi(qrcode_key: string) {
  * 获取用户信息
  */
 export function getUserInfoApi(): PromiseData<IUser> {
-  const { currentUser } = useAppStore()
+  const { currentUser } = useUserStore()
 
   return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
@@ -42,7 +42,7 @@ export function getUserInfoApi(): PromiseData<IUser> {
 
 // 验证登录信息是否有效
 export async function validateLoginInfoApi() {
-  const { currentUser } = useAppStore()
+  const { currentUser } = useUserStore()
   if (!currentUser?.cookie || !currentUser?.csrf)
     return
 

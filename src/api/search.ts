@@ -1,5 +1,5 @@
 import { BASE_URL_PREFIX } from '@constants/urls'
-import { useAppStore } from '@/stores/appStore'
+import { useUserStore } from '@/stores/userStore'
 import { request } from '@/utils/request'
 import { getWbi } from './wbi'
 
@@ -9,7 +9,7 @@ import { getWbi } from './wbi'
  * @returns 视频详情
  */
 export async function getVideoDetail(bvid: string) {
-  const { currentUser } = useAppStore()
+  const { currentUser } = useUserStore()
   if (!currentUser?.cookie || !currentUser?.csrf) {
     window.$message.error('请先登录')
     throw new Error('请先登录')
@@ -67,7 +67,7 @@ function getStreamDetail(query: {
   bvid: string
   cid?: number
 }) {
-  const { currentUser } = useAppStore()
+  const { currentUser } = useUserStore()
 
   const params = {
     ...query,
@@ -104,7 +104,7 @@ export async function searchKeyword(keyword: string, page = 1, page_size = 20): 
     page,
     page_size,
   }
-  const { currentUser } = useAppStore()
+  const { currentUser } = useUserStore()
 
   const wbi = await getWbi(params)
 
@@ -122,7 +122,7 @@ export async function searchKeyword(keyword: string, page = 1, page_size = 20): 
  * @param {string} keyword 关键词
  */
 export async function searchSuggestion(keyword: string): Promise<{ result: { tag: ISuggestion[] } }> {
-  const { currentUser } = useAppStore()
+  const { currentUser } = useUserStore()
 
   return request({
     url: `https://s.search.bilibili.com/main/suggest`,

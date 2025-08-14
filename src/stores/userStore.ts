@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { getUserInfoApi } from '@/api/bilibili'
 
-export const useAppStore = defineStore('app', () => {
+export const useUserStore = defineStore('user', () => {
   // 当前用户
   const currentUser = ref<IUser>({} as IUser)
 
@@ -37,7 +37,7 @@ export const useAppStore = defineStore('app', () => {
   }
 }, {
   persist: {
-    key: '__pinia_appStore',
+    key: '__pinia_userStore',
     storage: localStorage,
   },
 })

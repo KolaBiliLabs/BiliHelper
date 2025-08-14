@@ -7,18 +7,18 @@ import { computed, h, onMounted } from 'vue'
 // import { getUserInfoApi } from '@/api/bilibili'
 import LoginModal from '@/components/modals/LoginModal.vue'
 import { useLoginModal } from '@/hooks/useLoginModal'
-import { useAppStore } from '@/stores/appStore'
 import { useSystemStore } from '@/stores/systemStore'
+import { useUserStore } from '@/stores/userStore'
 
-const appStore = useAppStore()
-const { isLogin } = storeToRefs(appStore)
+const userStore = useUserStore()
+const { isLogin } = storeToRefs(userStore)
 
 const systemStore = useSystemStore()
 const { isDark } = storeToRefs(systemStore)
 
 const { openModal, closeModal } = useLoginModal()
 function logout() {
-  appStore.clearUserInfo()
+  userStore.clearUserInfo()
 }
 // 进入时，获取用户信息
 onMounted(async () => {

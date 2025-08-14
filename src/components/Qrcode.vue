@@ -4,14 +4,14 @@ import { storeToRefs } from 'pinia'
 import QS from 'qs'
 import { ref } from 'vue'
 import { getLoginUrlApi, verifyQrCodeApi } from '@/api/bilibili'
-import { useAppStore } from '@/stores/appStore'
+import { useUserStore } from '@/stores/userStore'
 import { ELoginState, EQRCodeState } from '@/utils/enums'
 
 const emit = defineEmits<{
   success: []
 }>()
 
-const { currentUser } = storeToRefs(useAppStore())
+const { currentUser } = storeToRefs(useUserStore())
 
 const qrCodeImage = ref<string>()
 

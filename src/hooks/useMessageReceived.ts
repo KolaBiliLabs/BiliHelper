@@ -3,8 +3,8 @@ import { DATA_FROM_PLUGIN } from '@constants/ipcChannels'
 // import { NStep, NSteps } from 'naive-ui'
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
-import { useAppStore } from '@/stores/appStore'
 import { usePlayStore } from '@/stores/playStore'
+import { useUserStore } from '@/stores/userStore'
 import { delay } from '@/utils/helper'
 
 const notificationSimpleConfig = {
@@ -19,7 +19,7 @@ const channelName = DATA_FROM_PLUGIN
  */
 export function useMessageReceived() {
   const playStore = usePlayStore()
-  const appStore = useAppStore()
+  const userStore = useUserStore()
 
   onMounted(() => {
     window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]: [IUnifiedData]) => {
@@ -46,7 +46,7 @@ export function useMessageReceived() {
         ...notificationSimpleConfig,
       })
 
-      if (!appStore.currentUser || !appStore.currentUser.cookie) {
+      if (!userStore.currentUser || !userStore.currentUser.cookie) {
         window.$message.error('请先登录')
         return
       }
