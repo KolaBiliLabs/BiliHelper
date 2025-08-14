@@ -1,4 +1,6 @@
+// [ ] 替换为 steps
 import { DATA_FROM_PLUGIN } from '@constants/ipcChannels'
+// import { NStep, NSteps } from 'naive-ui'
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
 import { useAppStore } from '@/stores/appStore'
@@ -23,6 +25,20 @@ export function useMessageReceived() {
     window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]: [IUnifiedData]) => {
       console.log(payload)
       const { params } = payload
+
+      // window.$message.create(
+      //   () => h(NSteps, { size: 'small', status: 'process', current: 1 }, {
+      //     default: () => [
+      //       h(NStep, { title: '解析参数', description: '收到了来自插件的消息' }),
+      //       h(NStep, { title: '解析参数', description: '收到了来自插件的消息' }),
+      //       h(NStep, { title: '解析参数', description: '收到了来自插件的消息' }),
+      //       h(NStep, { title: '解析参数', description: '收到了来自插件的消息' }),
+      //     ],
+      //   }),
+      //   {
+      //     duration: 5000,
+      //   },
+      // )
 
       window.$notification.info({
         title: '接收到了来自插件的消息',
