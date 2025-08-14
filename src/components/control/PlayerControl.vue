@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// [ ] 进度条防抖 => 触发阶段修改为为 player 设置，ui阶段无防抖
+
 import { CatIcon, ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon } from 'lucide-vue-next'
 import { NButton, NCard, NSlider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
