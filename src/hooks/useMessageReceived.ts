@@ -20,8 +20,9 @@ export function useMessageReceived() {
   const appStore = useAppStore()
 
   onMounted(() => {
-    window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]) => {
-      const { bvId } = payload
+    window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]: [IUnifiedData]) => {
+      console.log(payload)
+      const { params } = payload
 
       window.$notification.info({
         title: '接收到了来自插件的消息',
@@ -37,14 +38,14 @@ export function useMessageReceived() {
       await delay(200)
 
       window.$notification.info({
-        title: ' 获取视频详情',
+        title: '获取视频详情',
         description: '正在获取视频详情...',
         ...notificationSimpleConfig,
       })
 
       await delay(200)
 
-      const songDetail = await getVideoDetail(bvId)
+      const songDetail = await getVideoDetail(params.bvId!)
 
       window.$notification.info({
         title: '添加到播放列表',

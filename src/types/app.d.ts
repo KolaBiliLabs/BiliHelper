@@ -66,3 +66,41 @@ interface IDemandMusic {
   uid: number
   isFree: boolean
 }
+
+interface IUnifiedData {
+  // 基础信息
+  timestamp: number
+  source: 'browser-extension'
+  version: string
+
+  // URL 参数信息
+  params: {
+    bvId?: string
+    [key: string]: any
+  }
+
+  // 视频信息
+  video: {
+    title: string
+    url: string
+    currentTime: number
+    duration: number
+    paused: boolean
+    src: string
+    videoWidth: number
+    videoHeight: number
+    readyState: number
+  }
+
+  // 自定义歌曲信息
+  song: {
+    name: string
+    startTime: number
+    endTime: number
+  }
+
+  // 扩展信息
+  metadata?: {
+    [key: string]: any
+  }
+}
