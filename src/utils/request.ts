@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { useLoginModal } from '@/hooks/useLoginModal'
+import { useUserStore } from '@/stores/userStore'
 import { createElectronAdapter } from '@/utils/adapter'
 
 const instance = axios.create({
@@ -12,6 +14,15 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    const { currentUser } = useUserStore()
+    const { openModal } = useLoginModal()
+
+    if (currentUser.cookie) {
+      config.headers.cookie = currentUser.cookie
+    } else {
+      window.$message.error('请先登录')
+      openModal()
+    }
     return config
   },
   (error) => {
@@ -21,6 +32,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
+    console.log('response response in request interceptors.response => ', response)
     return response.data
   },
   (error) => {

@@ -30,13 +30,8 @@ export function verifyQrCodeApi(qrcode_key: string) {
  * 获取用户信息
  */
 export function getUserInfoApi(): PromiseData<IUser> {
-  const { currentUser } = useUserStore()
-
   return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
-    headers: {
-      cookie: currentUser?.cookie,
-    },
   })
 }
 
@@ -54,9 +49,6 @@ export async function validateLoginInfoApi() {
       mobi_app: 'web',
       csrf_token: currentUser.csrf,
       csrf: currentUser.csrf,
-    },
-    headers: {
-      cookie: currentUser.cookie,
     },
   })
 }

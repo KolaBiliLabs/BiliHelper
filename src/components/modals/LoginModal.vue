@@ -30,7 +30,7 @@ function handleSuccess() {
       <!-- 主体部分 -->
       <NCard class="p-4 rounded-xl bg-white/50">
         <div class="mb-6 size-45 rounded-md mx-auto overflow-hidden flex-center">
-          <Qrcode class="mt-2" @success="handleSuccess" />
+          <Qrcode v-if="isShowModal" class="mt-2" @success="handleSuccess" />
         </div>
 
         <div class="text-center">

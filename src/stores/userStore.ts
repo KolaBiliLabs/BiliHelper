@@ -6,7 +6,7 @@ export const useUserStore = defineStore('user', () => {
   // 当前用户
   const currentUser = ref<IUser>({} as IUser)
 
-  const isLogin = computed(() => currentUser.value.cookie)
+  const isLogin = computed(() => !!currentUser.value.cookie)
 
   // 刷新当前用户信息
   async function refreshCurrentUser() {

@@ -1,5 +1,4 @@
 import { BASE_URL_PREFIX } from '@constants/urls'
-import { useUserStore } from '@/stores/userStore'
 import { request } from '@/utils/request'
 import { getWbi } from './wbi'
 
@@ -9,19 +8,10 @@ import { getWbi } from './wbi'
  * @returns 视频详情
  */
 export async function getVideoDetail(bvid: string) {
-  const { currentUser } = useUserStore()
-  if (!currentUser?.cookie || !currentUser?.csrf) {
-    window.$message.error('请先登录')
-    throw new Error('请先登录')
-  }
-
   const { data } = await request({
     url: `${BASE_URL_PREFIX}/x/web-interface/view`,
     method: 'GET',
     params: { bvid },
-    headers: {
-      cookie: currentUser.cookie,
-    },
   })
 
   const params = {
@@ -67,8 +57,6 @@ function getStreamDetail(query: {
   bvid: string
   cid?: number
 }) {
-  const { currentUser } = useUserStore()
-
   const params = {
     ...query,
     qn: 16, // 画质
@@ -83,9 +71,6 @@ function getStreamDetail(query: {
     url: `${BASE_URL_PREFIX}/x/player/wbi/playurl`,
     method: 'GET',
     params,
-    headers: {
-      cookie: currentUser?.cookie,
-    },
   })
 }
 
@@ -104,16 +89,12 @@ export async function searchKeyword(keyword: string, page = 1, page_size = 20): 
     page,
     page_size,
   }
-  const { currentUser } = useUserStore()
 
   const wbi = await getWbi(params)
 
   return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/wbi/search/type?${wbi}`,
     method: 'GET',
-    headers: {
-      cookie: currentUser?.cookie,
-    },
   })
 }
 
@@ -122,16 +103,11 @@ export async function searchKeyword(keyword: string, page = 1, page_size = 20): 
  * @param {string} keyword 关键词
  */
 export async function searchSuggestion(keyword: string): Promise<{ result: { tag: ISuggestion[] } }> {
-  const { currentUser } = useUserStore()
-
   return request({
     url: `https://s.search.bilibili.com/main/suggest`,
     method: 'GET',
     params: {
       term: keyword,
-    },
-    headers: {
-      cookie: currentUser?.cookie,
     },
   })
 }

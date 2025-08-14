@@ -2,7 +2,7 @@
 import { NButton, NQrCode } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import QS from 'qs'
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import { getLoginUrlApi, verifyQrCodeApi } from '@/api/bilibili'
 import { useUserStore } from '@/stores/userStore'
 import { ELoginState, EQRCodeState } from '@/utils/enums'
@@ -11,12 +11,14 @@ const emit = defineEmits<{
   success: []
 }>()
 
-const { currentUser } = storeToRefs(useUserStore())
+const userStore = useUserStore()
+const { currentUser } = storeToRefs(userStore)
 
 const qrCodeImage = ref<string>()
 
 const loginState = ref(ELoginState.未登录)
 
+let timer: NodeJS.Timeout | null = null
 // 获取登录链接，生成二维码
 async function getQRCode() {
   loginState.value = 0
@@ -24,7 +26,7 @@ async function getQRCode() {
 
   const { data } = await getLoginUrlApi()
   if (!data) {
-    setTimeout(getQRCode, 1000 * 3)
+    timer = setTimeout(getQRCode, 1000 * 3)
     return
   }
 
@@ -39,7 +41,7 @@ async function verifyQrCode(qrcode_key: string) {
   const { data } = await verifyQrCodeApi(qrcode_key)
 
   if (!data) {
-    setTimeout(() => verifyQrCode(qrcode_key), 1000 * 3)
+    timer = setTimeout(() => verifyQrCode(qrcode_key), 1000 * 3)
 
     return
   }
@@ -50,12 +52,12 @@ async function verifyQrCode(qrcode_key: string) {
       break
     }
     case EQRCodeState.未扫码: {
-      setTimeout(() => verifyQrCode(qrcode_key), 1000 * 3)
+      timer = setTimeout(() => verifyQrCode(qrcode_key), 1000 * 3)
       break
     }
     case EQRCodeState.已扫码未确认:{
       loginState.value = ELoginState.已扫码
-      setTimeout(() => verifyQrCode(qrcode_key), 1000 * 3)
+      timer = setTimeout(() => verifyQrCode(qrcode_key), 1000 * 3)
       break
     }
     case EQRCodeState.成功登陆: {
@@ -104,6 +106,13 @@ async function setUserInfo(access: IAccess) {
   loginState.value = ELoginState.未登录
   emit('success')
 }
+
+onUnmounted(() => {
+  if (timer) {
+    clearTimeout(timer)
+    timer = null
+  }
+})
 
 getQRCode()
 </script>

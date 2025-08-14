@@ -4,7 +4,6 @@ import { DATA_FROM_PLUGIN } from '@constants/ipcChannels'
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
 import { usePlayStore } from '@/stores/playStore'
-import { useUserStore } from '@/stores/userStore'
 import { delay } from '@/utils/helper'
 
 const notificationSimpleConfig = {
@@ -19,7 +18,6 @@ const channelName = DATA_FROM_PLUGIN
  */
 export function useMessageReceived() {
   const playStore = usePlayStore()
-  const userStore = useUserStore()
 
   onMounted(() => {
     window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]: [IUnifiedData]) => {
@@ -45,11 +43,6 @@ export function useMessageReceived() {
         description: '正在解析参数...',
         ...notificationSimpleConfig,
       })
-
-      if (!userStore.currentUser || !userStore.currentUser.cookie) {
-        window.$message.error('请先登录')
-        return
-      }
 
       await delay(200)
 

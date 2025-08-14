@@ -53,12 +53,14 @@
     "bvid",
     "clickoutside",
     "cursorrules",
+    "Dede",
     "KHTML",
     "mata",
     "mobi",
     "onloaderror",
     "onplayerror",
-    "qrcode"
+    "qrcode",
+    "SESSDATA"
   ],
   "todo-tree.tree.scanMode": "workspace"
 }
