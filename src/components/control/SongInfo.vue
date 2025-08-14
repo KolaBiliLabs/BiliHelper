@@ -46,15 +46,17 @@ function toggleLike(song: ISong) {
     </div>
 
     <NSpace vertical justify="center">
-      <div class="flex items-center gap-2">
+      <div class="flex-1 flex items-center gap-2">
         <WithSkeleton
           :loading
           :width="100"
           :height="16"
           transition-name="left"
         >
-          <NMarquee>
-            <div><span v-html="data?.title" /></div>
+          <NMarquee :speed="15">
+            <div>
+              <span v-html="data?.custom?.name || data?.title" />
+            </div>
           </NMarquee>
         </WithSkeleton>
 
@@ -64,7 +66,7 @@ function toggleLike(song: ISong) {
           :height="16"
           transition-name="left-sm"
         >
-          <Like :data="data!" @toggle-like="toggleLike" />
+          <Like v-if="data" :data="data" @toggle-like="toggleLike" />
         </WithSkeleton>
       </div>
 
@@ -74,7 +76,7 @@ function toggleLike(song: ISong) {
         :height="16"
         transition-name="left-sm"
       >
-        <NText>  {{ data?.author }}</NText>
+        <NText>  {{ data?.author || '未知' }}</NText>
       </WithSkeleton>
     </NSpace>
   </div>

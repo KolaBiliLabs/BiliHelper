@@ -17,7 +17,7 @@ const playStore = usePlayStore()
 const { liked } = storeToRefs(playStore)
 
 function isLicked() {
-  return isInList(liked.value, data)
+  return isInList(liked.value, data) !== -1
 }
 
 function toggleLike() {

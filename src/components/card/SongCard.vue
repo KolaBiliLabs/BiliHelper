@@ -2,9 +2,10 @@
 import { Music2Icon, Pause, Play } from 'lucide-vue-next'
 import { NCard, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import Loading from '@/components/global/Loading.vue'
 import { usePlayStore } from '@/stores/playStore'
-import { handleThumb } from '@/utils/helper'
+import { handleThumb, isSameSong } from '@/utils/helper'
 import Like from '../global/Like.vue'
 
 const props = defineProps<{
@@ -13,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  toggleLike: [bvid: ISong]
+  toggleLike: [song: ISong]
 }>()
 
 const playStore = usePlayStore()
@@ -22,21 +23,23 @@ const { currentSong, isPlaying, loading } = storeToRefs(playStore)
 function toggleLike() {
   emit('toggleLike', props.data)
 }
+
+const sameSong = computed(() => isSameSong(currentSong.value, props.data))
 </script>
 
 <template>
   <NCard
     hoverable
     select-none
-    :class="{ active: currentSong?.bvid === data?.bvid }"
+    :class="{ active: sameSong }"
   >
     <div v-auto-animate class="flex items-center h-full gap-2 w-full group">
       <!-- 提示信息 -->
       <div class="w-10 flex-center">
         <Transition name="fade" mode="out-in">
-          <Loading v-if="loading && currentSong?.bvid === data.bvid" :size="20" />
+          <Loading v-if="loading && sameSong" :size="20" />
           <div v-else class="relative flex-center" @dblclick.stop>
-            <NText v-if="currentSong?.bvid !== data.bvid" depth="3" class="num-transition group-hover:opacity-0">
+            <NText v-if="!sameSong" depth="3" class="num-transition group-hover:opacity-0">
               {{ index + 1 }}
             </NText>
             <Music2Icon v-else class="num-transition size-4 group-hover:opacity-0" />
@@ -44,14 +47,14 @@ function toggleLike() {
             <component
               :is="isPlaying ? Pause : Play "
               class="num-transition size-6 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-0"
-              :class="{ 'group-hover:opacity-100': currentSong?.bvid === data.bvid }"
+              :class="{ 'group-hover:opacity-100': sameSong }"
               @click="playStore.pauseOrResume"
               @dblclick.stop
             />
             <!-- 播放 -->
             <Music2Icon
               class="num-transition size-5 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-100"
-              :class="{ 'group-hover:hidden': currentSong?.bvid === data.bvid }"
+              :class="{ 'group-hover:hidden': sameSong }"
               @click="playStore.play(data)"
             />
           </div>
@@ -66,9 +69,9 @@ function toggleLike() {
       <!-- 介绍 -->
       <div class="flex-1 flex justify-center flex-col pr-4">
         <div class="flex flex-col justify-center">
-          <NText class="text-ellipsis" v-html="data.title" />
+          <NText class="text-ellipsis" v-html="data.custom?.name || data.title" />
           <NText depth="3" class="text-slate-200">
-            {{ data.author }}
+            {{ data.author || '未知' }}
           </NText>
         </div>
       </div>

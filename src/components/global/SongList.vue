@@ -17,7 +17,7 @@ withDefaults(defineProps<{
 })
 const emit = defineEmits<{
   choose: [song: ISong]
-  toggleLike: [bvid: ISong]
+  toggleLike: [song: ISong]
 }>()
 
 defineSlots<{
@@ -49,7 +49,7 @@ function toggleLike(song: ISong) {
       <template v-else>
         <template
           v-for="(song, idx) in data"
-          :key="song?.bvid"
+          :key="song?.id"
         >
           <SongCard
             v-if="song"
