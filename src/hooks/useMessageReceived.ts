@@ -1,3 +1,4 @@
+import { DATA_FROM_PLUGIN } from '@constants/ipcChannels'
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
 import { useAppStore } from '@/stores/appStore'
@@ -9,7 +10,7 @@ const notificationSimpleConfig = {
   closable: true,
 }
 
-const channelName = 'dataFromPlugin'
+const channelName = DATA_FROM_PLUGIN
 
 /**
  * @description 用于接收 electron主线程的 ws 消息并做后续处理

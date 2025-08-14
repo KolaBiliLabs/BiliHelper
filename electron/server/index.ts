@@ -1,6 +1,8 @@
 import type { App, BrowserWindow } from 'electron'
 import * as http from 'node:http' // Socket.IO 可以直接依附于 http.Server
 import { Server } from 'socket.io'
+import { DATA_RECEIVED_ACK, UNIFIED_DATA_TO_ELECTRON } from '../../constants/browserExtension'
+import { DATA_FROM_PLUGIN } from '../../constants/ipcChannels'
 import log from '../main/logger'
 
 const SERVER_PORT = 25885 // 定义服务器监听端口
@@ -26,14 +28,14 @@ export function startSocketIOServer(app: App, mainWindow: BrowserWindow | null):
   io.on('connection', (socket) => {
     log.info(`一个新的浏览器插件已连接: ${socket.id}`)
 
-    // 监听来自浏览器插件的 'sendDataToElectron' 事件
-    socket.on('sendDataToElectron', async (data: any) => {
+    // 监听来自浏览器插件的事件
+    socket.on(UNIFIED_DATA_TO_ELECTRON, async (data: any) => {
       log.info(`收到来自插件 (${socket.id}) 的数据:`, data)
 
-      mainWindow?.webContents.send('dataFromPlugin', data)
+      mainWindow?.webContents.send(DATA_FROM_PLUGIN, data)
 
       // 向浏览器插件发送确认消息
-      socket.emit('dataReceivedAck', { status: 'success', message: 'Electron 已收到您的数据', data })
+      socket.emit(DATA_RECEIVED_ACK, { status: 'success', message: 'Electron 已收到您的数据', data })
     })
 
     // 监听 'disconnect' 事件
