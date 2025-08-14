@@ -52,6 +52,17 @@ interface ISong {
   artist: string
   bvid: string
   duration: number
+
+  id: string
+
+  // 自定义歌曲信息
+  custom?: {
+    name: string
+    startTime: number
+    endTime: number
+
+    source: string
+  }
 }
 
 interface ICollection {

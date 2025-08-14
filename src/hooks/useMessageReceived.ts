@@ -4,7 +4,7 @@ import { DATA_FROM_PLUGIN } from '@constants/ipcChannels'
 import { onMounted, onUnmounted } from 'vue'
 import { getVideoDetail } from '@/api/search'
 import { usePlayStore } from '@/stores/playStore'
-import { delay } from '@/utils/helper'
+import { assembleSongInfo, delay } from '@/utils/helper'
 
 const notificationSimpleConfig = {
   duration: 1500,
@@ -21,9 +21,6 @@ export function useMessageReceived() {
 
   onMounted(() => {
     window.electron.ipcRenderer.on(channelName, async (_e, ...[payload]: [IUnifiedData]) => {
-      console.log(payload)
-      const { params } = payload
-
       // window.$message.create(
       //   () => h(NSteps, { size: 'small', status: 'process', current: 1 }, {
       //     default: () => [
@@ -54,7 +51,11 @@ export function useMessageReceived() {
 
       await delay(200)
 
-      const songDetail = await getVideoDetail(params.bvId!)
+      const songDetail = await getVideoDetail(payload.params.bvId!)
+
+      const songInfo = await assembleSongInfo(songDetail, payload)
+
+      console.log('songInfo => ', songInfo)
 
       window.$notification.info({
         title: '添加到播放列表',
@@ -62,7 +63,7 @@ export function useMessageReceived() {
         ...notificationSimpleConfig,
       })
 
-      playStore.addToPlugin(songDetail)
+      playStore.addToPlugin(songInfo)
 
       await delay(200)
 
@@ -72,6 +73,7 @@ export function useMessageReceived() {
       })
     })
   })
+
   onUnmounted(() => {
     window.electron.ipcRenderer.removeAllListeners(channelName)
   })

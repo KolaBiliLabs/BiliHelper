@@ -3,6 +3,7 @@ import { HeartIcon } from 'lucide-vue-next'
 import { NPopover } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { usePlayStore } from '@/stores/playStore'
+import { isInList } from '@/utils/helper'
 
 const { data } = defineProps<{
   data: ISong
@@ -15,8 +16,8 @@ const emit = defineEmits<{
 const playStore = usePlayStore()
 const { liked } = storeToRefs(playStore)
 
-function isLicked(bvid: string) {
-  return liked.value.map(l => l.bvid).includes(bvid)
+function isLicked() {
+  return isInList(liked.value, data)
 }
 
 function toggleLike() {
@@ -32,7 +33,7 @@ function toggleLike() {
   >
     <NPopover>
       <template #trigger>
-        <HeartIcon :class="[{ 'fill-red-500': isLicked(data?.bvid) }]" class="num-transition hover:fill-red-500 hover:scale-110" />
+        <HeartIcon :class="[{ 'fill-red-500': isLicked() }]" class="num-transition hover:fill-red-500 hover:scale-110" />
       </template>
 
       添加/移除 我喜欢的歌曲

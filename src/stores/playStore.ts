@@ -1,9 +1,11 @@
 import { LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE } from '@constants/ipcChannels'
 import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE } from '@constants/pageId'
+import { HISTORY_MAX } from '@constants/renderer'
 import { Howl } from 'howler'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { getVideoDetail } from '@/api/search'
+import { isInList, isSameSong, lruInsert } from '@/utils/helper'
 
 export interface IPlaylist {
   id: string
@@ -15,18 +17,6 @@ export interface IPlaylist {
   isDefault?: boolean
 }
 
-// LRU工具
-function lruInsert<T = Record<string, any>>(arr: T[], item: T, max: number, key: keyof T) {
-  const idx = arr.findIndex(i => i[key] === item[key])
-  if (idx !== -1)
-    arr.splice(idx, 1)
-  arr.unshift(item)
-  if (arr.length > max)
-    arr.pop()
-}
-
-const HISTORY_MAX = 100
-
 export const usePlayStore = defineStore('play', () => {
   // 历史记录（LRU，最大100条）
   const history = ref<ISong[]>([])
@@ -34,6 +24,7 @@ export const usePlayStore = defineStore('play', () => {
   // 喜欢的音乐
   const liked = ref<ISong[]>([])
 
+  /// 来自插件的歌曲
   const fromPlugin = ref<ISong[]>([])
 
   // 默认歌单
@@ -46,6 +37,7 @@ export const usePlayStore = defineStore('play', () => {
   // 其他自定义歌单
   const customPlaylists = ref<IPlaylist[]>([])
 
+  // 所有歌单
   const playlists = computed(() => [...defaultPlaylists.value, ...customPlaylists.value])
 
   const isPlaying = ref(false)
@@ -67,34 +59,39 @@ export const usePlayStore = defineStore('play', () => {
 
   /**
    * 切换喜欢状态 （在喜欢列表中）
-   * @param music
+   * @param song
    */
-  function toggleLike(music: ISong) {
-    const idx = liked.value.findIndex(i => i.bvid === music.bvid)
-    if (idx === -1) {
-      liked.value.unshift(music)
-    } else {
+  function toggleLike(song: ISong) {
+    const idx = isInList(liked.value, song)
+    if (idx !== -1) {
       liked.value.splice(idx, 1)
+    } else {
+      liked.value.unshift(song)
     }
     // 同步托盘喜欢状态
-    if (currentSong.value && currentSong.value.bvid === music.bvid) {
+    if (currentSong.value && isSameSong(currentSong.value, song)) {
+      // idx === -1 表示歌曲不在喜欢列表中，需要同步托盘喜欢状态
       window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, idx === -1)
     }
   }
 
-  // 添加到历史（LRU）
-  function addToHistory(music: ISong) {
-    lruInsert(history.value, music, HISTORY_MAX, 'bvid')
+  /**
+   * @description 添加到历史（LRU）
+   * @param song
+   */
+  function addToHistory(song: ISong) {
+    lruInsert(history.value, song, HISTORY_MAX)
   }
 
   /**
    * @description 添加到插件列表
    */
   function addToPlugin(music: ISong) {
-    const idx = fromPlugin.value.findIndex(i => i.bvid === music.bvid)
-    if (idx === -1) {
-      fromPlugin.value.unshift(music)
+    const idx = isInList(fromPlugin.value, music)
+    if (idx !== -1) {
+      return
     }
+    fromPlugin.value.unshift(music)
   }
 
   /**
@@ -182,7 +179,7 @@ export const usePlayStore = defineStore('play', () => {
     resetPlayerState()
 
     // 插入到播放队列
-    const idx = playQueue.value.findIndex(item => item.bvid === song.bvid)
+    const idx = isInList(playQueue.value, song)
     if (idx !== -1) {
       currentIndex.value = idx
     } else {
@@ -194,16 +191,20 @@ export const usePlayStore = defineStore('play', () => {
     // 添加到历史记录
     addToHistory(song)
 
-    window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, liked.value.find(l => l.bvid === currentSong.value.bvid) !== undefined)
+    // 同步托盘喜欢状态
+    window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, isInList(liked.value, song) !== -1)
+
+    // 同步托盘播放状态
     window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
 
     try {
-      // 获取音频播放地址
-      loading.value = true
-
       // 停止并卸载上一个音频
       unloadPlayer()
 
+      // 开始获取音频播放地址
+      loading.value = true
+
+      // [ ] 增加缓存： 将播放过的歌曲缓存到本地
       // 获取即将播放的歌曲
       const songDetail = await getVideoDetail(song.bvid)
 
