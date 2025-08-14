@@ -7,6 +7,7 @@ import { storeToRefs } from 'pinia'
 import { nextTick } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
+import { isInList, isSameSong } from '@/utils/helper'
 
 const systemStore = useSystemStore()
 const { showPlayQueue, showPlayer } = storeToRefs(systemStore)
@@ -22,7 +23,7 @@ function handleDeleteSong(song: ISong) {
   }
 
   // 选中歌曲的 idx
-  const chooseSongIndex = playQueue.value.findIndex(pq => pq.bvid === song.bvid)
+  const chooseSongIndex = isInList(playQueue.value, song)
 
   // 删除的歌曲位于当前播放歌曲之前
   if (chooseSongIndex < currentIndex.value) {
@@ -51,7 +52,7 @@ function handleChooseSong(song: ISong) {
 // 当进入动画结束
 async function scrollToItem() {
   await nextTick()
-  const playingItem = document.querySelector(`.item-${currentSong.value?.bvid}`)
+  const playingItem = document.querySelector(`.item-${currentSong.value?.id}`)
 
   playingItem?.scrollIntoView({
     behavior: 'smooth',
@@ -88,17 +89,17 @@ function clearQueue() {
         <template v-if="playQueue.length">
           <div
             v-for="(song, idx) of playQueue"
-            :key="song.bvid"
+            :key="song.id"
             class="flex-center p-2 gap-6 bg-black/50 border border-black/50 mb-3 rounded-xl cursor-pointer box-border transition-all duration-300 select-none hover:border-white/50 hover:shadow-black/10 active:scale-3d active:scale-[0.992]"
             :class="[
-              `item-${song.bvid}`,
-              { 'bg-white/50': song.bvid === currentSong?.bvid },
+              `item-${song.id}`,
+              { 'bg-white/50': isSameSong(song, currentSong) },
             ]"
             @click="handleChooseSong(song)"
           >
             <!-- 序号 -->
             <div class="px-3">
-              <MusicIcon v-if="song.bvid === currentSong?.bvid" class="size-4" />
+              <MusicIcon v-if="isSameSong(song, currentSong)" class="size-4" />
               <NText v-else>
                 {{ idx + 1 }}
               </NText>
@@ -106,7 +107,7 @@ function clearQueue() {
 
             <!-- 歌曲信息 -->
             <div class="flex-1">
-              <NText v-html="song.title" />
+              <NText v-html="song.custom?.name || song.title" />
             </div>
 
             <!-- 操作 -->

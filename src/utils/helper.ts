@@ -68,6 +68,9 @@ export function isInList(list: ISong[], song: ISong) {
  * @returns {boolean} 是否相同
  */
 export function isSameSong(song1: ISong, song2: ISong): boolean {
+  if (!song1 || !song2) {
+    return false
+  }
   if (song1.id !== song2.id) {
     return false
   }
