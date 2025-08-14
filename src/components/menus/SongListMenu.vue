@@ -91,7 +91,7 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
           icon: renderIcon(TrashIcon),
           props: {
             onClick() {
-              playStore.removeMusicFromPlaylist(playListId, song.bvid)
+              playStore.removeMusicFromPlaylist(playListId, song)
             },
           },
         },

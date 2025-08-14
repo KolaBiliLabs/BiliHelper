@@ -130,7 +130,7 @@ export const usePlayStore = defineStore('play', () => {
   function addMusicToPlaylist(playlistId: string, music: ISong) {
     const playlist = customPlaylists.value.find(p => p.id === playlistId)
     if (playlist) {
-      if (!playlist.musics.find(i => i.bvid === music.bvid)) {
+      if (isInList(playlist.musics, music) === -1) {
         playlist.musics.push(music)
         playlist.updateTime = Date.now()
       }
@@ -139,13 +139,11 @@ export const usePlayStore = defineStore('play', () => {
 
   /**
    * 从指定歌单中移除歌曲
-   * @param playlistId
-   * @param musicId
    */
-  function removeMusicFromPlaylist(playlistId: string, musicId: string | number) {
+  function removeMusicFromPlaylist(playlistId: string, song: ISong) {
     const playlist = [...defaultPlaylists.value, ...customPlaylists.value].find(p => p.id === playlistId)
     if (playlist) {
-      const idx = playlist.musics.findIndex(i => i.bvid === musicId)
+      const idx = isInList(playlist.musics, song)
       if (idx !== -1) {
         playlist.musics.splice(idx, 1)
         playlist.updateTime = Date.now()
