@@ -12,7 +12,6 @@ interface SystemStore {
   collapsed: boolean
   collapsedWidth: number
   fullScreen: boolean
-  currentPage: string
 
   showPlayer: boolean
   showPlayQueue: boolean
@@ -31,7 +30,6 @@ export const useSystemStore = defineStore('system', {
     collapsed: false,
     collapsedWidth: 64,
     fullScreen: false,
-    currentPage: HISTORY_PAGE,
     showPlayer: false,
     showPlayQueue: false,
 

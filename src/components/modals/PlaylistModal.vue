@@ -57,47 +57,65 @@ function handleCancel() {
     :closable="false"
     close-on-esc
   >
-    <div>
-      <NCard class="p-4 rounded-xl bg-white/80">
-        <div class="mb-4 text-lg font-bold text-center">
-          {{ isEdit ? '编辑歌单' : '新建歌单' }}
-        </div>
-        <div class="mb-3 text-gray-500 text-sm text-center">
-          {{ isEdit ? '修改歌单信息' : '创建属于你自己的专属歌单，支持自定义名称和描述。' }}
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-2xl">
-            🎵
+    <Transition name="modal" mode="out-in">
+      <div v-if="isShowModal">
+        <NCard class="p-4 rounded-xl bg-white/80">
+          <div class="mb-4 text-lg font-bold text-center">
+            {{ isEdit ? '编辑歌单' : '新建歌单' }}
           </div>
-          <div class="flex-1">
-            <NInput
-              v-model:value="playlistName"
-              placeholder="请输入歌单名称"
-              maxlength="30"
-              class="mb-2"
-            />
-            <NInput
-              v-model:value="playlistDesc"
-              placeholder="可填写歌单描述"
-              maxlength="60"
-            />
+          <div class="mb-3 text-gray-500 text-sm text-center">
+            {{ isEdit ? '修改歌单信息' : '创建属于你自己的专属歌单，支持自定义名称和描述。' }}
           </div>
-        </div>
-        <div class="flex justify-end gap-2 mt-6">
-          <NButton secondary @click="handleCancel">
-            取消
-          </NButton>
-          <NButton type="primary" :disabled="!playlistName.trim()" @click="handleSubmit">
-            {{ isEdit ? '保存' : '创建' }}
-          </NButton>
-        </div>
-      </NCard>
-    </div>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-2xl">
+              🎵
+            </div>
+            <div class="flex-1">
+              <NInput
+                v-model:value="playlistName"
+                placeholder="请输入歌单名称"
+                maxlength="30"
+                class="mb-2"
+              />
+              <NInput
+                v-model:value="playlistDesc"
+                placeholder="可填写歌单描述"
+                maxlength="60"
+              />
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 mt-6">
+            <NButton secondary @click="handleCancel">
+              取消
+            </NButton>
+            <NButton type="primary" :disabled="!playlistName.trim()" @click="handleSubmit">
+              {{ isEdit ? '保存' : '创建' }}
+            </NButton>
+          </div>
+        </NCard>
+      </div>
+    </Transition>
   </NModal>
 </template>
 
 <style scoped>
 .n-card {
   padding: 0;
+}
+
+/* 模态框过渡动画 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-enter-from {
+  opacity: 0;
+  transform: scale(0.9) translateY(-20px);
+}
+
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0.9) translateY(20px);
 }
 </style>

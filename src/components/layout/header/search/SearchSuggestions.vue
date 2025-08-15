@@ -114,4 +114,20 @@ watchEffect(() => {
     text-align: right;
   }
 }
+
+/* 搜索建议过渡动画 */
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: all 0.2s ease-out;
+}
+
+.fade-up-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fade-up-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>

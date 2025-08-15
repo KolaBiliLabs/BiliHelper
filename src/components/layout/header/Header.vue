@@ -14,7 +14,7 @@ const { siderWidth } = storeToRefs(systemStore)
   <NLayoutHeader bordered class="flex-none px-0 h-15 flex items-center">
     <div class="flex items-center w-full app-region-drag gap-2">
       <!-- Logo -->
-      <div class="flex-none px-3" :style="{ width: `${siderWidth}px` }">
+      <div class="flex-none px-3 header-logo" :style="{ width: `${siderWidth}px` }">
         logo
       </div>
 
@@ -29,3 +29,13 @@ const { siderWidth } = storeToRefs(systemStore)
     </div>
   </NLayoutHeader>
 </template>
+
+<style scoped>
+.header-logo {
+  transition: all 0.3s ease;
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+}
+</style>

@@ -8,13 +8,13 @@ import { Edit2Icon, PlayIcon, Trash2Icon } from 'lucide-vue-next'
 import { NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
-import { useSystemStore } from '@/stores/systemStore'
 
 defineEmits<{ removeSong: [index: number[]] }>()
 
-const systemStore = useSystemStore()
+const router = useRouter()
 const playStore = usePlayStore()
 const { customPlaylists } = storeToRefs(playStore)
 
@@ -49,7 +49,7 @@ function handleDelPlayList(playList: IPlaylist) {
 
   playStore.removePlaylist(playList.id)
 
-  systemStore.currentPage = HISTORY_PAGE
+  router.push(`/${HISTORY_PAGE}`)
 }
 
 // 开启右键菜单

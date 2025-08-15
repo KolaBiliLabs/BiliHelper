@@ -5,24 +5,26 @@ import { SearchIcon } from 'lucide-vue-next'
 import { NInput } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ref, useTemplateRef } from 'vue'
+import { useRouter } from 'vue-router'
 import { useSearchStore } from '@/stores/searchStore'
 import { useSystemStore } from '@/stores/systemStore'
 import SearchSuggestions from './SearchSuggestions.vue'
 
+const router = useRouter()
+
 const systemStore = useSystemStore()
-const { searchFocus, fullScreen, currentPage } = storeToRefs(systemStore)
+const { searchFocus, fullScreen } = storeToRefs(systemStore)
 
 const searchStore = useSearchStore()
 const { currentSearchKeyword } = storeToRefs(searchStore)
 
-const searchInputRef = useTemplateRef<InstanceType<typeof NInput> | null>('searchInputRef')
-
 const searchValue = ref('')
+const searchInputRef = useTemplateRef<InstanceType<typeof NInput> | null>('searchInputRef')
 
 // 搜索
 async function handleSearch(v: string) {
   currentSearchKeyword.value = v
-  currentPage.value = SEARCH_RESULT_PAGE
+  router.push(`/${SEARCH_RESULT_PAGE}`)
 
   // 关闭搜索框
   searchFocus.value = false

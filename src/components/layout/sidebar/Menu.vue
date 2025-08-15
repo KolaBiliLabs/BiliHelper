@@ -2,19 +2,23 @@
 import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
 import type { IPlaylist } from '@/stores/playStore'
-import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE, SEARCH_RESULT_PAGE } from '@constants/pageId'
+import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE } from '@constants/pageId'
 import { ActivityIcon, AudioLines, HeartIcon, HistoryIcon, PlugIcon, PlusIcon } from 'lucide-vue-next'
 import { NButton, NMenu, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h, useTemplateRef, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import PlayListMenu from '@/components/menus/PlayListMenu.vue'
 import PlaylistModal from '@/components/modals/PlaylistModal.vue'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 
+const router = useRouter()
+const route = useRoute()
+
 const systemStore = useSystemStore()
-const { selectedMenuKey, currentPage, collapsed } = storeToRefs(systemStore)
+const { selectedMenuKey, collapsed } = storeToRefs(systemStore)
 
 const playStore = usePlayStore()
 const { defaultPlaylists, customPlaylists } = storeToRefs(playStore)
@@ -55,21 +59,31 @@ function renderDefaultPlaylistIcon(playlistId: string) {
 }
 
 function selectedMenu(v: string) {
-  currentPage.value = v
+  // 检查是否为默认页面
+  const defaultPages = [HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE]
+  if (defaultPages.includes(v)) {
+    router.push(`/${v}`)
+  } else {
+    // 自定义歌单
+    router.push(`/playlist/${v}`)
+  }
 }
 
-// 当currentPage 切换时，同步selectedKey
-watch(() => currentPage.value, (v) => {
-  // 相同则不处理
-  if (selectedMenuKey.value === v) {
-    return
-  }
+// 当路由切换时，同步selectedKey
+watch(() => route.path, (path) => {
+  const pathSegments = path.split('/')
+  const currentPath = pathSegments[pathSegments.length - 1]
 
-  if (v === SEARCH_RESULT_PAGE) {
-    return
+  // 如果是默认页面
+  const defaultPages = [HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE]
+  if (defaultPages.includes(currentPath)) {
+    selectedMenuKey.value = currentPath
+  } else if (path.startsWith('/playlist/')) {
+    // 如果是歌单页面，使用歌单ID
+    const playlistId = pathSegments[pathSegments.length - 1]
+    selectedMenuKey.value = playlistId
   }
-  selectedMenuKey.value = v
-})
+}, { immediate: true })
 
 // 菜单项
 const menuOptions = computed<MenuOption[]>(() => [
@@ -106,7 +120,7 @@ const menuOptions = computed<MenuOption[]>(() => [
           renderIcon: renderIcon(PlusIcon),
           onclick: (event: Event) => {
             event.stopPropagation()
-            openCreatePlaylist()
+            openPlaylistModal()
           },
         }),
       ]),
@@ -119,14 +133,6 @@ const menuOptions = computed<MenuOption[]>(() => [
     icon: renderIcon(ActivityIcon),
   })),
 ])
-
-/**
- * 打开新建歌单的弹窗或面板
- * 用于触发用户创建新的播放列表的操作
- */
-function openCreatePlaylist() {
-  openPlaylistModal()
-}
 
 /**
  * 创建歌单

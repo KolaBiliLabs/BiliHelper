@@ -2,6 +2,7 @@ import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import { createApp } from 'vue'
 import App from './App.vue'
 import { setupPinia } from './plugins/store'
+import router from './router'
 import { initIpc } from './utils/initIpc'
 
 import './assets/main.css'
@@ -12,7 +13,7 @@ initIpc()
 function bootstrap() {
   const app = createApp(App)
   setupPinia(app)
-
+  app.use(router)
   app.use(autoAnimatePlugin)
   app.mount('#app')
 }
