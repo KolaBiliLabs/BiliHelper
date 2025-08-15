@@ -19,3 +19,10 @@ export const /** 显示窗口 */ WINDOW_SHOW = 'win_show'
 export const /** 重启窗口 */ WINDOW_RELOAD = 'win_reload'
 export const /** 开启控制台 */ OPEN_DEV_TOOLS = 'open_dev_tools'
 export const /** 是否最大化 */ WINDOW_IS_MAXIMIZED = 'win_is_max'
+
+// 音频裁剪相关
+export const AUDIO_TRIM_START = 'audio-trim-start'
+export const AUDIO_TRIM_PROGRESS = 'audio-trim-progress'
+export const AUDIO_TRIM_COMPLETE = 'audio-trim-complete'
+export const AUDIO_TRIM_ERROR = 'audio-trim-error'
+export const AUDIO_TRIM_CANCEL = 'audio-trim-cancel'

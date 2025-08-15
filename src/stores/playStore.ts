@@ -224,7 +224,14 @@ export const usePlayStore = defineStore('play', () => {
           loading.value = false
         },
         onplay: () => {
-          loading.value = false
+          console.log('playing')
+
+          if (player && currentSong.value.custom) {
+            // 播放时 设置当前时间
+            currentTime.value = currentSong.value.custom.startTime
+            player.seek(currentSong.value.custom.startTime)
+          }
+
           isPlaying.value = true
           duration.value = player?.duration() || 0
           currentTime.value = player?.seek() as number
