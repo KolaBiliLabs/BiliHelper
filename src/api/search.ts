@@ -74,15 +74,17 @@ function getStreamDetail(query: {
   })
 }
 
+export interface ISearchResult {
+  next: number
+  numResults: number
+  result: ISong[]
+}
+
 /**
  * 获取搜索结果
  * @param {string} keyword 关键词
  */
-export async function searchKeyword(keyword: string, page = 1, page_size = 20): PromiseData<{
-  next: number
-  numResults: number
-  result: ISong[]
-}> {
+export async function searchKeyword(keyword: string, page = 1, page_size = 20): PromiseData<ISearchResult> {
   const params = {
     keyword,
     search_type: 'video',

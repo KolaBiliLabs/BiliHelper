@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { NDivider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { onBeforeUnmount, ref, watchEffect } from 'vue'
-import { searchKeyword } from '@/api/search'
+import { onBeforeUnmount, watch } from 'vue'
 import Pagination from '@/components/global/Pagination.vue'
 import SongList from '@/components/global/SongList.vue'
+import { useRequestSearchResults } from '@/hooks/useRequestSearchResults'
 import { usePlayStore } from '@/stores/playStore'
 import { useSearchStore } from '@/stores/searchStore'
 import { useSystemStore } from '@/stores/systemStore'
@@ -13,18 +13,17 @@ const systemStore = useSystemStore()
 const { showPlayer } = storeToRefs(systemStore)
 
 const searchStore = useSearchStore()
-const { currentSearchKeyword, currentSearchResult } = storeToRefs(searchStore)
+const { currentSearchKeyword } = storeToRefs(searchStore)
 
 const playStore = usePlayStore()
 
-const loading = ref(false)
-// 分页相关
-const currentPage = ref(1)
-const pageSize = ref(20)
-const total = ref(0)
+const { data, loading, total, page, pageSize, run } = useRequestSearchResults(currentSearchKeyword, {
+  page: 1,
+  pageSize: 20,
+})
 
 function pageChange(v: number) {
-  currentPage.value = v
+  page.value = v
 }
 
 // 选择歌曲
@@ -34,17 +33,14 @@ function chooseSong(song: ISong) {
   showPlayer.value = true
 }
 
-watchEffect(() => {
+function toggleLike(song: ISong) {
+  playStore.toggleLike(song)
+}
+
+watch(currentSearchKeyword, () => {
   if (currentSearchKeyword.value) {
-    // todo  请求该 keyword 对应的歌单
-    loading.value = true
-    ;(async () => {
-      const res = await searchKeyword(currentSearchKeyword.value, currentPage.value, pageSize.value)
-      currentSearchResult.value = res.data.result
-      // 假设接口返回 total 字段，否则可根据实际返回结构调整
-      total.value = res.data.numResults || 0
-      loading.value = false
-    })()
+    // 请求该 keyword 对应的歌曲
+    run()
   }
 })
 
@@ -52,10 +48,6 @@ onBeforeUnmount(() => {
   searchStore.clearupSearch()
   console.log('----- searStore 已清理 -----')
 })
-
-function toggleLike(song: ISong) {
-  playStore.toggleLike(song)
-}
 </script>
 
 <template>
@@ -73,7 +65,7 @@ function toggleLike(song: ISong) {
 
     <!-- 歌曲列表 -->
     <SongList
-      :data="currentSearchResult"
+      :data="data"
       :loading="loading"
       @choose="chooseSong"
       @toggle-like="toggleLike"
@@ -82,7 +74,7 @@ function toggleLike(song: ISong) {
     <!-- 分页 -->
     <Pagination
       :loading
-      :page="currentPage"
+      :page="page"
       :page-size="pageSize"
       :total-count="total"
       @page-change="pageChange"
