@@ -68,22 +68,26 @@ function renderIcon(icon: Component) {
 }
 // 处理下拉菜单选择
 function handleSelect(key: string) {
-  if (key === 'toggleTheme') {
-    systemStore.toggleTheme()
-    window.$message.success(`主题已切换到${isDark.value ? '暗色' : '亮色'}`)
-  } else if (key === 'login') {
-    openModal()
-  } else if (key === 'logout') {
-    logout()
-    window.$message.success('您已退出登录')
+  switch (key) {
+    case 'toggleTheme':
+      systemStore.toggleTheme()
+      window.$message.success(`主题已切换到${isDark.value ? '暗色' : '亮色'}`)
+      break
+    case 'login':
+      openModal()
+      break
+    case 'logout':
+      logout()
+      window.$message.success('您已退出登录')
+      break
+    default:
+      break
   }
 }
 </script>
 
 <template>
-  <div
-    class="flex-none app-region-no-drag size-10 rounded-full flex-center ring-2 shadow ring-slate-100/50"
-  >
+  <div class="flex-none app-region-no-drag size-9 rounded-full flex-center ring-2 ring-slate-500/50">
     <NDropdown
       :options="dropdownOptions"
       trigger="click"
@@ -93,7 +97,7 @@ function handleSelect(key: string) {
       <!-- 头像本身 -->
       <NAvatar
         round
-        :size="40"
+        :size="36"
         src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
         fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
         class="cursor-pointer"
