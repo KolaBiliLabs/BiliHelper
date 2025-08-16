@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { NImage, NMarquee, NSpace, NText } from 'naive-ui'
+import { NImage, NSpace, NText } from 'naive-ui'
 import { ref } from 'vue'
 import WithSkeleton from '@/components/global/WithSkeleton.vue'
+import TextContainer from '../common/TextContainer.vue'
 import Like from '../global/Like.vue'
 
 defineProps<{
@@ -53,11 +54,7 @@ function toggleLike(song: ISong) {
           :height="16"
           transition-name="left"
         >
-          <NMarquee :speed="15">
-            <div>
-              <span v-html="data?.custom?.name || data?.title" />
-            </div>
-          </NMarquee>
+          <TextContainer :text="data!.custom?.name || data!.title" :speed="15" />
         </WithSkeleton>
 
         <WithSkeleton
