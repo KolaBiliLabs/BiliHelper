@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router'
 import SongList from '@/components/global/SongList.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import { formatTime } from '@/utils/dayjs'
+import { formatTime } from '@/utils/time'
 
 const route = useRoute()
 const systemStore = useSystemStore()

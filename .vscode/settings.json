@@ -61,10 +61,14 @@
     "loudnorm",
     "mata",
     "mobi",
+    "nexttrack",
     "onloaderror",
     "onplayerror",
+    "previoustrack",
     "qrcode",
-    "SESSDATA"
+    "seekto",
+    "SESSDATA",
+    "sourceid"
   ],
   "todo-tree.tree.scanMode": "workspace"
 }

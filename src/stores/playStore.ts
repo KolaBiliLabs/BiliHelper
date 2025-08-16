@@ -40,10 +40,21 @@ export const usePlayStore = defineStore('play', () => {
   // 所有歌单
   const playlists = computed(() => [...defaultPlaylists.value, ...customPlaylists.value])
 
+  // 播放状态
   const isPlaying = ref(false)
   const currentTime = ref(0)
-  const duration = ref(0)
-  const volume = ref(1)
+
+  // 播放模式
+  const playSongMode = ref('repeat')
+  // 播放速率
+  const playRate = ref(1)
+  // 播放时长
+  const playDuration = ref(0)
+  // 播放音量
+  const playVolume = ref(1)
+  // 播放进度
+  const playProgress = ref(0)
+  // 加载状态
   const loading = ref(false)
 
   let player: Howl | null = null
@@ -216,7 +227,7 @@ export const usePlayStore = defineStore('play', () => {
       player = new Howl({
         src: [url],
         html5: true,
-        volume: volume.value,
+        volume: playVolume.value,
         onend: () => {
           playNext()
         },
@@ -233,7 +244,7 @@ export const usePlayStore = defineStore('play', () => {
           }
 
           isPlaying.value = true
-          duration.value = player?.duration() || 0
+          playDuration.value = player?.duration() || 0
           currentTime.value = player?.seek() as number
 
           console.log('start playing => ', player?.duration(), player?.seek(), loading.value)
@@ -411,7 +422,7 @@ export const usePlayStore = defineStore('play', () => {
 
   // 设置音量
   function setVolume(val: number) {
-    volume.value = val
+    playVolume.value = val
     if (player)
       player.volume(val)
   }
@@ -453,9 +464,13 @@ export const usePlayStore = defineStore('play', () => {
     currentSong,
     isPlaying,
     currentTime,
-    duration,
-    volume,
+    playDuration,
+    playVolume,
+    playProgress,
     loading,
+
+    playSongMode,
+    playRate,
 
     setVolume,
     seek,

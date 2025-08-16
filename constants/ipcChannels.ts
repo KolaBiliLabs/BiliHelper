@@ -4,6 +4,8 @@ export const DATA_FROM_PLUGIN = 'data_from_plugin'
 // 播放channels
 export const LIKE_STATUS_CHANGE = 'like_status_change'
 export const PLAY_STATUS_CHANGE = 'play_status_change'
+export const PLAY_MODE_CHANGE = 'play_mode_change'
+export const PLAY_SONG_CHANGE = 'play_song_change'
 
 export const PLAY = 'play'
 export const PAUSE = 'pause'
