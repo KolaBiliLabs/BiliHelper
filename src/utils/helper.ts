@@ -145,3 +145,14 @@ export async function generateCustomSongId(bvid: string, customName: string, sta
   const content = `${bvid}_${customName}_${startTime}_${endTime}`
   return `custom_${content}`
 }
+
+/**
+ * @description 用于去除html 标签
+ */
+export function toPureText(text: string) {
+  let result = ''
+  const div = document.createElement('div')
+  div.innerHTML = text
+  result = div.textContent || ''
+  return result
+}

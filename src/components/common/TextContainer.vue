@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useElementSize } from '@vueuse/core'
 import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
+import { toPureText } from '@/utils/helper'
 
 const props = defineProps<{
   text: string
@@ -113,8 +114,8 @@ onUnmounted(() => {
     <!-- 空白占位符 -->
     <span class="empty">{{ text }}</span>
     <div ref="scrollWrapperRef" class="scroll-wrapper">
-      <span ref="textRef" class="text">{{ text }}</span>
-      <span v-if="isTextOverflowing" ref="textCloneRef" class="text">{{ text }}</span>
+      <span ref="textRef" class="text">{{ toPureText(text) }}</span>
+      <span v-if="isTextOverflowing" ref="textCloneRef" class="text">{{ toPureText(text) }}</span>
     </div>
   </div>
 </template>

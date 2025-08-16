@@ -54,7 +54,12 @@ function toggleLike(song: ISong) {
           :height="16"
           transition-name="left"
         >
-          <TextContainer :text="data!.custom?.name || data!.title" :speed="15" />
+          <TextContainer
+            v-if="data"
+            :text="data.custom?.name || data.title"
+            :speed="0.8"
+            class="max-w-50"
+          />
         </WithSkeleton>
 
         <WithSkeleton
