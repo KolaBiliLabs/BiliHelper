@@ -1,0 +1,83 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 可乐瓶轮廓 -->
+  <path d="M6 4C6 2.89543 6.89543 2 8 2H24C25.1046 2 26 2.89543 26 4V6C26 6.55228 25.5523 7 25 7H7C6.44772 7 6 6.55228 6 6V4Z" fill="url(#bottleGradient)"/>
+  
+  <!-- 可乐瓶主体 -->
+  <path d="M7 7H25V20C25 21.1046 24.1046 22 23 22H9C7.89543 22 7 21.1046 7 20V7Z" fill="url(#bottleGradient)"/>
+  
+  <!-- 可乐瓶底部 -->
+  <path d="M8 22H24V24C24 25.1046 23.1046 26 22 26H10C8.89543 26 8 25.1046 8 24V22Z" fill="url(#bottleGradient)"/>
+  
+  <!-- 可乐瓶标签区域 -->
+  <rect x="8" y="9" width="16" height="10" rx="1" fill="url(#labelGradient)" opacity="0.8"/>
+  
+  <!-- B站小电视元素 -->
+  <g transform="translate(10, 11)">
+    <!-- 小电视外框 -->
+    <rect x="0" y="0" width="12" height="8" rx="1" fill="white" opacity="0.9"/>
+    
+    <!-- 小电视屏幕 -->
+    <rect x="1" y="1" width="10" height="6" rx="0.5" fill="url(#tvGradient)"/>
+    
+    <!-- 小电视天线 -->
+    <line x1="2" y1="0" x2="2" y2="-2" stroke="white" stroke-width="1" opacity="0.8"/>
+    <line x1="10" y1="0" x2="10" y2="-2" stroke="white" stroke-width="1" opacity="0.8"/>
+    
+    <!-- 小电视眼睛 -->
+    <circle cx="3" cy="3" r="0.6" fill="white"/>
+    <circle cx="9" cy="3" r="0.6" fill="white"/>
+  </g>
+  
+  <!-- 音乐音符 -->
+  <g transform="translate(20, 6)">
+    <!-- 音符主体 -->
+    <rect x="0" y="0" width="3" height="4" rx="0.5" fill="url(#musicGradient)"/>
+    
+    <!-- 音符圆点 -->
+    <circle cx="1.5" cy="5.5" r="1.2" fill="url(#musicGradient)"/>
+    
+    <!-- 音符线条 -->
+    <line x1="3" y1="0" x2="3" y2="3" stroke="url(#musicGradient)" stroke-width="1.2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 播放按钮 -->
+  <g transform="translate(12, 18)">
+    <circle cx="4" cy="4" r="3" fill="url(#playGradient)" opacity="0.9"/>
+    <path d="M2.4 2.4L2.4 5.6L5.6 4L2.4 2.4Z" fill="white"/>
+  </g>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <!-- 可乐瓶渐变 -->
+    <linearGradient id="bottleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A1A1A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2D2D2D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1A1A;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 标签渐变 -->
+    <linearGradient id="labelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6699;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF8C42;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00A1D6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 小电视渐变 -->
+    <linearGradient id="tvGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A1D6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6699;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 音乐元素渐变 -->
+    <linearGradient id="musicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8C42;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6699;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 播放按钮渐变 -->
+    <linearGradient id="playGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A1D6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6699;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,95 @@
+<svg width="140" height="40" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 主图标：可乐瓶 + B站小电视 + 音乐元素 -->
+  <g transform="translate(5, 5)">
+    <!-- 可乐瓶轮廓 -->
+    <path d="M8 6C8 4.89543 8.89543 4 10 4H20C21.1046 4 22 4.89543 22 6V8C22 8.55228 21.5523 9 21 9H9C8.44772 9 8 8.55228 8 8V6Z" fill="url(#bottleGradient)"/>
+    
+    <!-- 可乐瓶主体 -->
+    <path d="M9 9H21V24C21 25.1046 20.1046 26 19 26H11C9.89543 26 9 25.1046 9 24V9Z" fill="url(#bottleGradient)"/>
+    
+    <!-- 可乐瓶底部 -->
+    <path d="M10 26H20V28C20 29.1046 19.1046 30 18 30H12C10.8954 30 10 29.1046 10 28V26Z" fill="url(#bottleGradient)"/>
+    
+    <!-- 可乐瓶标签区域 -->
+    <rect x="10" y="11" width="10" height="12" rx="1" fill="url(#labelGradient)" opacity="0.8"/>
+    
+    <!-- B站小电视元素 -->
+    <g transform="translate(12, 13)">
+      <!-- 小电视外框 -->
+      <rect x="0" y="0" width="6" height="4" rx="0.5" fill="white" opacity="0.9"/>
+      
+      <!-- 小电视屏幕 -->
+      <rect x="0.5" y="0.5" width="5" height="3" rx="0.25" fill="url(#tvGradient)"/>
+      
+      <!-- 小电视天线 -->
+      <line x1="1" y1="0" x2="1" y2="-1" stroke="white" stroke-width="0.5" opacity="0.8"/>
+      <line x1="5" y1="0" x2="5" y2="-1" stroke="white" stroke-width="0.5" opacity="0.8"/>
+      
+      <!-- 小电视眼睛 -->
+      <circle cx="1.5" cy="1.5" r="0.3" fill="white"/>
+      <circle cx="4.5" cy="1.5" r="0.3" fill="white"/>
+    </g>
+    
+    <!-- 音乐音符 -->
+    <g transform="translate(16, 8)">
+      <!-- 音符主体 -->
+      <rect x="0" y="0" width="2" height="3" rx="0.5" fill="url(#musicGradient)"/>
+      
+      <!-- 音符圆点 -->
+      <circle cx="1" cy="4" r="0.8" fill="url(#musicGradient)"/>
+      
+      <!-- 音符线条 -->
+      <line x1="2" y1="0" x2="2" y2="2" stroke="url(#musicGradient)" stroke-width="0.8" stroke-linecap="round"/>
+    </g>
+    
+    <!-- 播放按钮 -->
+    <g transform="translate(14, 18)">
+      <circle cx="2" cy="2" r="1.5" fill="url(#playGradient)" opacity="0.9"/>
+      <path d="M1.2 1.2L1.2 2.8L2.8 2L1.2 1.2Z" fill="white"/>
+    </g>
+  </g>
+  
+  <!-- 文字部分 -->
+  <g transform="translate(40, 0)">
+    <!-- Kola 文字 -->
+    <text x="0" y="18" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="700" fill="currentColor" letter-spacing="-0.5">Kola</text>
+    
+    <!-- BiliHelper 文字 -->
+    <text x="0" y="32" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="500" fill="currentColor" opacity="0.6" letter-spacing="0.2">BiliHelper</text>
+  </g>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <!-- 可乐瓶渐变 -->
+    <linearGradient id="bottleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A1A1A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2D2D2D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1A1A;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 标签渐变 -->
+    <linearGradient id="labelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6699;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF8C42;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00A1D6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 小电视渐变 -->
+    <linearGradient id="tvGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A1D6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6699;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 音乐元素渐变 -->
+    <linearGradient id="musicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8C42;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6699;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 播放按钮渐变 -->
+    <linearGradient id="playGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A1D6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6699;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
