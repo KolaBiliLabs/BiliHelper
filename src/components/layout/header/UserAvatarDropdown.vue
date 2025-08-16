@@ -3,15 +3,15 @@ import type { Component } from 'vue'
 import { LogInIcon, LogOutIcon, MoonStarIcon, SunIcon } from 'lucide-vue-next'
 import { NAvatar, NDropdown } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { computed, h, onMounted } from 'vue'
-// import { getUserInfoApi } from '@/api/bilibili'
+import { computed, h } from 'vue'
+import { getUserInfoApi } from '@/api/bilibili'
 import LoginModal from '@/components/modals/LoginModal.vue'
 import { useLoginModal } from '@/hooks/useLoginModal'
 import { useSystemStore } from '@/stores/systemStore'
 import { useUserStore } from '@/stores/userStore'
 
 const userStore = useUserStore()
-const { isLogin } = storeToRefs(userStore)
+const { isLogin, currentUser } = storeToRefs(userStore)
 
 const systemStore = useSystemStore()
 const { isDark } = storeToRefs(systemStore)
@@ -20,22 +20,13 @@ const { openModal, closeModal } = useLoginModal()
 function logout() {
   userStore.clearUserInfo()
 }
-// 进入时，获取用户信息
-onMounted(async () => {
-  // try {
-  //   const userInfoResponse = await getUserInfoApi()
-  //   if (userInfoResponse.code === -101) {
-  //     openModal()
-  //     console.log('未登录')
-  //   } else {
-  //     console.log(' 用户信息 => ', userInfoResponse)
-  //   }
-  // } catch {
-  //   console.log('it gonna be false')
-  // }
-})
 
-function loginSuccess() {
+async function loginSuccess() {
+  const userInfoResponse = await getUserInfoApi()
+
+  console.log(' 用户信息 => ', userInfoResponse)
+  currentUser.value.info = userInfoResponse.data
+
   closeModal()
   window.$message.success('恭喜您，登录成功')
 }
@@ -98,8 +89,8 @@ function handleSelect(key: string) {
       <NAvatar
         round
         :size="36"
-        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-        fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+        :src="currentUser?.info?.face"
+        fallback-src="https://i0.hdslb.com/bfs/face/member/noface.jpg@128w_128h_1c_1s.webp"
         class="cursor-pointer"
       />
     </NDropdown>

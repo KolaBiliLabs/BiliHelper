@@ -29,7 +29,7 @@ export function verifyQrCodeApi(qrcode_key: string) {
 /**
  * 获取用户信息
  */
-export function getUserInfoApi(): PromiseData<IUser> {
+export function getUserInfoApi(): PromiseData<IUserInfo> {
   return request({
     url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
   })

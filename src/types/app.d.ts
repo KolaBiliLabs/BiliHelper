@@ -1,15 +1,13 @@
-interface IUser {
+interface IUserInfo {
+
   mid: number
   uname: string
   face: string
+}
+interface IUser {
   cookie?: string
   csrf?: string
-  medals: IUserMedal[]
-  medalCount: number
-  wbi_img: {
-    img_url: string
-    sub_url: string
-  }
+  info: IUserInfo
 }
 
 interface IAccess {
