@@ -45,9 +45,11 @@ onMounted(() => {
         <!-- 主体部分 -->
         <NLayoutContent :native-scrollbar="false" embedded>
           <div class="p-4 pl-6" :class="{ 'pb-27': showPlayer }">
-            <Transition :name="transitionName" mode="out-in">
-              <RouterView />
-            </Transition>
+            <RouterView #default="{ Component }">
+              <Transition :name="transitionName" mode="out-in">
+                <component :is="Component" />
+              </Transition>
+            </RouterView>
           </div>
         </NLayoutContent>
       </NLayout>
