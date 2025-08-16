@@ -59,13 +59,10 @@ function renderDefaultPlaylistIcon(playlistId: string) {
 }
 
 function selectedMenu(v: string) {
-  // 检查是否为默认页面
-  const defaultPages = [HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE]
-  if (defaultPages.includes(v)) {
-    router.push(`/${v}`)
-  } else {
-    // 自定义歌单
+  if (v.startsWith('custom_')) {
     router.push(`/playlist/${v}`)
+  } else {
+    router.push(`/${v}`)
   }
 }
 
