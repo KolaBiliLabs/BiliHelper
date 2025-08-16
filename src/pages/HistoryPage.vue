@@ -65,11 +65,9 @@ function playAll() {
         </template>
       </div>
 
-      <div>
-        <NButton round tertiary @click="playAll">
-          播放全部
-        </NButton>
-      </div>
+      <NButton round tertiary @click="playAll">
+        播放全部
+      </NButton>
     </header>
 
     <NDivider />
