@@ -1,57 +1,25 @@
 <script setup lang="ts">
 // [ ] 进度条防抖 => 触发阶段修改为为 player 设置，ui阶段无防抖
 
-import { CatIcon, ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon } from 'lucide-vue-next'
-import { NButton, NCard, NSlider } from 'naive-ui'
+import { CatIcon, ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon, Volume1Icon, Volume2Icon, VolumeIcon, VolumeOffIcon } from 'lucide-vue-next'
+import { NButton, NCard, NPopover, NSlider, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
+import { h } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
-import Loading from '../global/Loading.vue'
+import player from '@/utils/player'
+import { calculateCurrentTime, secondsToTime } from '@/utils/time'
 import WithSkeleton from '../global/WithSkeleton.vue'
 import SongInfo from './SongInfo.vue'
-import Volume from './Volume.vue'
 
 const systemStore = useSystemStore()
 const { showPlayer, showPlayQueue } = storeToRefs(systemStore)
 const playStore = usePlayStore()
-const { isPlaying, currentSong, currentTime, duration, loading } = storeToRefs(playStore)
-
-let seekTimeout: ReturnType<typeof setTimeout> | null = null
-
-// 更新当前时间
-function handleUpdateCurrentTime(v: number) {
-  if (seekTimeout) {
-    clearTimeout(seekTimeout)
-  }
-  seekTimeout = setTimeout(() => {
-    playStore.seek(v)
-    console.log('seek v', v)
-  }, 200) // 200ms 可根据需要调整
-}
+const { isPlaying, currentSong, currentTime, playDuration, loading, playVolume, playProgress } = storeToRefs(playStore)
 
 // 打开播放列表
 function handleOpenPlayList() {
   showPlayQueue.value = true
-}
-
-// 播放上一首/下一首
-function handlePlayAdjacentOne(type: 'prev' | 'next') {
-  type === 'prev' ? playStore.playPrev() : playStore.playNext()
-}
-// 播放/暂停按钮点击
-function handlePlayOrPause() {
-  if (!currentSong.value) {
-    return
-  }
-
-  playStore.pauseOrResume()
-}
-
-// 用于格式化当前时间戳
-function formatSongTime(seconds: number): string {
-  const m = Math.floor(seconds / 60)
-  const s = Math.floor(seconds % 60)
-  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
 /**
@@ -62,6 +30,35 @@ function toggleLike(song: ISong) {
     return
   }
   playStore.toggleLike(song)
+}
+
+/**
+ * 进度条拖动结束
+ */
+function sliderDragend() {
+  const seek = calculateCurrentTime(playProgress.value, playDuration.value)
+  playStore.isPlaying = true
+  // 调整进度
+  player.setSeek(seek)
+  player.play()
+}
+
+/**
+ * 音量图标
+ */
+function RenderVolumeIcon({ volume }: { volume: number }) {
+  let _icon = Volume2Icon
+  if (volume > 0.5 && volume <= 1) {
+    _icon = Volume2Icon
+  } else if (volume > 0.15 && volume <= 0.5) {
+    _icon = Volume1Icon
+  } else if (volume > 0 && volume <= 0.15) {
+    _icon = VolumeIcon
+  } else {
+    _icon = VolumeOffIcon
+  }
+
+  return h(_icon, { class: 'size-4' })
 }
 </script>
 
@@ -74,18 +71,23 @@ function toggleLike(song: ISong) {
     }"
   >
     <!-- 进度条 -->
-    <NSlider
-      v-if="showPlayer && currentSong"
-      :disabled="loading"
-      :value="currentTime"
-      :max="duration"
-      :format-tooltip=" formatSongTime"
-      @update:value="handleUpdateCurrentTime"
-    >
-      <template #thumb>
-        <CatIcon class="size-4 fill-blue-200 scale-3d hover:scale-115 transition duration-300" />
-      </template>
-    </NSlider>
+    <div class="slider">
+      <NSlider
+        v-model:value="playStore.playProgress"
+        :step="0.01"
+        :min="0"
+        :max="100"
+        :tooltip="false"
+        :keyboard="false"
+        class="player-slider"
+        @dragstart="player.pause(false)"
+        @dragend="sliderDragend"
+      >
+        <template #thumb>
+          <CatIcon class="size-4 fill-blue-200 scale-3d hover:scale-115 transition duration-300" />
+        </template>
+      </NSlider>
+    </div>
 
     <div class="grid grid-cols-3 items-center h-full gap-2.5">
       <!-- 歌曲信息 -->
@@ -93,41 +95,38 @@ function toggleLike(song: ISong) {
 
       <!-- 播放器 -->
       <div class="flex-center h-full gap-3">
+        <!-- 上一曲 -->
+        <div v-debounce="() => player.nextOrPrev('prev')" class="btn-icon">
+          <ChevronLeftIcon class="size-4" />
+        </div>
+        <!-- 播放/暂停 -->
         <NButton
-          tertiary
-          circle
-          :disabled="loading"
-          @click="handlePlayAdjacentOne('prev')"
-        >
-          <template #icon>
-            <ChevronLeftIcon class="size-4" />
-          </template>
-        </NButton>
-        <NButton
+          :focusable="false"
+          :keyboard="false"
+          :loading="loading"
+          type="primary"
+          strong
           circle
           secondary
-          size="large"
-          :disabled="loading"
-          @click="handlePlayOrPause"
-        >
-          <Transition name="fade" mode="out-in">
-            <template v-if="loading">
-              <Loading :size="30" />
-            </template>
-            <component :is="isPlaying ? PauseIcon : PlayIcon" v-else class="size-5" />
-          </Transition>
-        </NButton>
-        <NButton
-          size="small"
-          circle
-          tertiary
-          :disabled="loading"
-          @click="handlePlayAdjacentOne('next')"
+          @click.stop="() => {
+            console.log('player => ', player)
+            player.playOrPause()
+          }"
         >
           <template #icon>
-            <ChevronRightIcon class="size-4" />
+            <Transition name="fade" mode="out-in">
+              <component
+                :is="isPlaying ? PauseIcon : PlayIcon"
+                :key="playStore.isPlaying"
+                class="size-7"
+              />
+            </transition>
           </template>
         </NButton>
+        <!-- 下一曲 -->
+        <div v-debounce="() => player.nextOrPrev('next')" class="btn-icon">
+          <ChevronRightIcon class="size-4" />
+        </div>
       </div>
 
       <!-- 菜单 -->
@@ -135,14 +134,34 @@ function toggleLike(song: ISong) {
         <!-- 歌曲进度 -->
         <WithSkeleton :loading :width="110" :height="25">
           <div class="text-gray-400 flex-center select-none space-x-1">
-            <span>{{ formatSongTime(currentTime) }}</span>
+            <span>{{ secondsToTime(currentTime) }}</span>
             <span>/</span>
-            <span>{{ formatSongTime(duration) }}</span>
+            <span>{{ secondsToTime(playDuration) }}</span>
           </div>
         </WithSkeleton>
 
         <!-- 音量调节 -->
-        <Volume />
+        <NPopover :show-arrow="false" raw>
+          <template #trigger>
+            <div class="menu-icon" @click.stop="player.toggleMute" @wheel="player.setVolume">
+              <RenderVolumeIcon :volume="playVolume" />
+            </div>
+          </template>
+          <div class="flex flex-col items-center w-16 h-50 px-3 py-2 rounded-3xl bg-[var(n-color)]/50" @wheel="player.setVolume">
+            <NSlider
+              v-model:value="playVolume"
+              :tooltip="false"
+              :min="0"
+              :max="1"
+              :step="0.01"
+              vertical
+              @update:value="(val) => player.setVolume(val)"
+            />
+            <NText class="mt-1 text-xs">
+              {{ Math.round(playStore.playVolume * 100) }}%
+            </NText>
+          </div>
+        </NPopover>
 
         <!-- 播放列表 -->
         <NButton
@@ -157,14 +176,14 @@ function toggleLike(song: ISong) {
   </NCard>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .control-wrap {
-  $h: 90px;
+  --h: 90px;
   position: fixed;
   left: 0;
   right: 0;
-  height: $h;
-  bottom: -$h;
+  height: var(--h);
+  bottom: var(--h);
   z-index: 100;
   transition: bottom 0.3s;
 
@@ -181,6 +200,24 @@ function toggleLike(song: ISong) {
   .n-slider {
     position: absolute;
     top: -10px;
+  }
+}
+
+.slider {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  font-size: 12px;
+  cursor: pointer;
+  .n-slider {
+    margin: 6px 8px;
+    --n-handle-size: 12px;
+    --n-rail-height: 4px;
+  }
+  span {
+    opacity: 0.6;
   }
 }
 </style>

@@ -1,3 +1,4 @@
+import type { App } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE, SEARCH_RESULT_PAGE } from '@constants/pageId'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -67,7 +68,7 @@ const routes: RouteRecordRaw[] = [
   },
 ]
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(),
   routes,
 })
@@ -84,4 +85,10 @@ router.beforeEach((to, _from, next) => {
   }
 })
 
-export default router
+/**
+ * 设置路由
+ * @param app 应用实例
+ */
+export function setupRouter(app: App) {
+  app.use(router)
+}

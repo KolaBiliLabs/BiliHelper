@@ -2,6 +2,7 @@
 import { LIKE_STATUS_CHANGE, PLAY_MODE_CHANGE, PLAY_SONG_CHANGE, PLAY_STATUS_CHANGE } from '@constants/ipcChannels'
 import { Howl, Howler } from 'howler'
 import { cloneDeep } from 'lodash-es'
+import { getVideoDetail } from '@/api/search'
 import { usePlayStore } from '@/stores/playStore'
 import { isElectron, isInList } from './helper'
 import { calculateProgress } from './time'
@@ -12,14 +13,11 @@ export class Player {
   // 定时器
   private playerInterval: ReturnType<typeof setInterval> | undefined
 
-  private timer: ReturnType<typeof setInterval> | null = null
-
   constructor() {
-    this.player = new Howl({
-      src: [],
-      html5: true,
-      volume: 1,
-    })
+    // 创建播放器实例
+    this.player = new Howl({ src: [''], autoplay: false })
+    // 初始化媒体会话
+    this.initMediaSession()
   }
 
   /**
@@ -30,25 +28,10 @@ export class Player {
     const playStore = usePlayStore()
     // 播放列表
     const playlist = playStore.playQueue
-    if (!playlist.length)
-      return null
-    return playlist[playStore.currentIndex]
-  }
-
-  /**
-   * 获取在线播放地址
-   * @param _songId 歌曲ID
-   * @returns 播放地址
-   */
-  private async getOnlineUrl(_songId: string): Promise<string | null> {
-    try {
-      // 这里应该调用相应的API获取播放地址
-      // 暂时返回null，需要根据实际API实现
-      return null
-    } catch (error) {
-      console.error('获取播放地址失败:', error)
+    if (!playlist.length) {
       return null
     }
+    return playlist[playStore.currentIndex]
   }
 
   /**
@@ -63,17 +46,14 @@ export class Player {
     try {
       // 获取播放数据
       const playSongData = this.getPlaySongData()
-      if (!playSongData)
+      if (!playSongData) {
         return
-      const { id } = playSongData
+      }
       // 更改状态
       playStore.loading = true
       // 在线歌曲
-      if (id && playStore.playQueue.length) {
-        const songId = id
-        if (!songId)
-          throw new Error('Get song id error')
-        const url = await this.getOnlineUrl(songId)
+      if (playStore.playQueue.length) {
+        const url = await this.getOnlineUrl(playSongData)
         // 正常播放地址
         if (url) {
           await this.createPlayer(url, autoPlay, seek)
@@ -90,7 +70,31 @@ export class Player {
     } catch (error) {
       console.error('❌ 初始化音乐播放器出错：', error)
       window.$message.error('播放器遇到错误，请尝试软件热重载')
-      // this.errorNext();
+      this.errorNext()
+    }
+  }
+
+  /**
+   * 获取在线播放地址
+   * @param song 歌曲ID
+   * @returns 播放地址
+   */
+  private async getOnlineUrl(song: ISong): Promise<string | null> {
+    try {
+      // [ ] 增加缓存： 将播放过的歌曲缓存到本地
+      // 获取即将播放的歌曲
+      const songDetail = await getVideoDetail(song.bvid)
+
+      // 取第一个可用 url
+      const url = songDetail.urls?.[0]
+      if (!url) {
+        console.error('未获取到音频播放地址')
+        return null
+      }
+      return url
+    } catch (error) {
+      console.error('获取播放地址失败:', error)
+      return null
     }
   }
 
@@ -110,6 +114,7 @@ export class Player {
    */
   setSeek(time: number) {
     const playStore = usePlayStore()
+    console.log(this.player, this.player.seek())
     this.player.seek(time)
     playStore.currentTime = time
   }
@@ -169,15 +174,19 @@ export class Player {
     const isMuted = playStore.playVolume === 0
     // 恢复音量
     if (isMuted) {
-      playStore.playVolume = 1 // 恢复默认音量
+      playStore.playVolume = playStore.playVolumeMute
     }
     // 保存当前音量并静音
     else {
+      playStore.playVolumeMute = playStore.playVolume
       playStore.playVolume = 0
     }
     this.player.volume(playStore.playVolume)
   }
 
+  /**
+   * 处理播放状态
+   */
   private handlePlayStatus() {
     const playStore = usePlayStore()
     // 清理定时器
@@ -246,8 +255,14 @@ export class Player {
     // 清空数据
     this.resetStatus()
     playStore.$patch({
-      currentIndex: -1,
       playQueue: [],
+      currentIndex: -1,
+      playVolume: 1,
+      playRate: 1,
+      playSongMode: 'repeat',
+      playDuration: 0,
+      playProgress: 0,
+      currentTime: 0,
     })
     window.$message.success('已清空播放列表')
   }
@@ -273,19 +288,59 @@ export class Player {
   /**
    * 播放
    */
-  private async play() {
+  async play() {
     const playStore = usePlayStore()
+    // 已在播放
+    if (this.player.playing()) {
+      playStore.isPlaying = true
+      return
+    }
+    this.player.play()
+    playStore.isPlaying = true
+    // 淡入
+    await new Promise<void>((resolve) => {
+      this.player.once('play', () => {
+        this.player.fade(0, playStore.playVolume, 0.5)
+        resolve()
+      })
+    })
+  }
 
-    try {
-      if (this.player.state() === 'loaded') {
-        await this.player.play()
-        playStore.isPlaying = true
-      } else {
-        console.warn('播放器未加载完成')
-      }
-    } catch (error) {
-      console.error('播放失败:', error)
-      throw error
+  /**
+   * 暂停
+   * @param changeStatus 是否更改播放状态
+   */
+  async pause(changeStatus: boolean = true) {
+    const playStore = usePlayStore()
+    console.log('pause =>', this.player.state())
+
+    // 播放器未加载完成
+    if (this.player.state() !== 'loaded') {
+      return
+    }
+
+    // 淡出
+    await new Promise<void>((resolve) => {
+      this.player.fade(playStore.playVolume, 0, 0.5)
+      this.player.once('fade', () => {
+        this.player.pause()
+        if (changeStatus)
+          playStore.isPlaying = false
+        resolve()
+      })
+    })
+  }
+
+  /**
+   * 播放或暂停
+   */
+  async playOrPause() {
+    const playStore = usePlayStore()
+    console.log('playOrPause =>', this, playStore.isPlaying)
+    if (playStore.isPlaying) {
+      await this.pause()
+    } else {
+      await this.play()
     }
   }
 
@@ -402,28 +457,33 @@ export class Player {
         playStore.currentIndex = -1
         this.setSeek(0)
         await this.play()
-      }
-      // 列表循环或处于心动模式
-      if (playStore.playSongMode === 'repeat') {
-        playStore.currentIndex += type === 'next' ? 1 : -1
-      }
-      // 随机播放
-      else if (playStore.playSongMode === 'shuffle') {
-        let newIndex: number
-        // 确保不会随机到同一首
-        do {
-          newIndex = Math.floor(Math.random() * playQueueLength)
-        } while (newIndex === playStore.currentIndex)
-        playStore.currentIndex = newIndex
-      }
-      // 单曲循环
-      else if (playStore.playSongMode === 'repeat-once') {
-        playStore.currentIndex = -1
-        this.setSeek(0)
-        await this.play()
         return
-      } else {
-        throw new Error('The play mode is not supported')
+      }
+
+      // 根据播放模式切换歌曲
+      switch (playStore.playSongMode) {
+        case 'repeat':
+          // 列表循环
+          playStore.currentIndex += type === 'next' ? 1 : -1
+          break
+        case 'shuffle': {
+          // 随机播放
+          let newIndex: number
+          // 确保不会随机到同一首
+          do {
+            newIndex = Math.floor(Math.random() * playQueueLength)
+          } while (newIndex === playStore.currentIndex)
+          playStore.currentIndex = newIndex
+          break
+        }
+        case 'repeat-once':
+          // 单曲循环
+          playStore.currentIndex = -1
+          this.setSeek(0)
+          await this.play()
+          return
+        default:
+          throw new Error('The play mode is not supported')
       }
       // 索引是否越界
       if (playStore.currentIndex < 0) {
@@ -442,48 +502,29 @@ export class Player {
   }
 
   /**
-   * 暂停
-   * @param changeStatus 是否更改播放状态
-   */
-  async pause(changeStatus: boolean = true) {
-    const playStore = usePlayStore()
-
-    // 播放器未加载完成
-    if (this.player.state() !== 'loaded') {
-      return
-    }
-
-    // 淡出
-    await new Promise<void>((resolve) => {
-      this.player.fade(playStore.playVolume, 0, playStore.currentTime)
-      this.player.once('fade', () => {
-        this.player.pause()
-        if (changeStatus)
-          playStore.isPlaying = false
-        resolve()
-      })
-    })
-  }
-
-  /**
-   * 播放或暂停
-   */
-  async playOrPause() {
-    const playStore = usePlayStore()
-    if (playStore.isPlaying) {
-      await this.pause()
-    } else {
-      await this.play()
-    }
-  }
-
-  /**
    * 错误处理 - 跳转到下一首
    * @param error 错误信息
    */
   private errorNext(error?: any) {
     console.error('播放错误，跳转下一首:', error)
     this.nextOrPrev('next')
+  }
+
+  /**
+   * 初始化 MediaSession
+   */
+  private initMediaSession() {
+    if (!('mediaSession' in navigator))
+      return
+    navigator.mediaSession.setActionHandler('play', () => this.play())
+    navigator.mediaSession.setActionHandler('pause', () => this.pause())
+    navigator.mediaSession.setActionHandler('previoustrack', () => this.nextOrPrev('prev'))
+    navigator.mediaSession.setActionHandler('nexttrack', () => this.nextOrPrev('next'))
+    // 跳转进度
+    navigator.mediaSession.setActionHandler('seekto', (event) => {
+      if (event.seekTime)
+        this.setSeek(event.seekTime)
+    })
   }
 
   /**
@@ -509,3 +550,5 @@ export class Player {
     }
   }
 }
+
+export default new Player()

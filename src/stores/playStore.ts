@@ -1,11 +1,11 @@
-import { LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE } from '@constants/ipcChannels'
+import { LIKE_STATUS_CHANGE } from '@constants/ipcChannels'
 import { HISTORY_PAGE, LIKED_PAGE, PLUGIN_PAGE } from '@constants/pageId'
 import { HISTORY_MAX } from '@constants/renderer'
-import { Howl } from 'howler'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { getVideoDetail } from '@/api/search'
 import { isInList, isSameSong, lruInsert } from '@/utils/helper'
+
+export type PlaySongMode = 'repeat' | 'repeat-once' | 'shuffle'
 
 export interface IPlaylist {
   id: string
@@ -45,20 +45,20 @@ export const usePlayStore = defineStore('play', () => {
   const currentTime = ref(0)
 
   // 播放模式
-  const playSongMode = ref('repeat')
+  const playSongMode = ref<PlaySongMode>('repeat')
   // 播放速率
   const playRate = ref(1)
   // 播放时长
   const playDuration = ref(0)
   // 播放音量
   const playVolume = ref(1)
+  const playVolumeMute = ref(playVolume.value)
   // 播放进度
   const playProgress = ref(0)
   // 加载状态
   const loading = ref(false)
 
   let player: Howl | null = null
-  let timer: ReturnType<typeof setInterval> | null = null
 
   // 播放队列
   const playQueue = ref<ISong[]>([])
@@ -177,199 +177,6 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  // 播放指定歌曲（可选：插入到队列/直接播放）
-  async function play(song: ISong) {
-    if (!song) {
-      // 提示用户歌曲不存在 当未选择歌曲时，从托盘点击播放相关行为的按钮会导致这个 bug
-      window.$message.error('歌曲不存在')
-      return
-    }
-    // [x] cleanup 上一首歌 并初始化状态
-    resetPlayerState()
-
-    // 插入到播放队列
-    const idx = isInList(playQueue.value, song)
-    if (idx !== -1) {
-      currentIndex.value = idx
-    } else {
-      // 插入到第一位
-      playQueue.value.unshift(song)
-      currentIndex.value = 0
-    }
-
-    // 添加到历史记录
-    addToHistory(song)
-
-    // 同步托盘喜欢状态
-    window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, isInList(liked.value, song) !== -1)
-
-    // 同步托盘播放状态
-    window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
-
-    try {
-      // 停止并卸载上一个音频
-      unloadPlayer()
-
-      // 开始获取音频播放地址
-      loading.value = true
-
-      // [ ] 增加缓存： 将播放过的歌曲缓存到本地
-      // 获取即将播放的歌曲
-      const songDetail = await getVideoDetail(song.bvid)
-
-      // 取第一个可用 url
-      const url = songDetail.urls?.[0]
-      if (!url) {
-        console.error('未获取到音频播放地址')
-        return
-      }
-
-      player = new Howl({
-        src: [url],
-        html5: true,
-        volume: playVolume.value,
-        onend: () => {
-          playNext()
-        },
-        onload() {
-          loading.value = false
-        },
-        onplay: () => {
-          console.log('playing')
-
-          if (player && currentSong.value.custom) {
-            // 播放时 设置当前时间
-            currentTime.value = currentSong.value.custom.startTime
-            player.seek(currentSong.value.custom.startTime)
-          }
-
-          isPlaying.value = true
-          playDuration.value = player?.duration() || 0
-          currentTime.value = player?.seek() as number
-
-          console.log('start playing => ', player?.duration(), player?.seek(), loading.value)
-
-          // 定时刷新 currentTime
-          if (timer) {
-            clearInterval(timer)
-          }
-          timer = setInterval(() => {
-            if (player && isPlaying.value) {
-              currentTime.value = player.seek() as number
-            }
-          }, 500)
-        },
-        onpause: () => {
-          isPlaying.value = false
-          if (timer) {
-            clearInterval(timer)
-          }
-        },
-        onstop: () => {
-          isPlaying.value = false
-          if (timer)
-            clearInterval(timer)
-        },
-        onloaderror: (_id, err) => {
-          console.error('音频加载失败', err)
-        },
-        onplayerror: (_id, err) => {
-          console.error('音频播放失败', err)
-        },
-      })
-      player.play()
-      isPlaying.value = true
-    } catch (error) {
-      loading.value = false
-      console.error('playStore => play ', error)
-      window.$message.error((error as { message: string }).message)
-    }
-  }
-
-  /// 重置播放器的状态
-  function resetPlayerState() {
-    if (player) {
-      player.seek(0)
-      player.stop()
-    }
-    console.log('cleanup => ')
-    currentTime.value = 0
-  }
-
-  // 下一首
-  function playNext(fromDel: boolean = false) {
-    if (playQueue.value.length === 0) {
-      // [ ] 当前播放列表为空， ui提示
-      return
-    }
-
-    if (fromDel) {
-      playIndexInQueue(currentIndex.value)
-    }
-
-    const nextIndex = currentIndex.value < playQueue.value.length - 1 ? currentIndex.value + 1 : 0
-    playIndexInQueue(nextIndex)
-  }
-
-  // 上一首
-  function playPrev() {
-    if (playQueue.value.length === 0) {
-      // [ ] 当前播放列表为空，ui提示
-      return
-    }
-
-    const prevIndex = currentIndex.value > 0 ? currentIndex.value - 1 : playQueue.value.length - 1
-    playIndexInQueue(prevIndex)
-  }
-
-  // 用于播放 上一曲/下一曲 in queue
-  function playIndexInQueue(index: number) {
-    // 先暂停当前歌曲
-    stop()
-
-    currentIndex.value = index
-
-    const song = playQueue.value[currentIndex.value]
-    if (song) {
-      play(song)
-    }
-  }
-
-  // 暂停
-  function pause() {
-    if (player && isPlaying.value) {
-      player.pause()
-      isPlaying.value = false
-      window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, false)
-      if (timer) {
-        clearInterval(timer)
-      }
-    }
-  }
-
-  // 恢复播放
-  function resume() {
-    if (player && !isPlaying.value) {
-      player.play()
-      isPlaying.value = true
-      window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
-    }
-  }
-
-  function pauseOrResume() {
-    if (player) {
-      if (isPlaying.value) {
-        player.pause()
-        isPlaying.value = false
-        window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, false)
-      } else {
-        player.play()
-        isPlaying.value = true
-        window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, true)
-      }
-    }
-  }
-
   /**
    * 播放指定歌单的全部歌曲
    * @param id
@@ -387,21 +194,9 @@ export const usePlayStore = defineStore('play', () => {
       // 将播放队列替换为指定歌单
       playQueue.value = [...playlist.musics]
 
-      const firstSong = playQueue.value[0]
-      play(firstSong)
+      // const firstSong = playQueue.value[0]
+      // play(firstSong)
     }
-  }
-
-  // 停止
-  function stop() {
-    if (player) {
-      unloadPlayer()
-      if (timer) {
-        clearInterval(timer)
-      }
-    }
-    isPlaying.value = false
-    window.electron.ipcRenderer.send(PLAY_STATUS_CHANGE, false)
   }
 
   // 清空队列
@@ -466,6 +261,7 @@ export const usePlayStore = defineStore('play', () => {
     currentTime,
     playDuration,
     playVolume,
+    playVolumeMute,
     playProgress,
     loading,
 
@@ -474,16 +270,9 @@ export const usePlayStore = defineStore('play', () => {
 
     setVolume,
     seek,
-    play,
-    playNext,
-    playPrev,
-    playIndexInQueue,
-    pause,
-    resume,
     stop,
     clearQueue,
     addToQueue,
-    pauseOrResume,
 
     playAll,
 

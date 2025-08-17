@@ -23,6 +23,13 @@
   @apply !flex flex-col items-center justify-center;
 }
 
+@utility btn-icon {
+  @apply flex-center size-10 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 hover:backdrop-blur-[10px] active:scale-100;
+}
+@utility menu-icon {
+  @apply flex-center p-2 rounded-lg transition-colors duration-300 cursor-pointer hover:scale-110 hover:backdrop-blur-[10px] active:scale-100;
+}
+
 @layer base {
   .lucide {
     @apply size-4;

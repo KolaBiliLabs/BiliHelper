@@ -61,7 +61,7 @@ onMounted(() => {
   </AppProvider>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .all-layout {
   $headerHeight: 60px;
   height: 100%;
@@ -95,62 +95,14 @@ onMounted(() => {
   }
 }
 
-// 路由过渡动画
-.router-enter-active,
-.router-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.router-enter-from {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-.router-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-// 淡入淡出过渡
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-// 滑动过渡
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease;
-}
-
-.slide-enter-from {
-  transform: translateY(30px);
-  opacity: 0;
-}
-
-.slide-leave-to {
-  transform: translateY(-30px);
-  opacity: 0;
-}
-
-// 缩放过渡
-.scale-enter-active,
-.scale-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.scale-enter-from {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.scale-leave-to {
-  opacity: 0;
-  transform: scale(1.05);
+.player-slider {
+  position: absolute !important;
+  width: 100%;
+  height: 16px;
+  top: -8px !important;
+  left: 0 !important;
+  margin: 0 !important;
+  --n-rail-height: 3px;
+  --n-handle-size: 14px;
 }
 </style>
