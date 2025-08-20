@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NLayoutHeader } from 'naive-ui'
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { useSystemStore } from '@/stores/systemStore'
 import Search from './search/Search.vue'
 import TrafficLights from './TrafficLights.vue'
@@ -21,7 +21,7 @@ const logoSrc = computed(() => {
     <div class="flex items-center w-full app-region-drag gap-2">
       <!-- Logo -->
       <div class="flex-none px-3 header-logo flex items-center gap-2" :style="{ width: `${siderWidth}px` }">
-        <img :src="logoSrc" alt="KolaBiliHelper" class="w-8 h-8" />
+        <img :src="logoSrc" alt="KolaBiliHelper" class="w-8 h-8">
         <span class="font-semibold text-lg text-gray-800 dark:text-gray-200">Kola</span>
       </div>
 

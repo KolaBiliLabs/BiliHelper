@@ -345,6 +345,80 @@ export class Player {
   }
 
   /**
+   * 切换播放索引
+   * @param index 播放索引
+   * @param play 是否立即播放
+   */
+  async togglePlayIndex(index: number, play: boolean = false) {
+    const playStore = usePlayStore()
+    // 若超出播放列表
+    if (index >= playStore.playQueue.length) {
+      return
+    }
+    // 相同
+    if (!play && playStore.currentIndex === index) {
+      this.play()
+      return
+    }
+    // 更改状态
+    playStore.currentIndex = index
+    // 清理并播放
+    this.resetStatus()
+    await this.initPlayer()
+  }
+
+  /**
+   * 更新播放列表
+   * @param data 播放列表
+   * @param song 当前播放歌曲
+   * @param options 配置
+   * @param options.play 是否直接播放
+   * @param options.showTip 是否显示提示信息
+   */
+  async updatePlayList(
+    data: ISong[],
+    song?: ISong,
+    options?: { play?: boolean, showTip?: boolean },
+  ) {
+    // 获取配置
+    const { play, showTip } = options ?? { play: true, showTip: false }
+
+    if (!data || !data.length) {
+      return
+    }
+
+    const playStore = usePlayStore()
+
+    // 更新列表
+    playStore.setPlayQueue(cloneDeep(data))
+
+    // 是否直接播放
+    if (song && typeof song === 'object' && 'id' in song) {
+      // 是否为当前播放歌曲
+      if (playStore.currentSong.id === song.id) {
+        if (play) {
+          await this.play()
+        }
+      } else {
+        // 查找索引
+        playStore.currentIndex = data.findIndex(item => item.id === song.id)
+        // 播放
+        await this.pause(false)
+        await this.initPlayer()
+      }
+    } else {
+      playStore.currentIndex = playStore.playSongMode === 'shuffle' ? Math.floor(Math.random() * data.length) : 0
+      // 播放
+      await this.pause(false)
+      await this.initPlayer()
+    }
+
+    if (showTip) {
+      window.$message.success('已开始播放')
+    }
+  }
+
+  /**
    * 创建播放器
    * @param src 播放地址
    * @param autoPlay 是否自动播放

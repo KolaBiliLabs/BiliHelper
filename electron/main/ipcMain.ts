@@ -2,7 +2,7 @@ import type { BrowserWindow } from 'electron'
 import type { MyTray } from './tray'
 import axios from 'axios'
 import { app, ipcMain } from 'electron'
-import { AUDIO_TRIM_CANCEL, AUDIO_TRIM_COMPLETE, AUDIO_TRIM_ERROR, AUDIO_TRIM_PROGRESS, AUDIO_TRIM_START, LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE, WINDOW_CLOSE, WINDOW_HIDE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE, WINDOW_RELOAD, WINDOW_SHOW } from '../../constants/ipcChannels'
+import { AUDIO_TRIM_CANCEL, AUDIO_TRIM_COMPLETE, AUDIO_TRIM_ERROR, AUDIO_TRIM_START, LIKE_STATUS_CHANGE, PLAY_STATUS_CHANGE, WINDOW_CLOSE, WINDOW_HIDE, WINDOW_MAXIMIZE, WINDOW_MINIMIZE, WINDOW_RELOAD, WINDOW_SHOW } from '../../constants/ipcChannels'
 import { PLAY_STATUS_PAUSE, PLAY_STATUS_PLAY } from '../../constants/playStatus'
 import { isDev } from './utils'
 
@@ -115,11 +115,11 @@ function initAudioTrimIpc(win: BrowserWindow | null) {
     try {
       const { AudioTrimmer } = await import('../../src/utils/audioTrimmer')
       const trimmer = new AudioTrimmer()
-      
+
       // 这里可以根据需要处理不同的输入源
       // 例如：从文件路径、URL 或 Buffer 进行裁剪
       const result = await trimmer.trimAudio(options.inputPath, options.trimOptions)
-      
+
       win?.webContents.send(AUDIO_TRIM_COMPLETE, result)
       return result
     } catch (error: any) {

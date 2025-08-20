@@ -1,5 +1,5 @@
-import { useRoute } from 'vue-router'
 import type { AppRouteName, AppRouteParams, AppRouteQuery } from '@/types/router'
+import { useRoute } from 'vue-router'
 
 /**
  * 类型安全的 useRoute hook
@@ -7,33 +7,33 @@ import type { AppRouteName, AppRouteParams, AppRouteQuery } from '@/types/router
  */
 export function useTypedRoute<T extends AppRouteName = AppRouteName>() {
   const route = useRoute()
-  
+
   return {
     // 路由名称，类型安全
     name: route.name as T,
-    
+
     // 路由参数，根据路由名称提供类型
-    params: route.params as T extends keyof AppRouteParams 
-      ? AppRouteParams[T] 
+    params: route.params as T extends keyof AppRouteParams
+      ? AppRouteParams[T]
       : Record<string, string | string[]>,
-    
+
     // 查询参数，根据路由名称提供类型
-    query: route.query as T extends keyof AppRouteQuery 
-      ? AppRouteQuery[T] 
+    query: route.query as T extends keyof AppRouteQuery
+      ? AppRouteQuery[T]
       : Record<string, string | string[]>,
-    
+
     // 路由元信息
     meta: route.meta,
-    
+
     // 路径
     path: route.path,
-    
+
     // 完整路径
     fullPath: route.fullPath,
-    
+
     // 哈希
     hash: route.hash,
-    
+
     // 原始路由对象
     route,
   }
@@ -65,4 +65,4 @@ export function usePluginRoute() {
 
 export function useAudioTrimRoute() {
   return useTypedRoute<'AudioTrim'>()
-} 
+}

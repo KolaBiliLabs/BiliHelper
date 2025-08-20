@@ -7,6 +7,7 @@ import Loading from '@/components/global/Loading.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { handleThumb, isSameSong } from '@/utils/helper'
 import Like from '../global/Like.vue'
+import player from '@/utils/player'
 
 const props = defineProps<{
   data: ISong
@@ -48,14 +49,14 @@ const sameSong = computed(() => isSameSong(currentSong.value, props.data))
               :is="isPlaying ? Pause : Play "
               class="num-transition size-6 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-0"
               :class="{ 'group-hover:opacity-100': sameSong }"
-              @click="playStore.pauseOrResume"
+              @click="player.playOrPause"
               @dblclick.stop
             />
             <!-- 播放 -->
             <Music2Icon
               class="num-transition size-5 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-100"
               :class="{ 'group-hover:hidden': sameSong }"
-              @click="playStore.play(data)"
+              @click="player.playOrPause"
             />
           </div>
         </Transition>

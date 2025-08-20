@@ -199,6 +199,10 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
+  function setPlayQueue(list: ISong[]) {
+    playQueue.value = list
+  }
+
   // 清空队列
   function clearQueue() {
     unloadPlayer()
@@ -254,7 +258,10 @@ export const usePlayStore = defineStore('play', () => {
     addMusicToPlaylist,
     removeMusicFromPlaylist,
     updatePlaylist, // 新增
+
     playQueue,
+    setPlayQueue,
+
     currentIndex,
     currentSong,
     isPlaying,

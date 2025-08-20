@@ -65,7 +65,7 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
 <template>
   <NCard
     class="control-wrap"
-    :class="[{ show: showPlayer && currentSong }]"
+    :class="[{ show: showPlayer }]"
     :content-style="{
       padding: 0,
     }"
@@ -183,7 +183,7 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
   left: 0;
   right: 0;
   height: var(--h);
-  bottom: var(--h);
+  bottom: calc(-1 * (var(--h) + 10px));
   z-index: 100;
   transition: bottom 0.3s;
 

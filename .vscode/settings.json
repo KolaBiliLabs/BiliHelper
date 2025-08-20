@@ -50,25 +50,31 @@
   ],
   "cSpell.words": [
     "afade",
+    "asar",
     "bilibili",
     "bvid",
     "clickoutside",
     "cursorrules",
     "Dede",
+    "electronjs",
+    "eslintcache",
     "flac",
+    "itsimddc",
     "kbps",
     "KHTML",
     "loudnorm",
     "mata",
     "mobi",
     "nexttrack",
+    "nsis",
     "onloaderror",
     "onplayerror",
     "previoustrack",
     "qrcode",
     "seekto",
     "SESSDATA",
-    "sourceid"
+    "sourceid",
+    "vite"
   ],
   "todo-tree.tree.scanMode": "workspace"
 }
