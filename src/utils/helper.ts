@@ -110,7 +110,7 @@ export function lruInsert<T extends ISong>(arr: T[], item: T, max: number) {
  * @description 组装 SongInfo
  */
 export async function assembleSongInfo(songDetail: ISong, unifiedData: IUnifiedData) {
-  const id = await generateCustomSongId(songDetail.bvid, unifiedData.video.title, unifiedData.video.currentTime, unifiedData.video.duration)
+  const id = generateCustomSongId(songDetail.bvid, unifiedData.video.title, unifiedData.song.startTime, unifiedData.song.endTime)
 
   return {
     urls: songDetail.urls,
@@ -141,7 +141,7 @@ export async function assembleSongInfo(songDetail: ISong, unifiedData: IUnifiedD
  * @param endTime 结束时间
  * @returns 自定义歌曲 ID
  */
-export async function generateCustomSongId(bvid: string, customName: string, startTime: number, endTime: number) {
+export function generateCustomSongId(bvid: string, customName: string, startTime: number, endTime: number) {
   const content = `${bvid}_${customName}_${startTime}_${endTime}`
   return `custom_${content}`
 }
