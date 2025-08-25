@@ -4,7 +4,9 @@ import { storeToRefs } from 'pinia'
 import { useTemplateRef } from 'vue'
 import Loading from '@/components/global/Loading.vue'
 import SongListMenu from '@/components/menus/SongListMenu.vue'
+import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
+import player from '@/utils/player'
 import SongCard from '../card/SongCard.vue'
 
 withDefaults(defineProps<{
@@ -26,9 +28,20 @@ defineSlots<{
 }>()
 
 const systemStore = useSystemStore()
-const { selectedMenuKey } = storeToRefs(systemStore)
+const { selectedMenuKey, showPlayer } = storeToRefs(systemStore)
+
+const playStore = usePlayStore()
 
 const songListMenuRef = useTemplateRef<InstanceType<typeof SongListMenu>>('songListMenuRef')
+
+// 选择歌曲
+function chooseSong(song: ISong) {
+  console.log('→ choose song in SongList', song)
+  player.updatePlayList(playStore.playQueue, song)
+  showPlayer.value = true
+
+  emit('choose', song)
+}
 
 function toggleLike(song: ISong) {
   emit('toggleLike', song)
@@ -55,7 +68,7 @@ function toggleLike(song: ISong) {
             v-if="song"
             :data="song"
             :index="idx"
-            @dblclick="$emit('choose', song)"
+            @dblclick.stop="() => chooseSong(song)"
             @contextmenu.stop="
               songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
             "

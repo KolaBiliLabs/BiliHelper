@@ -19,16 +19,6 @@ const { playlists } = storeToRefs(playStore)
 const pageId = computed(() => route.meta.pageId)
 const playList = computed(() => playlists.value.find(v => v.id === pageId.value))
 
-/**
- * 选择歌单中的歌曲
- * @param v
- */
-function chooseSong(v: ISong) {
-  console.log('choose song in Playlist', v)
-  playStore.play(v)
-  showPlayer.value = true
-}
-
 function toggleLike(song: ISong) {
   playStore.toggleLike(song)
 }
@@ -71,6 +61,9 @@ function playAll() {
 
     <NDivider />
 
-    <SongList :data="playList?.musics || []" @choose="chooseSong" @toggle-like="toggleLike" />
+    <SongList
+      :data="playList?.musics || []"
+      @toggle-like="toggleLike"
+    />
   </div>
 </template>

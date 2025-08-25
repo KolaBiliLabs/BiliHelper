@@ -21,7 +21,7 @@ export class Player {
   }
 
   /**
-   * 获取当前播放歌曲
+   * 获取播放歌曲信息
    * @returns 当前播放歌曲
    */
   private getPlaySongData(): ISong | null {
@@ -29,6 +29,7 @@ export class Player {
     // 播放列表
     const playlist = playStore.playQueue
     if (!playlist.length) {
+      window.$message.error('播放列表为空')
       return null
     }
     return playlist[playStore.currentIndex]
@@ -47,6 +48,7 @@ export class Player {
       // 获取播放数据
       const playSongData = this.getPlaySongData()
       if (!playSongData) {
+        window.$message.error('当前歌曲不存在')
         return
       }
       // 更改状态
@@ -295,6 +297,7 @@ export class Player {
       playStore.isPlaying = true
       return
     }
+    // 播放
     this.player.play()
     playStore.isPlaying = true
     // 淡入
@@ -377,38 +380,39 @@ export class Player {
    */
   async updatePlayList(
     data: ISong[],
-    song?: ISong,
+    song: ISong,
     options?: { play?: boolean, showTip?: boolean },
   ) {
     // 获取配置
     const { play, showTip } = options ?? { play: true, showTip: false }
 
-    if (!data || !data.length) {
-      return
-    }
-
     const playStore = usePlayStore()
 
-    // 更新列表
-    playStore.setPlayQueue(cloneDeep(data))
+    // 更新播放队列
+    const newList = data.filter(s => s.id !== song.id)
+    newList.push(song)
+    playStore.setPlayQueue(cloneDeep(newList))
 
     // 是否直接播放
     if (song && typeof song === 'object' && 'id' in song) {
       // 是否为当前播放歌曲
-      if (playStore.currentSong.id === song.id) {
+      if (playStore.currentSong && playStore.currentSong.id === song.id) {
         if (play) {
           await this.play()
         }
       } else {
         // 查找索引
-        playStore.currentIndex = data.findIndex(item => item.id === song.id)
+        playStore.currentIndex = playStore.playQueue.findIndex(item => item.id === song.id)
         // 播放
         await this.pause(false)
         await this.initPlayer()
       }
     } else {
-      playStore.currentIndex = playStore.playSongMode === 'shuffle' ? Math.floor(Math.random() * data.length) : 0
-      // 播放
+      // 随机播放则取随机索引
+      playStore.currentIndex = playStore.playSongMode === 'shuffle'
+        ? Math.floor(Math.random() * data.length)
+        // 其他模式则从头开始
+        : 0
       await this.pause(false)
       await this.initPlayer()
     }

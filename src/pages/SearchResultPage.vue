@@ -7,10 +7,6 @@ import SongList from '@/components/global/SongList.vue'
 import { useRequestSearchResults } from '@/hooks/useRequestSearchResults'
 import { usePlayStore } from '@/stores/playStore'
 import { useSearchStore } from '@/stores/searchStore'
-import { useSystemStore } from '@/stores/systemStore'
-
-const systemStore = useSystemStore()
-const { showPlayer } = storeToRefs(systemStore)
 
 const searchStore = useSearchStore()
 const { currentSearchKeyword } = storeToRefs(searchStore)
@@ -24,13 +20,6 @@ const { data, loading, total, page, pageSize, run } = useRequestSearchResults(cu
 
 function pageChange(v: number) {
   page.value = v
-}
-
-// 选择歌曲
-function chooseSong(song: ISong) {
-  playStore.play(song)
-  playStore.addToHistory(song)
-  showPlayer.value = true
 }
 
 function toggleLike(song: ISong) {
@@ -67,7 +56,6 @@ onBeforeUnmount(() => {
     <SongList
       :data="data"
       :loading="loading"
-      @choose="chooseSong"
       @toggle-like="toggleLike"
     />
 

@@ -6,8 +6,8 @@ import { computed } from 'vue'
 import Loading from '@/components/global/Loading.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { handleThumb, isSameSong } from '@/utils/helper'
-import Like from '../global/Like.vue'
 import player from '@/utils/player'
+import Like from '../global/Like.vue'
 
 const props = defineProps<{
   data: ISong

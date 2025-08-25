@@ -20,16 +20,6 @@ const pageId = computed(() => route.meta.pageId)
 const playList = computed(() => playlists.value.find(v => v.id === pageId.value))
 
 /**
- * 选择歌曲
- * @param v
- */
-function chooseSong(v: ISong) {
-  console.log('choose song in Playlist', v)
-  playStore.play(v)
-  showPlayer.value = true
-}
-
-/**
  * 切换歌曲的喜欢状态
  */
 function toggleLike(song: ISong) {
@@ -72,6 +62,9 @@ function playAll() {
 
     <NDivider />
 
-    <SongList :data="playList?.musics || []" @choose="chooseSong" @toggle-like="toggleLike" />
+    <SongList
+      :data="playList?.musics || []"
+      @toggle-like="toggleLike"
+    />
   </div>
 </template>

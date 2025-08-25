@@ -32,16 +32,6 @@ const playList = computed(() => playlists.value.find(v => v.id === playlistId.va
 // 如果歌单不存在，显示错误信息
 const playlistNotFound = computed(() => !playList.value)
 
-/**
- * 选择歌单中的歌曲
- * @param v
- */
-function chooseSong(v: ISong) {
-  console.log('choose song in Playlist', v)
-  playStore.play(v)
-  showPlayer.value = true
-}
-
 function toggleLike(song: ISong) {
   playStore.toggleLike(song)
 }
@@ -94,7 +84,10 @@ function playAll() {
 
       <NDivider />
 
-      <SongList :data="playList?.musics || []" @choose="chooseSong" @toggle-like="toggleLike" />
+      <SongList
+        :data="playList?.musics || []"
+        @toggle-like="toggleLike"
+      />
     </div>
   </div>
 </template>
