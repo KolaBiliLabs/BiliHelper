@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router'
 import SongList from '@/components/global/SongList.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
+import player from '@/utils/player'
 import { formatTime } from '@/utils/time'
 
 const route = useRoute()
@@ -27,7 +28,10 @@ function toggleLike(song: ISong) {
  * 播放全部歌曲
  */
 function playAll() {
-  playStore.playAll(pageId.value!)
+  if (!playList.value?.musics.length) {
+    return
+  }
+  player.updatePlayList(playList.value.musics)
   showPlayer.value = true
 }
 </script>
@@ -53,7 +57,12 @@ function playAll() {
       </div>
 
       <div>
-        <NButton round tertiary @click="playAll">
+        <NButton
+          :disabled="!playList?.musics.length"
+          round
+          tertiary
+          @click="playAll"
+        >
           播放全部
         </NButton>
       </div>

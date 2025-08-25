@@ -1,6 +1,7 @@
 import { LIKE_STATUS_CHANGE, PAUSE, PLAY, PLAY_NEXT, PLAY_PREV } from '@constants/ipcChannels'
 import { usePlayStore } from '@/stores/playStore'
 import { isElectron } from './helper'
+import player from './player'
 
 // 全局 IPC 事件
 export function initIpc() {
@@ -11,31 +12,24 @@ export function initIpc() {
     }
     // 播放
     window.electron.ipcRenderer.on(PLAY, () => {
-      const playStore = usePlayStore()
       // 存在播放器则恢复播放
-      if (playStore.hasPlayer()) {
-        playStore.resume()
-      } else {
-        // 否则播放上次的歌曲
-        playStore.play(playStore.currentSong)
+      if (player) {
+        player.play()
       }
     })
     // 暂停
     window.electron.ipcRenderer.on(PAUSE, () => {
-      const playStore = usePlayStore()
-      playStore.pause()
+      player.pause()
     })
     // // 播放或暂停
     // window.electron.ipcRenderer.on('playOrPause', () => playStore.pauseOrResume())
     // 上一曲
     window.electron.ipcRenderer.on(PLAY_PREV, () => {
-      const playStore = usePlayStore()
-      playStore.playNext()
+      player.nextOrPrev('prev')
     })
     // 下一曲
     window.electron.ipcRenderer.on(PLAY_NEXT, () => {
-      const playStore = usePlayStore()
-      playStore.playPrev()
+      player.nextOrPrev('next')
     })
 
     // 切换喜欢

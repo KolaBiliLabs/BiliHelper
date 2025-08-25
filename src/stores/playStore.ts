@@ -58,8 +58,6 @@ export const usePlayStore = defineStore('play', () => {
   // 加载状态
   const loading = ref(false)
 
-  let player: Howl | null = null
-
   // 播放队列
   const playQueue = ref<ISong[]>([])
   // 当前播放索引
@@ -177,70 +175,13 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  /**
-   * 播放指定歌单的全部歌曲
-   * @param id
-   */
-  function playAll(id: string) {
-    const allPlaylist = [...defaultPlaylists.value, ...customPlaylists.value]
-    const playlist = allPlaylist.find(p => p.id === id)
-
-    if (!playlist?.musics.length) {
-      window.$message.info('请添加歌曲至当前歌单')
-      return
-    }
-
-    if (playlist) {
-      // 将播放队列替换为指定歌单
-      playQueue.value = [...playlist.musics]
-
-      // const firstSong = playQueue.value[0]
-      // play(firstSong)
-    }
-  }
-
   function setPlayQueue(list: ISong[]) {
     playQueue.value = list
   }
 
-  // 清空队列
-  function clearQueue() {
-    unloadPlayer()
-    playQueue.value = []
-    currentIndex.value = -1
-    isPlaying.value = false
-  }
-
-  // 添加到队列但不播放
-  function addToQueue(song: ISong) {
-    // [ ]: 这里是否需要修改 index?
-    if (!playQueue.value.find(item => item.bvid === song.bvid)) {
-      playQueue.value.push(song)
-    }
-  }
-
-  // 设置音量
-  function setVolume(val: number) {
-    playVolume.value = val
-    if (player)
-      player.volume(val)
-  }
-
   // 拖动进度条
   function seek(time: number) {
-    if (player) {
-      player.seek(time)
-      currentTime.value = time
-    }
-  }
-
-  function unloadPlayer() {
-    if (player) {
-      player.stop()
-      player.unload()
-      player = null
-      console.log('🦄 unloadingPlayer => ')
-    }
+    currentTime.value = time
   }
 
   return {
@@ -250,11 +191,14 @@ export const usePlayStore = defineStore('play', () => {
     defaultPlaylists,
     customPlaylists,
     playlists,
+
     addToHistory,
     toggleLike,
     addToPlugin,
+
     createPlaylist,
     removePlaylist,
+
     addMusicToPlaylist,
     removeMusicFromPlaylist,
     updatePlaylist, // 新增
@@ -275,17 +219,7 @@ export const usePlayStore = defineStore('play', () => {
     playSongMode,
     playRate,
 
-    setVolume,
     seek,
-    stop,
-    clearQueue,
-    addToQueue,
-
-    playAll,
-
-    hasPlayer() {
-      return player !== null
-    },
   }
 }, {
   persist: {

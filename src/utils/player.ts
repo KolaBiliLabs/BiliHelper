@@ -380,7 +380,7 @@ export class Player {
    */
   async updatePlayList(
     data: ISong[],
-    song: ISong,
+    song?: ISong,
     options?: { play?: boolean, showTip?: boolean },
   ) {
     // 获取配置
@@ -388,13 +388,13 @@ export class Player {
 
     const playStore = usePlayStore()
 
-    // 更新播放队列
-    const newList = data.filter(s => s.id !== song.id)
-    newList.push(song)
-    playStore.setPlayQueue(cloneDeep(newList))
-
     // 是否直接播放
     if (song && typeof song === 'object' && 'id' in song) {
+    // 更新播放队列
+      const newList = data.filter(s => s.id !== song.id)
+      newList.push(song)
+      playStore.setPlayQueue(cloneDeep(newList))
+
       // 是否为当前播放歌曲
       if (playStore.currentSong && playStore.currentSong.id === song.id) {
         if (play) {
@@ -408,6 +408,8 @@ export class Player {
         await this.initPlayer()
       }
     } else {
+      playStore.setPlayQueue(cloneDeep(data))
+
       // 随机播放则取随机索引
       playStore.currentIndex = playStore.playSongMode === 'shuffle'
         ? Math.floor(Math.random() * data.length)
