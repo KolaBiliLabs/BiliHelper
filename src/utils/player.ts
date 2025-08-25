@@ -532,24 +532,25 @@ export class Player {
       // 列表长度
       const playQueueLength = playStore.playQueue.length
       // 播放列表是否为空
-      if (playQueueLength === 0)
-        throw new Error('Play list is empty')
+      if (playQueueLength === 0) {
+        throw new Error('列表为空')
+      }
       // 只有一首歌的特殊处理
       if (playQueueLength === 1) {
         playStore.currentIndex = -1
         this.setSeek(0)
         await this.play()
-        return
       }
 
       // 根据播放模式切换歌曲
       switch (playStore.playSongMode) {
-        case 'repeat':
-          // 列表循环
+        // 列表循环
+        case 'repeat':{
           playStore.currentIndex += type === 'next' ? 1 : -1
           break
+        }
+        // 随机播放
         case 'shuffle': {
-          // 随机播放
           let newIndex: number
           // 确保不会随机到同一首
           do {
@@ -558,12 +559,13 @@ export class Player {
           playStore.currentIndex = newIndex
           break
         }
-        case 'repeat-once':
-          // 单曲循环
+        // 单曲循环
+        case 'repeat-once':{
           playStore.currentIndex = -1
           this.setSeek(0)
           await this.play()
           return
+        }
         default:
           throw new Error('The play mode is not supported')
       }
