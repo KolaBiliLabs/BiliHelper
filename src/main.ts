@@ -2,6 +2,7 @@ import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import { createApp } from 'vue'
 import App from './App.vue'
 import { debounceDirective, throttleDirective, visibleDirective } from './directives'
+
 import { setupPinia } from './plugins/store'
 import { setupRouter } from './router'
 

@@ -57,15 +57,6 @@ const routes: RouteRecordRaw[] = [
       transition: 'scale',
     },
   },
-  {
-    path: '/audio-trim',
-    name: 'AudioTrim',
-    component: () => import('@/pages/AudioTrimPage.vue'),
-    meta: {
-      title: '音频裁剪',
-      transition: 'scale',
-    },
-  },
 ]
 
 export const router = createRouter({
