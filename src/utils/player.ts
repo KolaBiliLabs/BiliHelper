@@ -4,7 +4,7 @@ import { Howl, Howler } from 'howler'
 import { cloneDeep } from 'lodash-es'
 import { getVideoDetail } from '@/api/search'
 import { usePlayStore } from '@/stores/playStore'
-import { isElectron, isInList } from './helper'
+import { isElectron } from './helper'
 import { calculateProgress } from './time'
 
 export class Player {
@@ -487,7 +487,7 @@ export class Player {
       // ipc
       if (isElectron) {
         window.electron.ipcRenderer.send(PLAY_SONG_CHANGE, playStore.currentSong)
-        window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, isInList(playStore.liked, playStore.currentSong))
+        window.electron.ipcRenderer.send(LIKE_STATUS_CHANGE, !!playStore.liked.find(l => l.id === playStore.currentSong.id))
       }
     })
     // 播放

@@ -138,13 +138,23 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
         </WithSkeleton>
 
         <!-- 音量调节 -->
-        <NPopover :show-arrow="false" raw>
+        <NPopover :show-arrow="false" style="padding: 0px;">
           <template #trigger>
-            <div class="menu-icon" @click.stop="player.toggleMute" @wheel="player.setVolume">
-              <RenderVolumeIcon :volume="playVolume" />
-            </div>
+            <NButton
+              circle
+              secondary
+              @click.stop="() => player.toggleMute()"
+              @wheel="(e: any) => player.setVolume(e)"
+            >
+              <template #icon>
+                <RenderVolumeIcon :volume="playVolume" />
+              </template>
+            </NButton>
           </template>
-          <div class="flex flex-col items-center w-16 h-50 px-3 py-2 rounded-3xl bg-[var(n-color)]/50" @wheel="player.setVolume">
+          <div
+            class="flex-col-center w-12 h-40 py-2 rounded-3xl"
+            @wheel="e => player.setVolume(e)"
+          >
             <NSlider
               v-model:value="playVolume"
               :tooltip="false"
@@ -212,9 +222,6 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
     margin: 6px 8px;
     --n-handle-size: 12px;
     --n-rail-height: 4px;
-  }
-  span {
-    opacity: 0.6;
   }
 }
 </style>
