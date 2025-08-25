@@ -108,10 +108,7 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
           strong
           circle
           secondary
-          @click.stop="() => {
-            console.log('player => ', player)
-            player.playOrPause()
-          }"
+          @click.stop="() => player.playOrPause()"
         >
           <template #icon>
             <Transition name="fade" mode="out-in">

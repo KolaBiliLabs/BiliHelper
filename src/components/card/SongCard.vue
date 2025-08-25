@@ -26,6 +26,16 @@ function toggleLike() {
 }
 
 const sameSong = computed(() => isSameSong(currentSong.value, props.data))
+
+function handlePlayOrPause(song: ISong) {
+  if (song.id === currentSong.value.id) {
+    console.log('playOrPause, same song =>', song)
+    player.playOrPause()
+  } else {
+    console.log('playOrPause, different song =>', song)
+    player.updatePlayList(playStore.playQueue, song)
+  }
+}
 </script>
 
 <template>
@@ -49,14 +59,14 @@ const sameSong = computed(() => isSameSong(currentSong.value, props.data))
               :is="isPlaying ? Pause : Play "
               class="num-transition size-6 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-0"
               :class="{ 'group-hover:opacity-100': sameSong }"
-              @click="player.playOrPause"
+              @click.stop="() => handlePlayOrPause(data)"
               @dblclick.stop
             />
             <!-- 播放 -->
             <Music2Icon
               class="num-transition size-5 absolute opacity-0 scale-75 active:opacity-60 group-hover:opacity-100"
               :class="{ 'group-hover:hidden': sameSong }"
-              @click="player.playOrPause"
+              @click.stop="() => handlePlayOrPause(data)"
             />
           </div>
         </Transition>

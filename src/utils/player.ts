@@ -339,7 +339,7 @@ export class Player {
    */
   async playOrPause() {
     const playStore = usePlayStore()
-    console.log('playOrPause =>', this, playStore.isPlaying)
+    console.log('playOrPause =>', this, this.player, playStore.isPlaying)
     if (playStore.isPlaying) {
       await this.pause()
     } else {
@@ -390,11 +390,12 @@ export class Player {
 
     // 是否直接播放
     if (song && typeof song === 'object' && 'id' in song) {
-    // 更新播放队列
-      const newList = data.filter(s => s.id !== song.id)
-      newList.push(song)
-      playStore.setPlayQueue(cloneDeep(newList))
-
+      // 不在播放队列中则添加，在则不管
+      if (data.findIndex(s => s.id === song.id) === -1) {
+        const newList = cloneDeep(data)
+        newList.push(song)
+        playStore.setPlayQueue(cloneDeep(newList))
+      }
       // 是否为当前播放歌曲
       if (playStore.currentSong && playStore.currentSong.id === song.id) {
         if (play) {
@@ -408,6 +409,7 @@ export class Player {
         await this.initPlayer()
       }
     } else {
+    // 更新播放队列
       playStore.setPlayQueue(cloneDeep(data))
 
       // 随机播放则取随机索引

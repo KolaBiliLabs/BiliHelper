@@ -40,7 +40,7 @@ async function scrollToItem() {
 
 // 清空播放队列
 function clearQueue() {
-  playStore.clearQueue()
+  player.cleanPlayList()
   showPlayQueue.value = false
   showPlayer.value = false
 }
