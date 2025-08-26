@@ -7,6 +7,9 @@ import { usePlayStore } from '@/stores/playStore'
 import { isElectron } from './helper'
 import { calculateProgress } from './time'
 
+// 允许播放格式
+const allowPlayFormat = ['mp3', 'flac', 'webm', 'ogg', 'wav']
+
 export class Player {
   // 播放器
   private player: Howl
@@ -15,7 +18,7 @@ export class Player {
 
   constructor() {
     // 创建播放器实例
-    this.player = new Howl({ src: [''], autoplay: false })
+    this.player = new Howl({ src: [''], format: allowPlayFormat, autoplay: false })
     // 初始化媒体会话
     this.initMediaSession()
   }
