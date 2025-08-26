@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { NImage, NSpace, NText } from 'naive-ui'
 import { ref } from 'vue'
-import WithSkeleton from '@/components/global/WithSkeleton.vue'
 import TextContainer from '../common/TextContainer.vue'
 import Like from '../global/Like.vue'
 
@@ -28,58 +27,46 @@ function toggleLike(song: ISong) {
 </script>
 
 <template>
-  <div class="px-3 flex items-center select-none">
+  <div class="px-3 flex items-center select-none gap-4">
     <div
-      class="flex-none size-15 mr-2 rounded-lg overflow-hidden"
+      class="flex-none size-15 rounded-lg overflow-hidden"
       @mouseenter="isShowOpenFull = true"
       @mouseleave="isShowOpenFull = false"
       @click="enableFullscreen"
     >
-      <WithSkeleton :loading :width="60" :height="60">
+      <Transition name="fade" mode="out-in">
         <NImage
-          :src="data?.pic || ''"
+          v-if="data"
+          :key="data.id"
+          :src="data.pic || ''"
           preview-disabled
           class="size-full"
           lazy
           object-fit="cover"
         />
-      </WithSkeleton>
+      </Transition>
     </div>
 
-    <NSpace vertical justify="center">
-      <div class="flex-1 flex items-center gap-2">
-        <WithSkeleton
-          :loading
-          :width="100"
-          :height="16"
-          transition-name="left"
-        >
+    <Transition name="left-sm" mode="out-in">
+      <NSpace
+        v-if="data"
+        :key="data.id"
+        vertical
+        justify="center"
+      >
+        <div class="flex-1 flex items-center gap-2">
           <TextContainer
-            v-if="data"
             :text="data.custom?.name || data.title"
             :speed="0.8"
             class="max-w-50"
           />
-        </WithSkeleton>
-
-        <WithSkeleton
-          :loading="loading && !data"
-          :width="16"
-          :height="16"
-          transition-name="left-sm"
-        >
           <Like v-if="data" :data="data" @toggle-like="toggleLike" />
-        </WithSkeleton>
-      </div>
+        </div>
 
-      <WithSkeleton
-        :loading
-        :width="50"
-        :height="16"
-        transition-name="left-sm"
-      >
-        <NText>  {{ data?.author || '未知' }}</NText>
-      </WithSkeleton>
-    </NSpace>
+        <NText :key="data?.id">
+          {{ data.artist || data.author || '未知' }}
+        </NText>
+      </NSpace>
+    </Transition>
   </div>
 </template>

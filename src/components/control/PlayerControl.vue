@@ -2,9 +2,9 @@
 // [ ] 进度条防抖 => 触发阶段修改为为 player 设置，ui阶段无防抖
 
 import { CatIcon, ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon, Volume1Icon, Volume2Icon, VolumeIcon, VolumeOffIcon } from 'lucide-vue-next'
-import { NButton, NCard, NPopover, NSlider, NText } from 'naive-ui'
+import { NCard, NPopover, NSlider, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { h } from 'vue'
+import { computed, h } from 'vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import player from '@/utils/player'
@@ -16,6 +16,9 @@ const systemStore = useSystemStore()
 const { showPlayer, showPlayQueue } = storeToRefs(systemStore)
 const playStore = usePlayStore()
 const { isPlaying, currentSong, currentTime, playDuration, loading, playVolume, playProgress } = storeToRefs(playStore)
+
+// 用于判断是否存在歌曲数据
+const haveSongData = computed(() => currentSong.value !== null)
 
 /**
  * 切换喜欢
@@ -74,6 +77,7 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
         :max="100"
         :tooltip="false"
         :keyboard="false"
+        :disabled="loading"
         class="player-slider"
         @dragstart="player.pause(false)"
         @dragend="sliderDragend"
@@ -130,11 +134,13 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
       <!-- 菜单 -->
       <div class="px-2 flex items-center justify-end h-full gap-2">
         <!-- 歌曲进度 -->
-        <div class="text-gray-400 flex-center select-none space-x-1 text-xs">
-          <span>{{ secondsToTime(currentTime) }}</span>
-          <span>/</span>
-          <span>{{ secondsToTime(playDuration) }}</span>
-        </div>
+        <Transition name="fade" mode="out-in">
+          <div v-if="haveSongData" :key="currentSong.id" class="text-gray-400 flex-center select-none space-x-1 text-xs">
+            <span>{{ secondsToTime(currentTime) }}</span>
+            <span>/</span>
+            <span>{{ secondsToTime(playDuration) }}</span>
+          </div>
+        </Transition>
 
         <!-- 音量调节 -->
         <NPopover :show-arrow="false" style="padding: 0px;">
