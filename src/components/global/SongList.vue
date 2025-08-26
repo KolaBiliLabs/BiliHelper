@@ -3,7 +3,7 @@ import type { VNode } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { NButton, NEmpty, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { useTemplateRef } from 'vue'
+import { useTemplateRef, watchEffect } from 'vue'
 import SongListMenu from '@/components/menus/SongListMenu.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
@@ -14,10 +14,13 @@ const props = withDefaults(defineProps<{
   data: ISong[]
   loading?: boolean
   disabledHeader?: boolean
-  noMore?: true
+  noMore?: boolean
+  showLoading?: boolean
 }>(), {
   disabledHeader: false,
   loading: false,
+  noMore: false,
+  showLoading: false,
 })
 const emit = defineEmits<{
   choose: [song: ISong]
@@ -52,11 +55,17 @@ function toggleLike(song: ISong) {
 }
 
 const loadMoreBtnRef = useTemplateRef('loadMoreBtnRef')
-useIntersectionObserver(loadMoreBtnRef, ([{ isIntersecting }]) => {
+
+const { stop } = useIntersectionObserver(loadMoreBtnRef, ([{ isIntersecting }]) => {
   if (isIntersecting) {
-    if (!props.noMore) {
+    if (!props.noMore && !props.loading) {
       emit('loadMore')
     }
+  }
+})
+watchEffect(() => {
+  if (!props.showLoading) {
+    stop()
   }
 })
 </script>
@@ -89,18 +98,20 @@ useIntersectionObserver(loadMoreBtnRef, ([{ isIntersecting }]) => {
     </section>
 
     <!-- loading -->
-    <div v-if="!noMore" class="flex justify-center">
-      <NButton
-        ref="loadMoreBtnRef"
-        :loading="loading"
-        size="small"
-        round
-      >
-        <span>
-          {{ noMore ? '没有更多了' : '加载更多' }}
-        </span>
-      </NButton>
-    </div>
+    <template v-if="showLoading">
+      <div v-if="!noMore" class="flex justify-center">
+        <NButton
+          ref="loadMoreBtnRef"
+          :loading="loading"
+          size="small"
+          round
+        >
+          <span>
+            {{ noMore ? '没有更多了' : '加载更多' }}
+          </span>
+        </NButton>
+      </div>
+    </template>
 
     <!-- 右键菜单 -->
     <SongListMenu ref="songListMenuRef" />

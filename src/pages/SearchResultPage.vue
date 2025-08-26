@@ -58,6 +58,7 @@ function handleLoadMore() {
     <SongList
       :data="data"
       :loading="loading"
+      show-loading
       @toggle-like="toggleLike"
       @load-more="handleLoadMore"
     >
