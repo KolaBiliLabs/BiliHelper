@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/playlist/:id',
     name: 'Playlist',
-    component: () => import('@/components/pages/playlist/Playlist.vue'),
+    component: () => import('@/pages/PlaylistPage.vue'),
     meta: {
       title: '歌单',
       transition: 'scale',

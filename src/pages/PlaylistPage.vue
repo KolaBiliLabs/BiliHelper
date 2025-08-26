@@ -4,11 +4,11 @@ import { NButton, NDivider } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import SongList from '@/components/global/SongList.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import player from '@/utils/player'
 import { formatTime } from '@/utils/time'
-import SongList from '../../global/SongList.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -93,10 +93,13 @@ function playAll() {
 
       <NDivider />
 
-      <SongList
-        :data="playList?.musics || []"
-        @toggle-like="toggleLike"
-      />
+      <Transition name="fade" mode="out-in">
+        <SongList
+          :key="playlistId"
+          :data="playList?.musics || []"
+          @toggle-like="toggleLike"
+        />
+      </Transition>
     </div>
   </div>
 </template>
