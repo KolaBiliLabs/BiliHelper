@@ -8,6 +8,8 @@ interface IUser {
   cookie?: string
   csrf?: string
   info: IUserInfo
+  face: string
+  uname: string
 }
 
 interface IAccess {
