@@ -11,6 +11,9 @@ import log from './logger'
 import { initTray } from './tray'
 import { appName, isDev, isMac } from './utils'
 
+// 屏蔽报错
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
+
 // [ ]: 应用关闭时选择后台运行或直接退出
 // [ ]: 快捷键关闭应用时，应用不完全退出
 
