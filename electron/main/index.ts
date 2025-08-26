@@ -159,10 +159,10 @@ class MainProcess {
    */
   createMainWindow() {
     const mainWindow = this.createWindow({
-      width: 1200,
-      height: 800,
-      minWidth: 1000,
-      minHeight: 700,
+      width: 1022,
+      height: 670,
+      minWidth: 1022,
+      minHeight: 670,
       // 立即显示窗口
       show: false,
       frame: false,
