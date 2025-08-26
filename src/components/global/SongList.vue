@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { NEmpty, NText } from 'naive-ui'
+import type { VNode } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
+import { NButton, NEmpty, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useTemplateRef } from 'vue'
-import Loading from '@/components/global/Loading.vue'
 import SongListMenu from '@/components/menus/SongListMenu.vue'
 import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import player from '@/utils/player'
 import SongCard from '../card/SongCard.vue'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   data: ISong[]
   loading?: boolean
   disabledHeader?: boolean
+  noMore?: true
 }>(), {
   disabledHeader: false,
   loading: false,
@@ -20,11 +22,13 @@ withDefaults(defineProps<{
 const emit = defineEmits<{
   choose: [song: ISong]
   toggleLike: [song: ISong]
+  loadMore: []
 }>()
 
 defineSlots<{
-  default: () => void
-  header: () => void
+  default: () => VNode
+  header: () => VNode
+  empty: () => VNode
 }>()
 
 const systemStore = useSystemStore()
@@ -46,44 +50,56 @@ function chooseSong(song: ISong) {
 function toggleLike(song: ISong) {
   emit('toggleLike', song)
 }
+
+const loadMoreBtnRef = useTemplateRef('loadMoreBtnRef')
+useIntersectionObserver(loadMoreBtnRef, ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    if (!props.noMore) {
+      emit('loadMore')
+    }
+  }
+})
 </script>
 
 <template>
-  <div v-auto-animate class="min-h-[60vh] space-y-4">
+  <div v-auto-animate class="space-y-4">
     <!-- 歌曲列表 -->
-    <template v-if="!loading">
-      <NEmpty
-        v-if="!data || !data.length"
-        class="w-full h-[50vh] flex-center"
-      >
-        <NText> 当前歌单无歌曲 </NText>
-      </NEmpty>
-
-      <template v-else>
-        <template
-          v-for="(song, idx) in data"
-          :key="song?.id"
+    <section>
+      <slot v-if="!loading && (!data || !data.length)" name="empty">
+        <NEmpty
+          class="w-full flex-center"
         >
-          <SongCard
-            v-if="song"
-            :data="song"
-            :index="idx"
-            @dblclick.stop="() => chooseSong(song)"
-            @contextmenu.stop="
-              songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
-            "
-            @toggle-like="toggleLike"
-          />
-        </template>
-      </template>
-    </template>
+          <NText> 当前歌单无歌曲 </NText>
+        </NEmpty>
+      </slot>
+
+      <div v-else class="space-y-4">
+        <SongCard
+          v-for="(song, idx) in data"
+          :key="song.id"
+          :data="song"
+          :index="idx"
+          @dblclick.stop="() => chooseSong(song)"
+          @contextmenu.stop="
+            songListMenuRef?.openDropdown($event, data, song, idx, selectedMenuKey)
+          "
+          @toggle-like="toggleLike"
+        />
+      </div>
+    </section>
 
     <!-- loading -->
-    <div v-else class="flex-center">
-      <Loading
-        :size="80"
-        class="w-full h-50vw flex-center"
-      />
+    <div v-if="!noMore" class="flex justify-center">
+      <NButton
+        ref="loadMoreBtnRef"
+        :loading="loading"
+        size="small"
+        round
+      >
+        <span>
+          {{ noMore ? '没有更多了' : '加载更多' }}
+        </span>
+      </NButton>
     </div>
 
     <!-- 右键菜单 -->

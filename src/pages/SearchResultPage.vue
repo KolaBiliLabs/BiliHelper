@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { NDivider } from 'naive-ui'
+import { NDivider, NEmpty } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { onBeforeUnmount, watch } from 'vue'
-import Pagination from '@/components/global/Pagination.vue'
 import SongList from '@/components/global/SongList.vue'
 import { useRequestSearchResults } from '@/hooks/useRequestSearchResults'
 import { usePlayStore } from '@/stores/playStore'
@@ -13,30 +12,33 @@ const { currentSearchKeyword } = storeToRefs(searchStore)
 
 const playStore = usePlayStore()
 
-const { data, loading, total, page, pageSize, run } = useRequestSearchResults(currentSearchKeyword, {
+const { data, page, loading, run, loadMore } = useRequestSearchResults(currentSearchKeyword, {
   page: 1,
   pageSize: 20,
 })
 
-function pageChange(v: number) {
-  page.value = v
-}
+watch(currentSearchKeyword, (v) => {
+  if (!v) {
+    return
+  }
+  console.log('search keyword => ', v)
+  // 请求该 keyword 对应的歌曲
+  page.value = 1
+  run()
+})
 
 function toggleLike(song: ISong) {
   playStore.toggleLike(song)
 }
 
-watch(currentSearchKeyword, () => {
-  if (currentSearchKeyword.value) {
-    // 请求该 keyword 对应的歌曲
-    run()
-  }
-})
-
 onBeforeUnmount(() => {
   searchStore.clearupSearch()
   console.log('----- searStore 已清理 -----')
 })
+
+function handleLoadMore() {
+  loadMore()
+}
 </script>
 
 <template>
@@ -57,15 +59,11 @@ onBeforeUnmount(() => {
       :data="data"
       :loading="loading"
       @toggle-like="toggleLike"
-    />
-
-    <!-- 分页 -->
-    <Pagination
-      :loading
-      :page="page"
-      :page-size="pageSize"
-      :total-count="total"
-      @page-change="pageChange"
-    />
+      @load-more="handleLoadMore"
+    >
+      <template #empty>
+        <NEmpty description="没有找到相关结果" />
+      </template>
+    </SongList>
   </div>
 </template>

@@ -61,35 +61,37 @@ function playAll() {
     </div>
 
     <div v-else>
-      <header class="flex justify-between">
-        <div>
-          <h1 class="text-2xl font-bold tracking-wide mb-1">
-            {{ playList?.name }}
-          </h1>
-          <template v-if="playList?.description">
-            <div class="text-gray-500 text-sm mt-1">
-              {{ playList.description }}
-            </div>
-          </template>
-          <template v-if="!playList?.isDefault">
-            <div class="flex items-center text-xs text-gray-400 mt-2 space-x-2">
-              <TimerIcon class="size-4" />
-              <span>{{ formatTime(playList?.createTime || 0, 'YYYY-MM-DD') }} 创建</span>
-            </div>
-          </template>
-        </div>
+      <Transition name="left-sm" mode="out-in">
+        <header :key="playlistId" class="flex justify-between">
+          <div>
+            <h1 class="text-2xl font-bold tracking-wide mb-1">
+              {{ playList?.name }}
+            </h1>
+            <template v-if="playList?.description">
+              <div class="text-gray-500 text-sm mt-1">
+                {{ playList.description || '该歌单没有描述' }}
+              </div>
+            </template>
+            <template v-if="!playList?.isDefault">
+              <div class="flex items-center text-xs text-gray-400 mt-2 space-x-2">
+                <TimerIcon class="size-4" />
+                <span>{{ formatTime(playList?.createTime || 0, 'YYYY-MM-DD') }} 创建</span>
+              </div>
+            </template>
+          </div>
 
-        <div>
-          <NButton
-            :disabled="!playList?.musics.length"
-            round
-            tertiary
-            @click="playAll"
-          >
-            播放全部
-          </NButton>
-        </div>
-      </header>
+          <div>
+            <NButton
+              :disabled="!playList?.musics.length"
+              round
+              tertiary
+              @click="playAll"
+            >
+              播放全部
+            </NButton>
+          </div>
+        </header>
+      </Transition>
 
       <NDivider />
 

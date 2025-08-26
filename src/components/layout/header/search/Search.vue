@@ -42,8 +42,9 @@ function searchInputFocus() {
  */
 function handleSearchByCK(e: KeyboardEvent) {
   // 全屏播放器时不响应
-  if (fullScreen.value)
+  if (fullScreen.value) {
     return
+  }
 
   // 搜索框聚焦时不响应
   if (searchFocus.value) {
