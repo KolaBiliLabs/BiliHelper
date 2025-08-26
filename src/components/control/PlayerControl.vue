@@ -9,18 +9,13 @@ import { usePlayStore } from '@/stores/playStore'
 import { useSystemStore } from '@/stores/systemStore'
 import player from '@/utils/player'
 import { calculateCurrentTime, secondsToTime } from '@/utils/time'
-import WithSkeleton from '../global/WithSkeleton.vue'
+import ControlButton from './ControlButton.vue'
 import SongInfo from './SongInfo.vue'
 
 const systemStore = useSystemStore()
 const { showPlayer, showPlayQueue } = storeToRefs(systemStore)
 const playStore = usePlayStore()
 const { isPlaying, currentSong, currentTime, playDuration, loading, playVolume, playProgress } = storeToRefs(playStore)
-
-// 打开播放列表
-function handleOpenPlayList() {
-  showPlayQueue.value = true
-}
 
 /**
  * 切换喜欢
@@ -96,18 +91,21 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
       <!-- 播放器 -->
       <div class="flex-center h-full gap-3">
         <!-- 上一曲 -->
-        <div v-debounce="() => player.nextOrPrev('prev')" class="btn-icon">
-          <ChevronLeftIcon class="size-4" />
-        </div>
+        <ControlButton v-debounce="() => player.nextOrPrev('prev')" circle>
+          <template #icon>
+            <ChevronLeftIcon />
+          </template>
+        </ControlButton>
+
         <!-- 播放/暂停 -->
-        <NButton
-          :focusable="false"
-          :keyboard="false"
+        <ControlButton
           :loading="loading"
           type="primary"
           strong
           circle
-          secondary
+          width="42"
+          height="42"
+          :quaternary="false"
           @click.stop="() => player.playOrPause()"
         >
           <template #icon>
@@ -115,41 +113,37 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
               <component
                 :is="isPlaying ? PauseIcon : PlayIcon"
                 :key="playStore.isPlaying"
-                class="size-7"
+                class="size-10"
               />
             </transition>
           </template>
-        </NButton>
+        </ControlButton>
+
         <!-- 下一曲 -->
-        <div v-debounce="() => player.nextOrPrev('next')" class="btn-icon">
-          <ChevronRightIcon class="size-4" />
-        </div>
+        <ControlButton v-debounce="() => player.nextOrPrev('next')" circle>
+          <template #icon>
+            <ChevronRightIcon class="size-4" />
+          </template>
+        </ControlButton>
       </div>
 
       <!-- 菜单 -->
-      <div class="px-2 flex items-center justify-end h-full gap-3">
+      <div class="px-2 flex items-center justify-end h-full gap-2">
         <!-- 歌曲进度 -->
-        <WithSkeleton :loading :width="110" :height="25">
-          <div class="text-gray-400 flex-center select-none space-x-1">
-            <span>{{ secondsToTime(currentTime) }}</span>
-            <span>/</span>
-            <span>{{ secondsToTime(playDuration) }}</span>
-          </div>
-        </WithSkeleton>
+        <div class="text-gray-400 flex-center select-none space-x-1 text-xs">
+          <span>{{ secondsToTime(currentTime) }}</span>
+          <span>/</span>
+          <span>{{ secondsToTime(playDuration) }}</span>
+        </div>
 
         <!-- 音量调节 -->
         <NPopover :show-arrow="false" style="padding: 0px;">
           <template #trigger>
-            <NButton
-              circle
-              secondary
-              @click.stop="() => player.toggleMute()"
-              @wheel="(e: any) => player.setVolume(e)"
-            >
+            <ControlButton @click.stop="() => player.toggleMute()" @wheel="(e: any) => player.setVolume(e)">
               <template #icon>
                 <RenderVolumeIcon :volume="playVolume" />
               </template>
-            </NButton>
+            </ControlButton>
           </template>
           <div
             class="flex-col-center w-12 h-40 py-2 rounded-3xl"
@@ -171,13 +165,11 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
         </NPopover>
 
         <!-- 播放列表 -->
-        <NButton
-          circle
-          secondary
-          @click="handleOpenPlayList"
-        >
-          <ListIcon class="size-4" />
-        </NButton>
+        <ControlButton @click="showPlayQueue = true">
+          <template #icon>
+            <ListIcon />
+          </template>
+        </ControlButton>
       </div>
     </div>
   </NCard>
