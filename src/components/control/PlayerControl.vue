@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // [ ] 进度条防抖 => 触发阶段修改为为 player 设置，ui阶段无防抖
 
-import { CatIcon, ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon, Volume1Icon, Volume2Icon, VolumeIcon, VolumeOffIcon } from 'lucide-vue-next'
+import { ChevronLeftIcon, ChevronRightIcon, ListIcon, PauseIcon, PlayIcon, Volume1Icon, Volume2Icon, VolumeIcon, VolumeOffIcon } from 'lucide-vue-next'
 import { NCard, NPopover, NSlider, NText } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed, h } from 'vue'
@@ -69,7 +69,7 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
     }"
   >
     <!-- 进度条 -->
-    <div class="slider">
+    <div class="flex items-center w-full cursor-pointer">
       <NSlider
         v-model:value="playStore.playProgress"
         :step="0.01"
@@ -78,14 +78,9 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
         :tooltip="false"
         :keyboard="false"
         :disabled="loading"
-        class="player-slider"
         @dragstart="player.pause(false)"
         @dragend="sliderDragend"
-      >
-        <template #thumb>
-          <CatIcon class="size-4 fill-blue-200 scale-3d hover:scale-115 transition duration-300" />
-        </template>
-      </NSlider>
+      />
     </div>
 
     <div class="grid grid-cols-3 items-center h-full gap-2.5">
@@ -197,29 +192,21 @@ function RenderVolumeIcon({ volume }: { volume: number }) {
   }
 }
 
+.n-slider {
+  position: absolute !important;
+  top: -6px !important;
+  width: 100%;
+  height: 16px;
+  left: 0 !important;
+  margin: 0 !important;
+
+  --n-handle-size: 12px !important;
+  --n-rail-height: 4px;
+}
+
 .n-card {
   /* position: relative; */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-
-  .n-slider {
-    position: absolute;
-    top: -10px;
-  }
-}
-
-.slider {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  max-width: 480px;
-  font-size: 12px;
-  cursor: pointer;
-  .n-slider {
-    margin: 6px 8px;
-    --n-handle-size: 12px;
-    --n-rail-height: 4px;
-  }
 }
 </style>

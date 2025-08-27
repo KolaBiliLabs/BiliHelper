@@ -94,15 +94,4 @@ onMounted(() => {
     }
   }
 }
-
-.player-slider {
-  position: absolute !important;
-  width: 100%;
-  height: 16px;
-  top: -8px !important;
-  left: 0 !important;
-  margin: 0 !important;
-  --n-rail-height: 3px;
-  --n-handle-size: 14px;
-}
 </style>
