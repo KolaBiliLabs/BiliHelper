@@ -147,6 +147,35 @@ export const usePlayStore = defineStore('play', () => {
   }
 
   /**
+   * 设置下一首播放歌曲
+   * @param song 歌曲
+   * @return idx 下一首歌曲插入的索引
+   */
+  function setNextPlaySong(song: ISong) {
+    // 若为空,则直接添加
+    if (playQueue.value.length === 0) {
+      playQueue.value = [song]
+      return 0
+    }
+
+    const idx = playQueue.value.findIndex(s => s.id === song.id)
+    if (idx < 0) {
+      // 歌单中不存在
+      playQueue.value.splice(currentIndex.value + 1, 0, song)
+    } else {
+      // 在歌单中存在
+      playQueue.value.splice(idx, 1)
+
+      if (idx < currentIndex.value) {
+        // 在当前播放位置之前 剔除后 将currentIndex - 1
+        currentIndex.value--
+      }
+      playQueue.value.splice(currentIndex.value + 1, 0, song)
+    }
+    return playQueue.value.findIndex(s => s.id === song.id)
+  }
+
+  /**
    * 从指定歌单中移除歌曲
    */
   function removeMusicFromPlaylist(playlistId: string, song: ISong) {
@@ -205,6 +234,7 @@ export const usePlayStore = defineStore('play', () => {
 
     playQueue,
     setPlayQueue,
+    setNextPlaySong,
 
     currentIndex,
     currentSong,

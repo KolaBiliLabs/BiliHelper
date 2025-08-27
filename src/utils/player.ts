@@ -215,6 +215,28 @@ export class Player {
   }
 
   /**
+   * 添加下一首歌曲
+   * @param song 歌曲
+   */
+  async addNextSong(song: ISong) {
+    const playStore = usePlayStore()
+    // 是否为当前播放歌曲
+    if (playStore.currentSong.id === song.id) {
+      this.play()
+      window.$message.success('已开始播放')
+      return
+    }
+    // 尝试添加
+    const songIndex = playStore.setNextPlaySong(song)
+    // 播放歌曲
+    if (songIndex < 0) {
+      return
+    }
+
+    window.$message.success('已添加至下一首播放')
+  }
+
+  /**
    * 移除指定歌曲
    * @param index 歌曲索引
    */

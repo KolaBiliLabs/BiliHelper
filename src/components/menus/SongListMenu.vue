@@ -2,12 +2,13 @@
 <script setup lang="ts">
 import type { DropdownOption } from 'naive-ui'
 import type { FunctionalComponent } from 'vue'
-import { CopyIcon, ListPlusIcon, MenuIcon, Play, ShareIcon, TrashIcon } from 'lucide-vue-next'
+import { CopyIcon, ListPlusIcon, MenuIcon, Play, PlusIcon, ShareIcon, TrashIcon } from 'lucide-vue-next'
 import { NButton, NDropdown, NEmpty, NSpace } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { h, nextTick, ref } from 'vue'
 import { usePlaylistModal } from '@/hooks/usePlaylistModal'
 import { usePlayStore } from '@/stores/playStore'
+import player from '@/utils/player'
 
 defineEmits<{ removeSong: [index: number[]] }>()
 
@@ -28,12 +29,12 @@ function renderIcon(icon: FunctionalComponent) {
 
 // 开启右键菜单
 function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, playListId: string) {
-  console.log(data, index)
+  console.log('openDropdown', 'song index => ', index)
   try {
     e.preventDefault()
     dropdownShow.value = false
-    // 是否为用户歌单
-    // const isUserPlaylist = !!playListId && customPlaylists.value.some(pl => pl.id === playListId)
+
+    const isCurrent = song.id === playStore.currentSong.id
 
     function genAddToCustomPlaylistChildren() {
       const haveCustomPlaylist = customPlaylists.value.length > 0
@@ -66,19 +67,22 @@ function openDropdown(e: MouseEvent, data: ISong[], song: ISong, index: number, 
           key: 'play',
           label: '立即播放',
           props: {
-            onClick: () => playStore.play(song),
+            onClick: () => player.updatePlayList(data, song),
           },
           icon: renderIcon(Play),
         },
-        // {
-        //   key: 'play-next',
-        //   label: '下一首播放',
-        //   show: !isCurrent && !statusStore.personalFmMode,
-        //   props: {
-        //     onClick: () => player.addNextSong(song, false),
-        //   },
-        //   icon: renderIcon('PlayNext', { size: 18 }),
-        // },
+        {
+          key: 'play-next',
+          label: '下一首播放',
+          show: !isCurrent,
+          props: {
+            onClick: () => {
+              console.log('add to next')
+              player.addNextSong(song)
+            },
+          },
+          icon: renderIcon(PlusIcon),
+        },
         {
           key: 'playlist-add',
           label: '添加到歌单',
