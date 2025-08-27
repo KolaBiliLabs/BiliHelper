@@ -4,6 +4,7 @@ import { Howl, Howler } from 'howler'
 import { cloneDeep } from 'lodash-es'
 import { getVideoDetail } from '@/api/search'
 import { usePlayStore } from '@/stores/playStore'
+import { useSystemStore } from '@/stores/systemStore'
 import { isElectron } from './helper'
 import { calculateProgress } from './time'
 
@@ -219,34 +220,46 @@ export class Player {
    */
   removeSongIndex(index: number) {
     const playStore = usePlayStore()
+    const systemStore = useSystemStore()
 
     // 若超出播放列表
-    if (index >= playStore.playQueue.length)
+    if (index >= playStore.playQueue.length) {
       return
+    }
+
     // 仅剩一首
     if (playStore.playQueue.length === 1) {
       this.cleanPlayList()
+      systemStore.showPlayQueue = false
       return
     }
+
     // 是否为当前播放歌曲
     const isCurrentPlay = playStore.currentIndex === index
+
     // 深拷贝，防止影响原数据
-    const newPlaylist = cloneDeep(playStore.playQueue)
-    // 若将移除最后一首
-    if (index === playStore.playQueue.length - 1) {
-      playStore.currentIndex = 0
-    }
-    // 若为当前播放之后
-    else if (playStore.currentIndex > index) {
+    const newPlayQueue = cloneDeep(playStore.playQueue)
+
+    // 移除指定歌曲
+    newPlayQueue.splice(index, 1)
+    playStore.playQueue = newPlayQueue
+
+    // 调整当前播放索引
+    if (isCurrentPlay) {
+      // 如果移除的是当前播放的歌曲，需要重新初始化播放器
+      // 优先播放同一位置的歌曲，如果超出范围则播放第一首
+      if (index >= newPlayQueue.length) {
+        playStore.currentIndex = 0
+      } else {
+        // 保持在同一位置，因为后面的歌曲会前移
+        playStore.currentIndex = index
+      }
+      this.initPlayer(playStore.isPlaying)
+    } else if (playStore.currentIndex > index) {
+      // 如果移除的歌曲在当前播放歌曲之前，当前索引需要减1
       playStore.currentIndex--
     }
-    // 移除指定歌曲
-    newPlaylist.splice(index, 1)
-    playStore.playQueue = newPlaylist
-    // 若为当前播放
-    if (isCurrentPlay) {
-      this.initPlayer(playStore.isPlaying)
-    }
+    // 如果移除的歌曲在当前播放歌曲之后，索引不需要调整
   }
 
   /**
@@ -396,7 +409,7 @@ export class Player {
       // 不在播放队列中则添加，在则不管
       if (data.findIndex(s => s.id === song.id) === -1) {
         const newList = cloneDeep(data)
-        newList.push(song)
+        newList.unshift(song)
         playStore.setPlayQueue(cloneDeep(newList))
       }
       // 是否为当前播放歌曲
